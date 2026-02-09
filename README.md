@@ -5,6 +5,9 @@
 villagers fall ill, and time is limited. The player must gather ingredients, brew potions, and decide who to treat, knowing that every choice affects survival outcomes...***<br>
 ## Gameplay
 Gather ingredients and create potions to cure as many villagers as possible while avoiding infection from rats. **Survival is not guaranteed, and difficult choices must be made throughout the game**.
+## Project Structure
+- `docs/` – Documents, guidance, and information about the project
+
 ## Group Members
 ### Project Manager
 Janay Snell
