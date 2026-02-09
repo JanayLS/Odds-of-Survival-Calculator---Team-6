@@ -6,7 +6,17 @@ villagers fall ill, and time is limited. The player must gather ingredients, bre
 ## Gameplay
 Gather ingredients and create potions to cure as many villagers as possible while avoiding infection from rats. **Survival is not guaranteed, and difficult choices must be made throughout the game**.
 ## Project Structure
-- `docs/` – Documents, guidance, and information about the project
+- `app/` – main application package
+  - `cli.py` – CLI entry + menus (temporary while we migrate to web)
+  - `domain/` – dataclasses / data models (no I/O)
+  - `services/` – core logic (probability, summaries, crypto helpers)
+  - `storage/` – loading/saving encrypted journal data
+  - `templates/` – Flask HTML templates (placeholders for later)
+  - `static/` – Flask static files (CSS/JS/images placeholders for later)
+- `data/` – runtime data (encrypted journal, maps, db, etc.). Not committed.
+-  `docs/` – Documents, guidance, and information about the project
+- `tests/` – unit tests / smoke tests
+
 
 ## Group Members
 ### Project Manager
