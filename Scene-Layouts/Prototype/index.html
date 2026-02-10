@@ -1,0 +1,42 @@
+<!-- HTML Boilerplate -->
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head (Meta Tags, Page Title, Link to CSS Styles) -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plague Village - Arrival</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<!-- Body (Page Contents) -->
+
+<body>
+    <!-- Game Title -->
+    <h1 id="game-title">PLAGUE VILLAGE</h1>
+    <!-- Game Container -->
+    <div id="game-container">
+        <!-- Game -->
+        <div id="game">
+            <!-- Assets (Background, Plague Doctor, Villager NPC, Dialogue Box) -->
+            <img id="villageBackground" src="villageBackground.png">
+            <img id="plagueDoctor" src="plagueDoctor.png">
+            <img id="introVillager" src="introVillager.png">
+            <div id="dialogue-box">
+                <!-- Dialogue Text -->
+                <p id="dialogue-text">"Doctor...thank the Heavens you have arrived...</p>
+                <p id="dialogue-text">Our people are sick. Some are dying. Rats roam our streets at night.</p>
+                <p id="dialogue-text">If you cannot save us...no one will."</p>
+            </div>
+        </div>
+    </div>
+    <!-- Music Button and Link to MP3 -->
+    <button id="turn-music-on">Music On</button>
+    <audio id="bgm" src="infectedVillage.mp3" autoplay loop></audio>
+    <!-- Link to JavaScript Scripts -->
+    <script src="script.js"></script>
+</body>
+
+</html>
