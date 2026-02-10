@@ -2,6 +2,8 @@
 This folder contains the **non-interactive** prototype for scene layouts for our Plague Village game. 
 The layout contained here specifically focuses on our first scene, **Intro/Arrival**, when the Plague Doctor first arrives at the village...
 
+**IMPORTANT: Do not change this `Prototype` folder or the files in it, as it is meant to be our starting point reference for creating scenes.**
+
 ## Folder Structure
 ### Code
 - `index.html` - HTML code for the scene.
