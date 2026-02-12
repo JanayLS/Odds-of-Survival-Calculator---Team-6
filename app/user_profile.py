@@ -8,6 +8,7 @@ app = Flask(__name__)
 def load_user_profile(rows: list[dict]) -> UserProfile:
     """
     Extract the UserProfile from the meta row in the encrypted journal.
+    
     """
     for row in rows:
         if row.get("algo") == "meta" and "profile|" in row.get("note", ""):
