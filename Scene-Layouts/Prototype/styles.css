@@ -1,0 +1,151 @@
+/* Styles for body of webpage */
+body {
+    background: black;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Styles for Plague Village Title */
+#game-title {
+    text-align: center;
+    font-family: "Cinzel", serif;
+    font-size: 55px;
+    letter-spacing: 4px;
+    color: #e6d7b7;
+    text-shadow: 2px 2px 8px #000;
+    margin-bottom: 20px;
+
+    text-shadow: 0 0 6px rgba(255, 230, 180, 0.7), 0 0 12px rgba(255, 200, 120, 0.5), 0 0 20px rgba(255, 180, 100, 0.25);
+
+    animation: titlePulse 2.2s ease-in-out infinite;
+}
+
+/* Styles to make Plague Village Title glow */
+@keyframes titlePulse {
+    0% {
+        text-shadow: 0 0 4px rgba(255, 230, 180, 0.5), 0 0 10px rgba(255, 200, 120, 0.35), 0 0 14px rgba(255, 180, 100, 0.2);
+        transform: scale(1);
+    }
+
+    50% {
+        text-shadow: 0 0 10px rgba(255, 240, 200, 0.9), 0 0 20px rgba(255, 210, 140, 0.7), 0 0 32px rgba(255, 190, 120, 0.4);
+        transform: scale(1.015);
+    }
+
+    100% {
+        text-shadow: 0 0 4px rgba(255, 230, 180, 0.5), 0 0 10px rgba(255, 200, 120, 0.35), 0 0 14px rgba(255, 180, 100, 0.2);
+        transform: scale(1);
+    }
+}
+
+/* Styles for game container and border */
+#game-container {
+    width: 1920px;
+    height: 1080px;
+    border: 8px solid #3a2f2f;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    overflow: hidden;
+}
+
+/* Styles for size of game */
+#game {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Styles for background image */
+#villageBackground {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    object-fit: cover;
+}
+
+/* Styles for Plague Doctor */
+#plagueDoctor {
+    position: absolute;
+    bottom: 0;
+    right: 20px;
+    width: 400px;
+    z-index: 10;
+}
+
+/* Styles for Villager NPC*/
+#introVillager {
+    position: absolute;
+    bottom: 0px;
+    left: -80px;
+    width: 600px;
+    z-index: 10;
+}
+
+/* Styles for Dialogue Box */
+#dialogue-box {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    padding: 20px;
+    border-radius: 12px;
+
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+
+    color: #f1e6c6;
+    font-family: 'Georgia', serif;
+    font-size: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    z-index: 11;
+}
+
+/* Styles for Dialogue Text */
+#dialogue-text {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 1.2em;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+/* Styles for Music On Button */
+#turn-music-on {
+    position: fixed;
+    bottom: 90px;
+    right: 570px;
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: green;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    /* z-index: 9999; */
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+/* Styles for Hover Effect on Music On Button*/
+#turn-music-on:hover {
+    transform: scale(1.1);
+    background-color: greenyellow;
+}
+
+/*Styles for when Music On Button is Clicked */
+#turn-music-on:active {
+    transform: scale(0.97);
+}
