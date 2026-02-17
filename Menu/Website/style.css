@@ -1,0 +1,33 @@
+body {
+    background-image: url("PlagueVillage1_1927x1080.png");
+    background-size: fill;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+
+#menu {
+  margin-top: 600px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 30px; 
+  
+  
+}
+
+button {
+  background-color: #7fffd1;
+  color: #01232b;
+  border: none;
+  padding: 20px 40px;
+  cursor: pointer;
+  font-size: 32px;
+  border-radius: 5px;
+}
+
+button:hover { background: #64c19f; }
