@@ -192,6 +192,8 @@ choiceButtons.forEach(button => {
     })
 })
 
+// BUTTONS
+// --------------------------------------------------------------------------------
 // Music Button Logic
 btn.addEventListener("click", () => {
     if (bgm.paused) {
