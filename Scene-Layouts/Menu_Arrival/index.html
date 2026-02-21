@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plague Village - Intro/Arrival</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Plague Village Menu, Entry Point for the Game -->
+    <div id="mainMenu">
+        <img src="plagueVillageMenu.png" id="menuImage">
+        <button id="startGameBtn" class="glow-btn">Start</button>
+    </div>
+
+    <!-- Arrival Scene (Scene 1), Activated after Player clicks Start Button in Menu -->
+    <div id="arrivalScene">
+        <img id="plagueDoctor" src="plagueDoctor.png">
+        <img id="villager1" src="villager1.png">
+        <img id="worriedVillagerWoman" src="worriedVillagerWoman.png">
+
+        <!-- Dialogue System (Character Name, Dialogue Text, Player Choices, Next Arrow for Navigation) -->
+        <div id="dialogueBox">
+            <div id="characterName">Desperate Villager:</div>
+            <div id="dialogueText"></div>
+            <div id="choiceBox">
+                <button class="choiceBtn" data-choice="villagers">
+                    Ask about the sick villagers
+                </button>
+                <button class="choiceBtn" data-choice="rats">
+                    Ask about the rats
+                </button>
+                <button class="choiceBtn" data-choice="supplies">
+                    Inspect your medical supplies
+                </button>
+            </div>
+            <div id="nextArrow">➤</div>
+        </div>
+
+        <!-- Music Button and Link to MP3 -->
+        <button id="turn-music-on">Music On</button>
+
+        <!-- Inventory Button (Hidden Until Supplies are Checked) -->
+        <button id="inventoryBtn">Inventory</button>
+        <span id="inventoryHintArrow">➤</span>
+
+        <!-- Inventory -->
+        <div id="inventoryPanel" style="display: none;">
+            <h3>Inventory</h3>
+            <div id="inventoryItems">
+                <!-- Items will be randomly generated and dynamically added later -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Game Audio -->
+    <audio id="bgm" src="arrivalMusic.mp3" autoplay loop></audio>
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
