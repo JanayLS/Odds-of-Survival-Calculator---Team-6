@@ -22,6 +22,7 @@ Start Button -> Transition to Arrival Scene (First Scene of Game)
     - Brew Ingredients
 
 ## Possible Features to Add
+- Brief transition Before Villager NPC Dialogue where Story Background appears ("Year 1349. The Black Plague spreads across the land..." etc.)
 - When Player chooses **Choice 1 (Ask about Villagers)**, a **list of sick villagers** could be randomly generated, along with an overall **Village Infection Rate** which will be based on how many villagers have been healed. (So for example, Village Infection Rate starts at 100%. Let's say you have 5 sick villagers. When one villager is healed, Village Infection rate would go down to 80%, and so on.)
 - When Player chooses **Choice 2 (Ask about Rats)**, a **list of rat enemies** could be randomly generated, so the player will know how many rats need to be killed to stop the Plague.
 
