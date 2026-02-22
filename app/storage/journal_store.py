@@ -1,124 +1,175 @@
-# Encrypted journal load/save will go here later
+from __future__ import annotations
+
 import os
 import json
-import csv
-import getpass
-from io import StringIO
-from typing import List, Dict
-from app.services.cryptography_service import _encrypt_bytes, _decrypt_bytes
-from app.storage.paths import JOURNAL_PATH, FIXED_MAP_PATH  # if you use them
+import base64
+import sqlite3
+from typing import Any
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives import hashes
 
-JOURNAL_ENC = "journal.enc"
-CSV_HEADER = [
-    "timestamp",
-    "character",
-    "encounter",
-    "probability",
-    "damage",
-    "outcome",
-    "algo",
-    "note",
-]
+DEFAULT_DB_PATH = os.path.join("data", "journal.db")
 
 
-def load_csv_from_encrypted(password: str) -> list[dict]:
-    """
-    Read the encrypted journal from JOURNAL_ENC using the given password.
-
-    Flow:
-      1) Read JSON blob {salt, ciphertext}.
-      2) Derive key from password+salt (PBKDF2).
-      3) Decrypt with Fernet (verifies integrity).
-      4) Parse CSV text into a list of dict rows.
-
-    Returns [] on first run (no file).
-    """
-    if not os.path.exists(JOURNAL_ENC):
-        return []
-    with open(JOURNAL_ENC, "r", encoding="utf-8") as f:
-        blob = json.load(f)
-    plaintext = _decrypt_bytes(password, blob).decode("utf-8")
-    return list(csv.DictReader(plaintext.splitlines()))
+def _derive_key(password: str, salt: bytes) -> bytes:
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=200_000,
+    )
+    return base64.urlsafe_b64encode(kdf.derive(password.encode("utf-8")))
 
 
-def save_csv_to_encrypted(password: str, rows: list[dict]) -> None:
-    """
-    Serialize rows → CSV text → encrypt → write JOURNAL_ENC.
-
-    Using authenticated encryption (Fernet) ensures the file cannot be
-    modified without detection and keeps the contents confidential.
-    """
-    sio = StringIO()
-    writer = csv.DictWriter(sio, fieldnames=CSV_HEADER)
-    writer.writeheader()
-    for r in rows:
-        writer.writerow(r)
-    plaintext = sio.getvalue().encode("utf-8")
-    blob = _encrypt_bytes(password, plaintext)
-    with open(JOURNAL_ENC, "w", encoding="utf-8") as f:
-        json.dump(blob, f)
+def _encrypt_dict(password: str, salt: bytes, row: dict[str, Any]) -> bytes:
+    key = _derive_key(password, salt)
+    token = Fernet(key).encrypt(json.dumps(row, separators=(",", ":")).encode("utf-8"))
+    return token
 
 
-def change_password(old_pwd: str, rows: list[dict]) -> str:
-    """
-    Optional 'verify current password' step + set a new password.
-    Re-encrypts the already-decrypted `rows` with the new password and saves.
-    Returns the new password on success, "" on failure.
-    """
-    check = getpass.getpass("Current password: ")
-    if check != old_pwd:
-        print("Incorrect current password.")
-        return ""
-    p1 = getpass.getpass("New password: ")
-    p2 = getpass.getpass("Confirm new password: ")
-    if not p1 or p1 != p2:
-        print("Passwords did not match.")
-        return ""
-    save_csv_to_encrypted(p1, rows)
-    print("Password updated.")
-    return p1
+def _decrypt_dict(password: str, salt: bytes, token: bytes) -> dict[str, Any]:
+    key = _derive_key(password, salt)
+    plaintext = Fernet(key).decrypt(token)
+    return json.loads(plaintext.decode("utf-8"))
 
 
-def reset_journal() -> bool:
-    """
-    Safely remove journal.enc after a typed confirmation.
-    Does not modify in-memory `rows`; caller should clear those.
-    """
-    confirm = input('Type "DELETE" to permanently remove journal.enc: ').strip()
-    if confirm != "DELETE":
-        print("Reset canceled.")
-        return False
-    try:
-        os.remove(JOURNAL_ENC)
-        print("journal.enc removed.")
-        return True
-    except FileNotFoundError:
-        print("No journal to remove.")
-        return False
+class JournalStore:
+    def __init__(self, db_path: str = DEFAULT_DB_PATH):
+        self.db_path = db_path
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
+    def _connect(self) -> sqlite3.Connection:
+        con = sqlite3.connect(self.db_path)
+        con.execute("PRAGMA journal_mode=WAL;")
+        con.execute("PRAGMA foreign_keys=ON;")
+        return con
 
-def open_or_create_journal() -> tuple[list[dict], str]:
-    """
-    If journal.enc exists: loop until a valid password decrypts it (or user cancels).
-    If it doesn't: ask the user to create/confirm a new password; start empty.
-    Returns (rows, password). If canceled, returns ([], "").
-    """
-    if os.path.exists(JOURNAL_ENC):
-        while True:
-            pwd = getpass.getpass("Enter journal password (Enter to cancel): ")
-            if not pwd:
-                print("Canceled.")
-                return [], ""
-            try:
-                rows = load_csv_from_encrypted(pwd)
-                return rows, pwd
-            except Exception:
-                print("Wrong password or corrupt file. Try again.")
-    else:
-        while True:
-            p1 = getpass.getpass("Create a new password: ")
-            p2 = getpass.getpass("Confirm password: ")
-            if p1 and p1 == p2:
-                print("New journal created.")
-                return [], p1
-            print("Passwords did not match. Try again.")
+    def init_db(self) -> None:
+        with self._connect() as con:
+            con.execute(
+                """
+                CREATE TABLE IF NOT EXISTS meta (
+                    k TEXT PRIMARY KEY,
+                    v TEXT NOT NULL
+                );
+                """
+            )
+            con.execute(
+                """
+                CREATE TABLE IF NOT EXISTS entries (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ts TEXT NOT NULL,
+                    blob BLOB NOT NULL
+                );
+                """
+            )
+
+    def has_journal(self) -> bool:
+        if not os.path.exists(self.db_path):
+            return False
+        self.init_db()
+        with self._connect() as con:
+            cur = con.execute("SELECT 1 FROM meta WHERE k='salt' LIMIT 1;")
+            return cur.fetchone() is not None
+
+    def create_new_journal(self, password: str) -> None:
+        self.init_db()
+        salt = os.urandom(16)
+        with self._connect() as con:
+            con.execute("DELETE FROM meta;")
+            con.execute("DELETE FROM entries;")
+            con.execute(
+                "INSERT INTO meta(k, v) VALUES('salt', ?);",
+                (base64.b64encode(salt).decode("utf-8"),),
+            )
+
+    def open_or_create_journal(self):
+        import getpass
+
+        if self.has_journal():
+            while True:
+                pwd = getpass.getpass("Enter journal password (Enter to cancel): ")
+                if not pwd:
+                    print("Canceled.")
+                    return [], ""
+                try:
+                    rows = self.load_rows(pwd)
+                    return rows, pwd
+                except Exception:
+                    print("Wrong password or corrupt data. Try again.")
+        else:
+            while True:
+                p1 = getpass.getpass("Create a new password: ")
+                p2 = getpass.getpass("Confirm password: ")
+                if p1 and p1 == p2:
+                    self.create_new_journal(p1)  # <-- correct method name
+                    print("New journal created.")
+                    return [], p1
+                print("Passwords did not match. Try again.")
+
+    def _get_salt(self) -> bytes:
+        with self._connect() as con:
+            cur = con.execute("SELECT v FROM meta WHERE k='salt' LIMIT 1;")
+            row = cur.fetchone()
+            if not row:
+                raise RuntimeError("Journal not initialized (missing salt).")
+            return base64.b64decode(row[0])
+
+    def load_rows(self, password: str) -> list[dict[str, Any]]:
+        self.init_db()
+        salt = self._get_salt()
+        rows: list[dict[str, Any]] = []
+        with self._connect() as con:
+            for _id, ts, blob in con.execute(
+                "SELECT id, ts, blob FROM entries ORDER BY ts;"
+            ):
+                d = _decrypt_dict(password, salt, blob)
+                # keep timestamp consistent with row contents
+                if "timestamp" not in d:
+                    d["timestamp"] = ts
+                rows.append(d)
+        return rows
+
+    def append_row(self, password: str, row: dict[str, Any]) -> None:
+        salt = self._get_salt()
+        ts = str(row.get("timestamp") or "")
+        blob = _encrypt_dict(password, salt, row)
+        with self._connect() as con:
+            con.execute("INSERT INTO entries(ts, blob) VALUES(?, ?);", (ts, blob))
+
+    def replace_all(self, password: str, rows: list[dict[str, Any]]) -> None:
+        salt = self._get_salt()
+        with self._connect() as con:
+            con.execute("DELETE FROM entries;")
+            for r in rows:
+                ts = str(r.get("timestamp") or "")
+                blob = _encrypt_dict(password, salt, r)
+                con.execute("INSERT INTO entries(ts, blob) VALUES(?, ?);", (ts, blob))
+
+    def reset(self) -> None:
+
+        self.init_db()
+        with self._connect() as con:
+            con.execute("DELETE FROM entries;")
+            con.execute("DELETE FROM meta;")
+
+    def change_password(self, old_password: str, rows: list[dict[str, Any]]) -> str:
+        import getpass
+
+        # Verify current password by attempting a decrypt
+        check = getpass.getpass("Current password: ")
+        if check != old_password:
+            print("Incorrect current password.")
+            return ""
+
+        p1 = getpass.getpass("New password: ")
+        p2 = getpass.getpass("Confirm new password: ")
+        if not p1 or p1 != p2:
+            print("Passwords did not match.")
+            return ""
+
+        # Re-encrypt everything with the new password
+        self.replace_all(p1, rows)
+        print("Password updated.")
+        return p1
