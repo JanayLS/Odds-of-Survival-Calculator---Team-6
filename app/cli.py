@@ -1,14 +1,9 @@
 from datetime import datetime
 import random
+import getpass
 from app.domain.models import UserProfile
 
-from app.storage.journal_store import (
-    open_or_create_journal,
-    save_csv_to_encrypted,
-    load_csv_from_encrypted,
-    change_password,
-    reset_journal,
-)
+from app.storage.journal_store import JournalStore
 
 from app.services.probability_service import (
     parse_prob,
@@ -129,7 +124,8 @@ def main() -> None:
     """
     print("Welcome to Group 2 MVP")
 
-    rows, password = open_or_create_journal()
+    store = JournalStore()  # uses data/journal.db by default
+    rows, password = store.open_or_create_journal()
     if not password:
         return
 
@@ -144,7 +140,7 @@ def main() -> None:
                 "note": f"profile|location={profile.location}|email={profile.email}",
             }
         )
-        save_csv_to_encrypted(password, rows)
+        store.replace_all(password, rows)
 
     while True:
         print(
@@ -181,7 +177,7 @@ def main() -> None:
                             pass
                         print("Invalid. Enter a number between 0 and 1.")
                     set_fixed_prob(rows, enc_name, p)  # persist fixed p as meta row
-                    save_csv_to_encrypted(password, rows)
+                    store.replace_all(password, rows)
                     print(f"Saved fixed p={p:.3f} for '{enc_name}'.")
                 algo_label = "fixed"
             else:
@@ -207,19 +203,18 @@ def main() -> None:
 
             # ---- record encounter ----
             ts = datetime.now().isoformat(timespec="seconds")
-            rows.append(
-                {
-                    "timestamp": ts,
-                    "character": name,
-                    "encounter": enc_name,
-                    "probability": f"{p:.6f}",
-                    "damage": f"{dmg:.2f}",
-                    "outcome": outcome,  # NEW
-                    "algo": algo_label,  # "fixed" or "random"
-                    "note": "",
-                }
-            )
-            save_csv_to_encrypted(password, rows)
+            entry = {
+                "timestamp": ts,
+                "character": name,
+                "encounter": enc_name,
+                "probability": f"{p:.6f}",
+                "damage": f"{dmg:.2f}",
+                "outcome": outcome,
+                "algo": algo_label,  # "fixed" or "random"
+                "note": "",
+            }
+            rows.append(entry)
+            store.append_row(password, entry)
 
             # ---- feedback ----
             bar = hp_bar(new_hp / 100.0, width=20)  # requires your hp_bar()
@@ -246,21 +241,25 @@ def main() -> None:
             confirm = input(f'Type "YES" to clear all entries for {name}: ').strip()
             if confirm == "YES":
                 removed = clear_character(rows, name)
-                save_csv_to_encrypted(password, rows)
+                store.replace_all(password, rows)
                 print(f"Removed {removed} entries.")
             else:
                 print("Canceled.")
 
         elif choice == "p":  # Change password
-            new_pwd = change_password(password, rows)
+            new_pwd = store.change_password(password, rows)
             if new_pwd:
                 password = new_pwd
 
         elif choice == "r":  # Reset journal file
-            if reset_journal():
+            confirm = input('Type "YES" to reset/delete the journal: ').strip()
+            if confirm == "YES":
+                store.reset()
                 rows.clear()
                 print("Journal cleared. Relaunch to create a new one.")
                 break
+            else:
+                print("Canceled.")
 
         elif choice == "q":  # Quit
             break

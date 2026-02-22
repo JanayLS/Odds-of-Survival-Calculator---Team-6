@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template
-from app.storage.journal_store import load_csv_from_encrypted  # open_or_create_journal
+
+# from app.storage.journal_store import load_csv_from_encrypted  # open_or_create_journal
+from app.storage.journal_store import JournalStore
 from app.services.profile_service import load_user_profile, calculate_stats
 
 
@@ -22,7 +24,8 @@ def profile():
     # if not rows or not password:
     #     return "Error: Could not load journal"
     password = "1234"  # change whats in the quotes to the password of the journal that you set when you created it
-    rows = load_csv_from_encrypted(password)
+    store = JournalStore()
+    rows = store.load_rows(password)
 
     # Load user profile from meta row
     user_profile = load_user_profile(rows)
