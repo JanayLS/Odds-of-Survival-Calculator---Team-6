@@ -131,7 +131,7 @@ function nextDialogue() {
 
         choiceBox.innerHTML = `
         <button class="choiceBtn">Search Forest for Ingredients</button>
-        <button class="choiceBtn">Brew Ingredients</button>`;
+        <button class="choiceBtn">Brew Potions</button>`;
 
         choiceBox.style.display = "flex";
     }
