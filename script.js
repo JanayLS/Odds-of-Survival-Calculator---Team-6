@@ -80,12 +80,30 @@ document.addEventListener("keydown", (e) => {
     if (e.code === "Space") {
         e.preventDefault();
 
-        // Only trigger if the main menu is NOT displayed
+        // Only triggers if the main menu is NOT displayed
         if (mainMenu.style.display === "none") {
             nextDialogue();
         }
     }
+    //EventListener for b key press to go backwards
+    if (e.key.toLowerCase() === "b") {
+        previousDialogue();
+    }
 });
+
+// Function to return you to the previous line as long as the current line is greater than 0
+function previousDialogue() {
+    if (isTyping) return;
+
+    if (sceneState === "intro") {
+
+        if (currentLine > 0) {
+            currentLine--;
+            typeLine(dialogueLines[currentLine]);
+        }
+
+    }
+}
 
 // Intro Scene Dialogue Lines (Villager 1 Opening Sequence)
 const dialogueLines = [
@@ -251,3 +269,4 @@ inventoryBtn.addEventListener("click", () => {
         inventoryPanel.style.display = "none";
     }
 })
+
