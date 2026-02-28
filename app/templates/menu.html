@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Linking files</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
+    </head>
+    <body>
+
+        <div id="menu">
+            <button id="button1">Start Game</button>
+            <button id="button2">About</button>
+            <button id="button3">Press F11 To Fullscreen</button>
+        </div>
+
+        <audio id="menu-music" loop preload="auto">
+            <source src="{{ url_for('static', filename='audio/menu.mp3') }}" type="audio/mpeg" />
+        </audio>
+
+        <button id="btn-mute" class="mute-btn" type="button" aria-label="Mute audio" title="Mute">🔊</button>
+
+        <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+    </body>
+</html>
