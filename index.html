@@ -49,6 +49,7 @@
             </div>
             <div id="nextArrow">➤</div>
         </div>
+ 
 
         <!-- Music Button and Link to MP3 -->
         <button id="turn-music-on">Music On</button>
@@ -56,6 +57,9 @@
         <!-- Inventory Button (Hidden Until Supplies are Checked) -->
         <button id="inventoryBtn">Inventory</button>
         <span id="inventoryHintArrow">➤</span>
+
+        <!-- Pause Screen Button -->
+         <button id="pause-screen-Btn">Menu</button>
 
         <!-- Inventory -->
         <div id="inventoryPanel" style="display: none;">
@@ -66,6 +70,11 @@
         </div>
 
     </div>
+
+    <div id="pauseScreen">
+        <img src="pauseMenuBackground.jpg" id="pauseImage">
+        <button id="resumeBtn">Resume</button>
+    </div>  
 
     <!-- Game Audio -->
     <audio id="bgm" src="arrivalMusic.mp3" autoplay loop></audio>

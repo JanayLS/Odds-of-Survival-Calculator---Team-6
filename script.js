@@ -56,6 +56,11 @@ const inventoryBtn = document.getElementById('inventoryBtn')
 const inventoryPanel = document.getElementById('inventoryPanel')
 const inventoryHintArrow = document.getElementById('inventoryHintArrow')
 
+// Pause Screen
+const pauseScreen = document.getElementById("pauseScreen");
+const resumeBtn = document.getElementById("resumeBtn");
+const pauseScreenBtn = document.getElementById("pause-screen-Btn");
+
 // TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
 // ----------------------------------------------------------------------------------
 // Start the first line after start game button is clicked
@@ -270,3 +275,19 @@ inventoryBtn.addEventListener("click", () => {
     }
 })
 
+//Pause Menu button
+pauseScreenBtn.addEventListener("click", () => {
+
+    arrivalScene.style.display = "none";
+    pauseScreen.style.display = "block";
+
+    bgm.pause();
+});
+
+resumeBtn.addEventListener("click", () => {
+
+    pauseScreen.style.display = "none";
+    arrivalScene.style.display = "block";
+
+    bgm.play();
+});

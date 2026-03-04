@@ -184,6 +184,56 @@ body {
     cursor: pointer;
     transition: transform 0.15s ease, background 0.15s ease;
 }
+/* Pause screen button */
+#pause-screen-Btn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#pause-screen-Btn:active {
+    transform: scale(0.97);
+}
+
+#pause-screen-Btn {
+    position: fixed;
+    top: 1vh;
+    left: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#resumeBtn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#resumeBtn:active {
+    transform: scale(0.97);
+}
+
+#resumeBtn {
+    position: fixed;
+    top: 1vh;
+    left: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+
 
 #turn-music-on:hover {
     transform: scale(1.1);
@@ -193,6 +243,8 @@ body {
 #turn-music-on:active {
     transform: scale(0.97);
 }
+
+
 
 /* Inventory System */
 #inventoryBtn {
@@ -269,3 +321,27 @@ button {
   font-family: 'Poppins', sans-serif;
   font-size: 18px;
 }
+
+/*Pause screen */
+#pauseScreen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 2000;
+}
+
+#pauseImage {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+}
+
+#resumeBtn {
+    position: absolute;
+    top: 45vh;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1.5vh 2vw;
+    font-size: 2vh;
+}
+
