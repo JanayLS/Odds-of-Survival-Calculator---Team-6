@@ -1,9 +1,12 @@
 from datetime import datetime
-from domain.models import UserProfile
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from storage.journal_store import JournalStore
+from app.domain.models import UserProfile
 
-from services.probability_service import (
+from app.storage.journal_store import JournalStore
+
+from app.services.probability_service import (
     # Data class
     EncounterResult,
     # Probability helpers
@@ -25,7 +28,7 @@ from services.probability_service import (
     _norm,
 )
 
-from services.summary_service import (
+from app.services.summary_service import (
     unique_characters,
     character_summaries,
 )
@@ -159,7 +162,6 @@ def create_encounter(
     session.store.append_row(session.password, entry)
 
     return result
-
 
 
 def main() -> None:
