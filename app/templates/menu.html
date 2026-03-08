@@ -1,26 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Linking files</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
-    </head>
-    <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plague Village - Intro/Arrival</title>
 
-        <div id="menu">
-            <button id="button1">Start Game</button>
-            <button id="button2">About</button>
-            <button id="button3">Press F11 To Fullscreen</button>
-        </div>
+  <!-- Flask static path -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}" />
+</head>
 
-        <audio id="menu-music" loop preload="auto">
-            <source src="{{ url_for('static', filename='audio/menu.mp3') }}" type="audio/mpeg" />
-        </audio>
+<body>
+  <!-- Plague Village Menu -->
+  <div id="mainMenu">
+    <img src="{{ url_for('static', filename='img/plagueVillageMenu.png') }}" id="menuImage" />
+    <button id="startGameBtn" class="glow-btn">Start</button>
+  </div>
 
-        <button id="btn-mute" class="mute-btn" type="button" aria-label="Mute audio" title="Mute">🔊</button>
+  <!-- Arrival Scene -->
+  <div id="arrivalScene">
+    <img id="plagueDoctor" src="{{ url_for('static', filename='img/plagueDoctor.png') }}" />
+    <img id="villager1" src="{{ url_for('static', filename='img/villager1.png') }}" />
 
-        <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
-    </body>
+    <!-- Keep element for future; frontend uses it in script -->
+    <img id="worriedVillagerWoman" src="{{ url_for('static', filename='img/worriedVillagerWoman.png') }}" />
+
+    <!-- Dialogue System -->
+    <div id="dialogueBox">
+      <div id="characterName">Desperate Villager:</div>
+      <div id="dialogueText"></div>
+
+      <div id="choiceBox">
+        <button class="choiceBtn" data-choice="villagers">Ask about the sick villagers</button>
+        <button class="choiceBtn" data-choice="rats">Ask about the rats</button>
+        <button class="choiceBtn" data-choice="supplies">Inspect your medical supplies</button>
+      </div>
+
+      <div id="nextArrow">➤</div>
+    </div>
+
+    <!-- Their music control button (we keep it, but make it control BOTH tracks + mute) -->
+    <button id="turn-music-on">Music On</button>
+
+    <!-- Inventory (keep their markup; you can remove later if desired) -->
+    <button id="inventoryBtn">Inventory</button>
+    <span id="inventoryHintArrow">➤</span>
+
+    <div id="inventoryPanel" style="display: none;">
+      <h3>Inventory</h3>
+      <div id="inventoryItems"></div>
+    </div>
+  </div>
+
+  <!-- Audio: keep arrivalMusic + add your menu music -->
+  <audio id="menuBgm" preload="auto" loop>
+    <source src="{{ url_for('static', filename='audio/menu.mp3') }}" type="audio/mpeg" />
+  </audio>
+
+  <audio id="bgm" preload="auto" loop>
+    <source src="{{ url_for('static', filename='audio/arrivalMusic.mp3') }}" type="audio/mpeg" />
+  </audio>
+
+  <!-- Flask static path -->
+  <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+</body>
 </html>
