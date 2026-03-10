@@ -88,6 +88,15 @@ body {
     pointer-events: none;
 }
 
+#plagueRat{
+    position:absolute;
+    right:25vw;
+    bottom:2vw;
+    width:12vw;
+    opacity:0;
+    transition: opacity 0.6s ease;
+}
+
 /* Dialogue System */
 #characterName {
     color: tan;
@@ -146,6 +155,46 @@ body {
     }
 }
 
+/* Fight Choice System */
+.fightChoiceBox {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vh;
+    margin-top: 2vh;
+}
+
+.fightChoiceBox .choiceBtn:nth-child(1) {
+    border-color:#7fffd1;
+}
+
+.fightChoiceBox .choiceBtn:nth-child(1):hover {
+    background: #64c19f;
+}
+
+.fightChoiceBox .choiceBtn:nth-child(2) {
+    border-color: rgb(255, 255, 134);
+}
+
+.fightChoiceBox .choiceBtn:nth-child(2):hover {
+    background: rgb(206, 206, 95);
+}
+
+.fightChoiceBox .choiceBtn:nth-child(3) {
+    border-color: rgb(98, 0, 255);
+}
+
+.fightChoiceBox .choiceBtn:nth-child(3):hover {
+    background: rgb(60, 0, 156);
+}
+
+.fightChoiceBox .choiceBtn:nth-child(4) {
+    border-color: red;
+}
+
+.fightChoiceBox .choiceBtn:nth-child(4):hover {
+    background: rgb(151, 0, 0);
+}
+
 /* Choice System */
 #choiceBox {
     display: none;
@@ -168,6 +217,7 @@ body {
     background: #64c19f;
     transform: scale(1.02);
 }
+
 
 /* Music */
 #turn-music-on {

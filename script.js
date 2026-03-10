@@ -4,6 +4,7 @@
 const villager1 = document.getElementById('villager1');
 const worriedVillagerWoman = document.getElementById('worriedVillagerWoman');
 const characterName = document.getElementById('characterName');
+const plagueRat = document.getElementById("plagueRat");
 
 // Controls current dialogue branch/scene state
 // Starts as intro, changes as scene progresses
@@ -23,6 +24,13 @@ bgm.load();
 const typeSounds = document.querySelectorAll(".typeSound");
 
 let lastSoundIndex = -1;
+
+// Dialogue Typing Behavior
+// Start with the first line (index 0) and set base typing speed for animation
+let currentLine = 0;
+let isTyping = false;
+let baseTypingSpeed = 40;
+let typingSpeed = baseTypingSpeed;
 
 
 // Randomises the text sound
@@ -110,6 +118,28 @@ function previousDialogue() {
     }
 }
 
+document.addEventListener("keydown", (e) => {
+
+    if (e.code === "Space") {
+        typingSpeed = baseTypingSpeed / 2; // 2x faster
+    }
+
+});
+
+document.addEventListener("keyup", (e) => {
+
+    if (e.code === "Space") {
+        typingSpeed = baseTypingSpeed; // back to normal
+    }
+
+});
+
+
+
+
+
+
+
 // Intro Scene Dialogue Lines (Villager 1 Opening Sequence)
 const dialogueLines = [
     "Doctor...thank the Heavens you've arrived.",
@@ -118,37 +148,54 @@ const dialogueLines = [
     "If you cannot save us...no one will."
 ];
 
-// Dialogue Typing Behavior
-// Start with the first line (index 0) and set base typing speed for animation
-let currentLine = 0;
-let isTyping = false;
-let typingSpeed = 40;
+// Other dialogue lines
+
+const ratIntroDoctor = [
+    "Watch out villager! There's a pesky rat by that shack.",
+    "It's bee-lining straight toward us!"
+];
+
+const ratDialogue = [
+    "Screeeeeeee!",
+    "The diseased rat bares its filthy stinky teeth.",
+    "It lunges forward! Just after the villager moved out of the way"
+];
+
 
 // Typing Animation for Dialogue Text
 // Disables navigation arrow while typing
 // Navigation arrow reappears when dialogue line is complete
 function typeLine(line) {
+
     dialogueText.textContent = "";
     arrow.style.opacity = 0;
+
     let i = 0;
     isTyping = true;
 
-    const interval = setInterval(() => {
+    function typeCharacter() {
+
         const char = line.charAt(i);
         dialogueText.textContent += char;
 
         if (char !== " ") {
             playRandomTypeSound();
         }
+
         i++;
 
-        if (i >= line.length) {
-            clearInterval(interval);
+        if (i < line.length) {
+            setTimeout(typeCharacter, typingSpeed);
+        } else {
             isTyping = false;
             arrow.style.opacity = 1;
         }
-    }, typingSpeed);
+    }
+
+    typeCharacter();
 }
+
+
 
 // Advances dialogue based on choice selection/current scene state
 function nextDialogue() {
@@ -181,8 +228,9 @@ function nextDialogue() {
         arrow.style.opacity = 0;
 
         choiceBox.innerHTML = `
-        <button class="choiceBtn">Fight Rats</button>
-        <button class="choiceBtn">Shop for Weapons/Rat Poison</button>`;
+        <button class="choiceBtn" data-choice="fightRats">Fight Rats</button>
+        <button class="choiceBtn" data-choice="ratShop">Shop for Weapons/Rat Poison</button>
+        `;
 
         choiceBox.style.display = "flex";
 
@@ -196,6 +244,58 @@ function nextDialogue() {
 
         choiceBox.style.display = "flex";
     }
+
+    else if (sceneState === "ratEncounter") {
+
+    currentLine++;
+
+    // Doctor dialogue first
+    if (currentLine < ratIntroDoctor.length) {
+
+        characterName.textContent = "Plague Doctor:";
+        typeLine(ratIntroDoctor[currentLine]);
+
+    }
+
+    // Then rat dialogue
+    else if (currentLine - ratIntroDoctor.length < ratDialogue.length) {
+
+        const ratIndex = currentLine - ratIntroDoctor.length;
+
+        plagueRat.style.opacity = 1;
+        plagueRat.style.transform = "scale(1.8)";
+
+        characterName.textContent = "Diseased Rat:";
+        typeLine(ratDialogue[ratIndex]);
+
+    }
+
+    // After dialogue show fight options
+    else {
+
+        arrow.style.opacity = 0;
+        villager1.style.opacity = 0;
+
+        plagueRat.style.left = "2vw";
+        plagueRat.style.bottom = "-2vw";
+        plagueRat.style.width = "35vw";
+
+        choiceBox.classList.add("fightChoiceBox");
+
+        choiceBox.innerHTML = `
+        <button class="choiceBtn">Run away</button>
+        <button class="choiceBtn">Scare him</button>
+        <button class="choiceBtn">Observe</button>
+        <button class="choiceBtn">FIGHT</button>
+        `;
+
+        choiceBox.style.display = "grid";
+    }
+}
+
+
+
+
 };
 
 // Choice Navigation
@@ -290,4 +390,26 @@ resumeBtn.addEventListener("click", () => {
     arrivalScene.style.display = "block";
 
     bgm.play();
+});
+
+//Fight Rats
+
+choiceBox.addEventListener("click", (e) => {
+
+    const choice = e.target.dataset.choice;
+
+    if(choice === "fightRats"){
+
+        sceneState = "ratEncounter";
+
+        currentLine = 0;
+
+        choiceBox.style.display = "none";
+
+        characterName.textContent = "Plague Doctor:";
+
+        typeLine(ratIntroDoctor[currentLine]);
+
+    }
+
 });
