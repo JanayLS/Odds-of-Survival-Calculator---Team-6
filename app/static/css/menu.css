@@ -1,0 +1,278 @@
+/* Global Styles */
+body {
+    background-image: url("../img/toxicVillage.png");
+    background-size: cover;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;          /* prevents scrolling / background “double” */
+}
+
+body {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+#arrivalScene {
+    display: none;
+}
+
+/* Main Menu */
+#mainMenu {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+#menuImage {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+}
+
+#startGameBtn {
+    position: absolute;
+    bottom: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2vh 2vw;
+    font-size: 2vw;
+}
+
+.glow-btn {
+    background-color: #39ff14;
+    color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+    animation: plaguePulse 2.5s infinite ease-in-out;
+}
+
+.glow-btn:hover {
+    transform: scale(1.05);
+}
+
+@keyframes plaguePulse {
+    0% {
+        box-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14;
+        opacity: 0.95;
+    }
+
+    50% {
+        box-shadow: 0 0 15px #39ff14, 0 0 30px #2aff00, 0 0 45px #2aff00;
+        opacity: 1;
+    }
+
+    100% {
+        box-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14;
+        opacity: 0.95;
+    }
+}
+
+/* Characters */
+#plagueDoctor {
+    position: absolute;
+    right: 1vw;
+    bottom: -3vw;
+    width: 22vw;
+}
+
+#villager1 {
+    position: absolute;
+    left: -4vw;
+    bottom: -3vw;
+    width: 35vw;
+    transition: opacity 0.6s ease;
+    opacity: 1;
+}
+
+#worriedVillagerWoman {
+    position: absolute;
+    left: 1vw;
+    bottom: -2vw;
+    width: 18vw;
+    transition: opacity 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Dialogue System */
+#characterName {
+    color: tan;
+}
+
+#dialogueBox {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 50vw;
+    max-width: 50vw;
+
+    padding: 2vh 2vw;
+
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+
+    color: white;
+    font-size: clamp(2vh, 2.2vw, 3vh);
+    line-height: 1.4;
+
+    z-index: 10;
+}
+
+#nextArrow {
+    position: absolute;
+    bottom: 1vh;
+    right: 1.5vw;
+
+    font-size: 2.2vw;
+    color: white;
+    cursor: pointer;
+
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    animation: arrowPulse 1s infinite ease-in-out;
+}
+
+@keyframes arrowPulse {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-0.4vh);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Choice System */
+#choiceBox {
+    display: none;
+    flex-direction: column;
+    gap: 1vh;
+    margin-top: 2vh;
+}
+
+.choiceBtn {
+    padding: 1vh 1vw;
+    font-size: 1.2vw;
+    background: #000;
+    border: 2px solid #c6a988;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.choiceBtn:hover {
+    background: rgba(10, 97, 23, 0.921);
+    transform: scale(1.02);
+}
+
+/* Music */
+#turn-music-on {
+    position: fixed;
+    top: 1vh;
+    right: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: green;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#turn-music-on:hover {
+    transform: scale(1.1);
+    background-color: greenyellow;
+}
+
+#turn-music-on:active {
+    transform: scale(0.97);
+}
+
+/* Inventory System */
+#inventoryBtn {
+    position: fixed;
+    top: 6vh;
+    right: 1vw;
+    padding: .5vh .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: green;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    display: none;
+}
+
+#inventoryBtn:hover {
+    transform: scale(1.05);
+    background-color: green;
+}
+
+#inventoryPanel {
+    position: fixed;
+    top: 15vh;
+    right: 10vw;
+    width: 50vw;
+    min-height: 40vh;
+    padding: 10px;
+
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+
+    color: white;
+    font-size: 2vh;
+    font-weight: bold;
+
+    display: none;
+    z-index: 50;
+}
+
+#inventoryHintArrow {
+    position: fixed;
+    top: 4vh;
+    right: 7vw;
+    font-size: 5vh;
+    color: #39ff14;
+
+    opacity: 0;
+    animation: hintPulse 1s infinite ease-in-out;
+    transition: opacity 0.3s ease;
+}
+
+@keyframes hintPulse {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
