@@ -59,15 +59,11 @@ const dialogueBox = document.getElementById('dialogueBox');
 const dialogueText = document.getElementById('dialogueText');
 const arrow = document.getElementById('nextArrow');
 
-// Inventory
-const inventoryBtn = document.getElementById('inventoryBtn')
-const inventoryPanel = document.getElementById('inventoryPanel')
-const inventoryHintArrow = document.getElementById('inventoryHintArrow')
 
 // Pause Screen
 const pauseScreen = document.getElementById("pauseScreen");
 const resumeBtn = document.getElementById("resumeBtn");
-const pauseScreenBtn = document.getElementById("pause-screen-Btn");
+const pauseScreenBtn = document.getElementById("pause-screen-Btn")
 
 // TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
 // ----------------------------------------------------------------------------------
@@ -333,23 +329,7 @@ choiceButtons.forEach(button => {
             typeLine("The rats are the plague itself. They scurry through our village, infecting our people. One bite can mean death...");
         }
 
-        // Choice 3: Supplies
-        else if (choice == "supplies") {
-            sceneState = "supplies";
-            currentLine = 0;
-
-            characterName.textContent = "";
-
-            inventoryBtn.style.display = "block";
-            inventoryHintArrow.style.opacity = "1";
-
-            setTimeout(() => {
-                inventoryHintArrow.style.opacity = "0";
-            }, 4000);
-
-            typeLine(`You check your satchel. Your supplies are limited. To create cures, you must gather ingredients from the forest. 
-                Each potion requires careful preparation. Mistakes may cost lives -- including your own.`);
-        }
+       
     })
 })
 
@@ -364,16 +344,8 @@ btn.addEventListener("click", () => {
         bgm.pause();
         btn.textContent = "Music On";
     }
-})
+});
 
-// Inventory Button Logic
-inventoryBtn.addEventListener("click", () => {
-    if (inventoryPanel.style.display == "none") {
-        inventoryPanel.style.display = "block";
-    } else {
-        inventoryPanel.style.display = "none";
-    }
-})
 
 //Pause Menu button
 pauseScreenBtn.addEventListener("click", () => {
@@ -413,3 +385,85 @@ choiceBox.addEventListener("click", (e) => {
     }
 
 });
+
+//Inventory
+const inventory = {
+    BitterMushroom: 0,
+    GoldenGarlicBulb: 0,
+    HawthornBerries: 0,
+    MintLeaves: 0,
+    MoldyWood: 0,
+    SilverLeaf: 0,
+    Thyme: 0,
+    Yarrow: 0,
+    BoneAsh: 0,
+    CharcoalPowder: 0,
+    BitterMushroomConcoction: 0,
+    CharcoalPowderConcoction: 0,
+    MoldedWoodConcoction: 0,
+    BoneAshRemedy: 0,
+    CharcoalPowderRemedy: 0,
+    GarlicBulbRemedy: 0,
+    CharcoalPowderElixir: 0,
+    GarlicPowderElixir: 0,
+    SilverLeafElixir: 0,
+    MintHealingTonic: 0,
+    SilverLeafHealingTonic: 0,
+    YarrowHealingTonic: 0,
+    FeverHawthornSuppressant: 0,
+    FeverMintSuppressant: 0,
+    FeverThymeSuppressant: 0,
+    Gold: 0,
+};
+
+const inventoryGrid = document.getElementById("inventoryGrid");
+
+for (let item in inventory) {
+
+    const slot = document.createElement("div");
+
+    slot.classList.add("inventorySlot");
+
+    slot.innerHTML = `
+        <img src="Assets/${item}.png" class="inventoryItem">
+        <span class="itemCount" id="${item}Count">0</span>
+    `;
+
+    inventoryGrid.appendChild(slot);
+
+}
+
+function addItem(itemName){
+
+    inventory[itemName]++;
+
+    document.getElementById(itemName + "Count").textContent = inventory[itemName];
+
+}
+
+function removeItem(itemName, amount){
+
+    inventory[itemName] -= amount;
+
+    document.getElementById(itemName + "Count").textContent = inventory[itemName];
+
+}
+
+const inventoryPanel = document.getElementById("inventoryPanel");
+const inventoryButton = document.getElementById("inventoryBtn");
+
+inventoryButton.addEventListener("click", () => {
+
+    if (inventoryPanel.style.display === "block") {
+        inventoryPanel.style.display = "none";
+    } else {
+        inventoryPanel.style.display = "block";
+    }
+
+});
+
+
+
+addItem("Gold");
+addItem("Gold");
+addItem("Thyme");
