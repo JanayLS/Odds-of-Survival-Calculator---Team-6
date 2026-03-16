@@ -1,142 +1,57 @@
+// ------------------------
 // INITIALIZE HTML ELEMENTS
-// --------------------------------------------------------------------------------
+// ------------------------
+
 // Characters
 const villager1 = document.getElementById('villager1');
 const worriedVillagerWoman = document.getElementById('worriedVillagerWoman');
+const sickVillager = document.getElementById('sickVillager');
+const plagueRat = document.getElementById('plagueRat');
 const characterName = document.getElementById('characterName');
-const plagueRat = document.getElementById("plagueRat");
 
-// Controls current dialogue branch/scene state
-// Starts as intro, changes as scene progresses
-// Possible values: "intro", "villagers", "rats", "supplies"
-let sceneState = "intro";
+// Dialogue box elements
+const dialogueBox = document.getElementById('dialogueBox');
+const dialogueText = document.getElementById('dialogueText');
+const choiceBox = document.getElementById('choiceBox');
+const arrow = document.getElementById('nextArrow');
 
-// Main menu, Arrival Scene, Start Game Button
+// Main menu and scene
 const mainMenu = document.getElementById('mainMenu');
 const arrivalScene = document.getElementById('arrivalScene');
 const startGameBtn = document.getElementById('startGameBtn');
 
-// Turn music on or off with Music On button
+// Music
 const bgm = document.getElementById('bgm');
-const btn = document.getElementById('turn-music-on')
+const btn = document.getElementById('turn-music-on');
 bgm.load();
 
-const typeSounds = document.querySelectorAll(".typeSound");
+// Pause screen
+const pauseScreen = document.getElementById('pauseScreen');
+const resumeBtn = document.getElementById('resumeBtn');
+const pauseScreenBtn = document.getElementById('pause-screen-Btn');
 
+// Typing sounds
+const typeSounds = document.querySelectorAll(".typeSound");
 let lastSoundIndex = -1;
 
-// Dialogue Typing Behavior
-// Start with the first line (index 0) and set base typing speed for animation
+// ------------------------
+// GLOBAL STATE VARIABLES
+// ------------------------
+let sceneState = "intro"; // intro, villagers, rats, supplies, healHouse, ratEncounter
 let currentLine = 0;
 let isTyping = false;
 let baseTypingSpeed = 40;
 let typingSpeed = baseTypingSpeed;
 
+//preload so no lag
+const sickRoomBg = new Image();
+sickRoomBg.src = "Assets/SickRoom.png";
 
-// Randomises the text sound
-function playRandomTypeSound() {
-    let randomIndex;
+// ------------------------
+// DIALOGUE LINES
+// ------------------------
 
-    // Prevent same sound twice in a row
-    do {
-        randomIndex = Math.floor(Math.random() * typeSounds.length);
-    } while (randomIndex === lastSoundIndex);
-
-    lastSoundIndex = randomIndex;
-
-    const sound = typeSounds[randomIndex];
-    sound.currentTime = 0;
-    sound.volume = 0.7 + Math.random() * 0.3; // small volume variation to sound more natural
-    sound.play();
-}
-
-// Choice Box Elements
-const choiceBox = document.getElementById('choiceBox');
-const choiceButtons = document.querySelectorAll('.choiceBtn');
-
-// Dialogue Box and Text
-const dialogueBox = document.getElementById('dialogueBox');
-const dialogueText = document.getElementById('dialogueText');
-const arrow = document.getElementById('nextArrow');
-
-
-// Pause Screen
-const pauseScreen = document.getElementById("pauseScreen");
-const resumeBtn = document.getElementById("resumeBtn");
-const pauseScreenBtn = document.getElementById("pause-screen-Btn")
-
-// TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
-// ----------------------------------------------------------------------------------
-// Start the first line after start game button is clicked
-startGameBtn.addEventListener("click", () => {
-
-    // Hide main menu and show Arrival scene
-    mainMenu.style.display = "none";
-    arrivalScene.style.display = "block";
-
-    // Start villager NPC dialogue
-    currentLine = 0;
-    dialogueText.innerHTML = "";
-    typeLine(dialogueLines[currentLine]);
-})
-
-// DIALOGUE SYSTEM AND CHOICES
-// ------------------------------------------------------------------------------------
-// Navigation Arrow beahvior
-arrow.addEventListener("click", nextDialogue);
-
-document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
-        e.preventDefault();
-
-        // Only triggers if the main menu is NOT displayed
-        if (mainMenu.style.display === "none") {
-            nextDialogue();
-        }
-    }
-    //EventListener for b key press to go backwards
-    if (e.key.toLowerCase() === "b") {
-        previousDialogue();
-    }
-});
-
-// Function to return you to the previous line as long as the current line is greater than 0
-function previousDialogue() {
-    if (isTyping) return;
-
-    if (sceneState === "intro") {
-
-        if (currentLine > 0) {
-            currentLine--;
-            typeLine(dialogueLines[currentLine]);
-        }
-
-    }
-}
-
-document.addEventListener("keydown", (e) => {
-
-    if (e.code === "Space") {
-        typingSpeed = baseTypingSpeed / 2; // 2x faster
-    }
-
-});
-
-document.addEventListener("keyup", (e) => {
-
-    if (e.code === "Space") {
-        typingSpeed = baseTypingSpeed; // back to normal
-    }
-
-});
-
-
-
-
-
-
-
-// Intro Scene Dialogue Lines (Villager 1 Opening Sequence)
+// Intro Scene
 const dialogueLines = [
     "Doctor...thank the Heavens you've arrived.",
     "Our people are sick. Some are dying.",
@@ -144,8 +59,7 @@ const dialogueLines = [
     "If you cannot save us...no one will."
 ];
 
-// Other dialogue lines
-
+// Rat Encounter
 const ratIntroDoctor = [
     "Watch out villager! There's a pesky rat by that shack.",
     "It's bee-lining straight toward us!"
@@ -157,29 +71,51 @@ const ratDialogue = [
     "It lunges forward! Just after the villager moved out of the way"
 ];
 
+// Heal Villager
+const healHouseDialogue = [
+    "*Cough… cough…*",
+    "Sweetie… is that you?",
+    "Yes father! I brought someone to help you!",
+    "Good evening. Do not worry. I am here to help you. I have brought potions and remedies.",
+    "A doctor…? Truly? Oh thank the heavens… I thought I might not last the night.",
+    "See father? I told you help would come!",
+    "Rest now, and we will begin your treatment.",
+    "Thank you doctor… you’ve given this old man hope."
+];
 
-// Typing Animation for Dialogue Text
-// Disables navigation arrow while typing
-// Navigation arrow reappears when dialogue line is complete
+
+// ------------------------
+// HELPER FUNCTIONS
+// ------------------------
+
+// Play a random typing sound
+function playRandomTypeSound() {
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * typeSounds.length);
+    } while (randomIndex === lastSoundIndex);
+
+    lastSoundIndex = randomIndex;
+    const sound = typeSounds[randomIndex];
+    sound.currentTime = 0;
+    sound.volume = 0.7 + Math.random() * 0.3;
+    sound.play();
+}
+
+// Typewriter effect for dialogue
 function typeLine(line) {
-
     dialogueText.textContent = "";
     arrow.style.opacity = 0;
-
     let i = 0;
     isTyping = true;
 
     function typeCharacter() {
-
         const char = line.charAt(i);
         dialogueText.textContent += char;
 
-        if (char !== " ") {
-            playRandomTypeSound();
-        }
+        if (char !== " ") playRandomTypeSound();
 
         i++;
-
         if (i < line.length) {
             setTimeout(typeCharacter, typingSpeed);
         } else {
@@ -191,151 +127,230 @@ function typeLine(line) {
     typeCharacter();
 }
 
+// ------------------------
+// START GAME
+// ------------------------
+startGameBtn.addEventListener("click", () => {
+    mainMenu.style.display = "none";
+    arrivalScene.style.display = "block";
+    currentLine = 0;
+    typeLine(dialogueLines[currentLine]);
+});
 
+// ------------------------
+// NAVIGATION
+// ------------------------
 
-// Advances dialogue based on choice selection/current scene state
-function nextDialogue() {
+// Arrow and Spacebar navigation
+arrow.addEventListener("click", nextDialogue);
+document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+        e.preventDefault();
+        if (mainMenu.style.display === "none") nextDialogue();
+        typingSpeed = baseTypingSpeed / 2;
+    }
+    if (e.key.toLowerCase() === "b") previousDialogue();
+});
+document.addEventListener("keyup", (e) => {
+    if (e.code === "Space") typingSpeed = baseTypingSpeed;
+});
+
+// Go back to previous line
+function previousDialogue() {
     if (isTyping) return;
 
-    // Intro (Original Dialogue Scene State)
-    if (sceneState == "intro") {
-
-        currentLine++;
-
-        if (currentLine < dialogueLines.length) {
-            typeLine(dialogueLines[currentLine]);
-        } else {
-            arrow.style.opacity = 0;
-            choiceBox.style.display = "flex";
-        }
-
-        // Choice 1: Ask About Villagers activates "villagers" scene state
-    } else if (sceneState == "villagers") {
-        arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn">Heal Villager in Home</button>
-        <button class="choiceBtn">Pray at Chapel</button>`;
-
-        choiceBox.style.display = "flex";
-
-        // Choice 2: Ask about Rats activates "rats" scene state
-    } else if (sceneState == "rats") {
-        arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn" data-choice="fightRats">Fight Rats</button>
-        <button class="choiceBtn" data-choice="ratShop">Shop for Weapons/Rat Poison</button>
-        `;
-
-        choiceBox.style.display = "flex";
-
-        // Choice 3: Ask about supplies activates "supplies" scene state
-    } else if (sceneState == "supplies") {
-        arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn">Search Forest for Ingredients</button>
-        <button class="choiceBtn">Brew Potions</button>`;
-
-        choiceBox.style.display = "flex";
+    if (sceneState === "intro" && currentLine > 0) {
+        currentLine--;
+        typeLine(dialogueLines[currentLine]);
     }
-
     else if (sceneState === "ratEncounter") {
-
-    currentLine++;
-
-    // Doctor dialogue first
-    if (currentLine < ratIntroDoctor.length) {
-
-        characterName.textContent = "Plague Doctor:";
-        typeLine(ratIntroDoctor[currentLine]);
-
+        if (currentLine > 0) currentLine--;
+        if (currentLine < ratIntroDoctor.length) {
+            characterName.textContent = "Plague Doctor:";
+            typeLine(ratIntroDoctor[currentLine]);
+        } else {
+            characterName.textContent = "Diseased Rat:";
+            typeLine(ratDialogue[currentLine - ratIntroDoctor.length]);
+        }
     }
-
-    // Then rat dialogue
-    else if (currentLine - ratIntroDoctor.length < ratDialogue.length) {
-
-        const ratIndex = currentLine - ratIntroDoctor.length;
-
-        plagueRat.style.opacity = 1;
-        plagueRat.style.transform = "scale(1.8)";
-
-        characterName.textContent = "Diseased Rat:";
-        typeLine(ratDialogue[ratIndex]);
-
-    }
-
-    // After dialogue show fight options
-    else {
-
-        arrow.style.opacity = 0;
-        villager1.style.opacity = 0;
-
-        plagueRat.style.left = "2vw";
-        plagueRat.style.bottom = "-2vw";
-        plagueRat.style.width = "35vw";
-
-        choiceBox.classList.add("fightChoiceBox");
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn">Run away</button>
-        <button class="choiceBtn">Scare him</button>
-        <button class="choiceBtn">Observe</button>
-        <button class="choiceBtn">FIGHT</button>
-        `;
-
-        choiceBox.style.display = "grid";
+    else if (sceneState === "healHouse" && currentLine > 0) {
+        currentLine--;
+        typeLine(healHouseDialogue[currentLine]);
     }
 }
 
+// ------------------------
+// DIALOGUE ADVANCEMENT
+// ------------------------
+function nextDialogue() {
+    if (isTyping) return;
 
+    switch (sceneState) {
+        // ------------------------
+        case "intro":
+            currentLine++;
+            if (currentLine < dialogueLines.length) {
+                typeLine(dialogueLines[currentLine]);
+            } else {
+                arrow.style.opacity = 0;
+                choiceBox.style.display = "flex";
+            }
+            break;
 
+        // ------------------------
+        case "villagers":
+            arrow.style.opacity = 0;
+            choiceBox.innerHTML = `
+                <button class="choiceBtn" data-choice="healHouse">Heal Villager in Home</button>
+                <button class="choiceBtn" data-choice="chapel">Pray at Chapel</button>
+            `;
+            choiceBox.style.display = "flex";
+            break;
 
-};
+        // ------------------------
+        case "rats":
+            arrow.style.opacity = 0;
+            choiceBox.innerHTML = `
+                <button class="choiceBtn" data-choice="fightRats">Fight Rats</button>
+                <button class="choiceBtn" data-choice="ratShop">Shop for Weapons/Rat Poison</button>
+            `;
+            choiceBox.style.display = "flex";
+            break;
 
-// Choice Navigation
-// Options:
-// Choice 1: Ask about villagers -> Worried Wife Dialogue -> Heal Villager at Home OR Pray at Chapel
-// Choice 2: Ask about rats -> Villager Rat Dialogue -> Fight Rat OR [Rat-Related Choice Placeholder 2]
-// Choice 3: Check supplies -> Supplies Game Dialogue -> Collect Ingredients in Forest OR Shop for Ingredients
-choiceButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        const choice = button.dataset.choice;
-        choiceBox.style.display = "none";
+        // ------------------------
+        case "supplies":
+            arrow.style.opacity = 0;
+            choiceBox.innerHTML = `
+                <button class="choiceBtn">Search Forest for Ingredients</button>
+                <button class="choiceBtn">Brew Potions</button>
+            `;
+            choiceBox.style.display = "flex";
+            break;
 
-        // Choice 1: Villager
-        if (choice == "villagers") {
+        // ------------------------
+        case "ratEncounter":
+            currentLine++;
+            if (currentLine < ratIntroDoctor.length) {
+                characterName.textContent = "Plague Doctor:";
+                typeLine(ratIntroDoctor[currentLine]);
+            } else if (currentLine - ratIntroDoctor.length < ratDialogue.length) {
+                const ratIndex = currentLine - ratIntroDoctor.length;
+                plagueRat.style.opacity = 1;
+                plagueRat.style.transform = "scale(1.8)";
+                characterName.textContent = "Diseased Rat:";
+                typeLine(ratDialogue[ratIndex]);
+            } else {
+                arrow.style.opacity = 0;
+                villager1.style.opacity = 0;
+                plagueRat.style.left = "2vw";
+                plagueRat.style.bottom = "-2vw";
+                plagueRat.style.width = "35vw";
+                choiceBox.classList.add("fightChoiceBox");
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn">Run away</button>
+                    <button class="choiceBtn">Scare him</button>
+                    <button class="choiceBtn">Observe</button>
+                    <button class="choiceBtn">FIGHT</button>
+                `;
+                choiceBox.style.display = "grid";
+            }
+            break;
+
+        // ------------------------
+        case "healHouse":
+            currentLine++;
+
+            if (currentLine < healHouseDialogue.length) {
+
+                if (currentLine === 0 || currentLine === 1 || currentLine === 4 || currentLine === 7) {
+                    characterName.textContent = "Sick Villager:";
+                }
+                else if (currentLine === 2 || currentLine === 5) {
+                    characterName.textContent = "Daughter:";
+                }
+                else {
+                    characterName.textContent = "Plague Doctor:";
+                }
+
+                typeLine(healHouseDialogue[currentLine]);
+            }
+            break;
+    }
+}
+
+// ------------------------
+// CHOICE HANDLING
+// ------------------------
+choiceBox.addEventListener("click", (e) => {
+    const choice = e.target.dataset.choice;
+    if (!choice) return;
+    choiceBox.style.display = "none";
+
+    switch (choice) {
+        case "villagers":
             sceneState = "villagers";
             currentLine = 0;
-
-            characterName.textContent = "Worried Wife:";
-
             villager1.style.opacity = 0;
             worriedVillagerWoman.style.opacity = 1;
-
+            characterName.textContent = "Worried Wife:";
             setTimeout(() => {
                 typeLine("Doctor...my husband hasn't woken in two days...");
             }, 600);
+            break;
 
-
-        }
-
-        // Choice 2: Rats
-        else if (choice == "rats") {
+        case "rats":
             sceneState = "rats";
             currentLine = 0;
-
             typeLine("The rats are the plague itself. They scurry through our village, infecting our people. One bite can mean death...");
-        }
+            break;
 
-       
-    })
-})
+        case "healHouse":
+            sceneState = "healHouse";
+            currentLine = 0;
 
-// BUTTONS
-// --------------------------------------------------------------------------------
-// Music Button Logic
+            
+            villager1.style.display = "none";
+            worriedVillagerWoman.style.display = "none";
+            plagueRat.style.display = "none";
+
+            
+            document.body.style.backgroundImage = "url('Assets/SickRoom.png')";
+
+            
+            sickVillager.style.display = "block";   
+            sickVillager.style.opacity = 0;          
+            sickVillager.style.transition = "opacity 0.6s ease";
+            sickVillager.style.width = "20vw";      
+            sickVillager.style.bottom = "-3vw";     
+            sickVillager.style.left = "0";         
+
+            
+            setTimeout(() => {
+                sickVillager.style.opacity = 1;
+            }, 50);
+
+            // Set dialogue
+            characterName.textContent = "Sick Villager:";
+            typeLine(healHouseDialogue[currentLine]);
+            break;
+
+        case "fightRats":
+            sceneState = "ratEncounter";
+            currentLine = 0;
+            plagueRat.style.opacity = 1;
+            plagueRat.style.transform = "scale(1.8)";
+            characterName.textContent = "Plague Doctor:";
+            typeLine(ratIntroDoctor[currentLine]);
+            break;
+
+        default:
+            break;
+    }
+});
+
+// ------------------------
+// MUSIC CONTROL
+// ------------------------
 btn.addEventListener("click", () => {
     if (bgm.paused) {
         bgm.play();
@@ -346,124 +361,64 @@ btn.addEventListener("click", () => {
     }
 });
 
-
-//Pause Menu button
+// ------------------------
+// PAUSE SCREEN
+// ------------------------
 pauseScreenBtn.addEventListener("click", () => {
-
     arrivalScene.style.display = "none";
     pauseScreen.style.display = "block";
-
     bgm.pause();
 });
 
 resumeBtn.addEventListener("click", () => {
-
     pauseScreen.style.display = "none";
     arrivalScene.style.display = "block";
-
     bgm.play();
 });
 
-//Fight Rats
-
-choiceBox.addEventListener("click", (e) => {
-
-    const choice = e.target.dataset.choice;
-
-    if(choice === "fightRats"){
-
-        sceneState = "ratEncounter";
-
-        currentLine = 0;
-
-        choiceBox.style.display = "none";
-
-        characterName.textContent = "Plague Doctor:";
-
-        typeLine(ratIntroDoctor[currentLine]);
-
-    }
-
-});
-
-//Inventory
+// ------------------------
+// INVENTORY SYSTEM
+// ------------------------
 const inventory = {
-    BitterMushroom: 0,
-    GoldenGarlicBulb: 0,
-    HawthornBerries: 0,
-    MintLeaves: 0,
-    MoldyWood: 0,
-    SilverLeaf: 0,
-    Thyme: 0,
-    Yarrow: 0,
-    BoneAsh: 0,
-    CharcoalPowder: 0,
-    BitterMushroomConcoction: 0,
-    CharcoalPowderConcoction: 0,
-    MoldedWoodConcoction: 0,
-    BoneAshRemedy: 0,
-    CharcoalPowderRemedy: 0,
-    GarlicBulbRemedy: 0,
-    CharcoalPowderElixir: 0,
-    GarlicPowderElixir: 0,
-    SilverLeafElixir: 0,
-    MintHealingTonic: 0,
-    SilverLeafHealingTonic: 0,
-    YarrowHealingTonic: 0,
-    FeverHawthornSuppressant: 0,
-    FeverMintSuppressant: 0,
-    FeverThymeSuppressant: 0,
-    Gold: 0,
+    BitterMushroom: 0, GoldenGarlicBulb: 0, HawthornBerries: 0, MintLeaves: 0,
+    MoldyWood: 0, SilverLeaf: 0, Thyme: 0, Yarrow: 0, BoneAsh: 0, CharcoalPowder: 0,
+    BitterMushroomConcoction: 0, CharcoalPowderConcoction: 0, MoldedWoodConcoction: 0,
+    BoneAshRemedy: 0, CharcoalPowderRemedy: 0, GarlicBulbRemedy: 0,
+    CharcoalPowderElixir: 0, GarlicPowderElixir: 0, SilverLeafElixir: 0,
+    MintHealingTonic: 0, SilverLeafHealingTonic: 0, YarrowHealingTonic: 0,
+    FeverHawthornSuppressant: 0, FeverMintSuppressant: 0, FeverThymeSuppressant: 0,
+    Gold: 0
 };
 
 const inventoryGrid = document.getElementById("inventoryGrid");
 
 for (let item in inventory) {
-
     const slot = document.createElement("div");
-
     slot.classList.add("inventorySlot");
-
     slot.innerHTML = `
         <img src="Assets/${item}.png" class="inventoryItem">
         <span class="itemCount" id="${item}Count">0</span>
     `;
-
     inventoryGrid.appendChild(slot);
-
 }
 
 function addItem(itemName){
-
     inventory[itemName]++;
-
     document.getElementById(itemName + "Count").textContent = inventory[itemName];
-
 }
 
 function removeItem(itemName, amount){
-
     inventory[itemName] -= amount;
-
     document.getElementById(itemName + "Count").textContent = inventory[itemName];
-
 }
 
 const inventoryPanel = document.getElementById("inventoryPanel");
 const inventoryButton = document.getElementById("inventoryBtn");
-
 inventoryButton.addEventListener("click", () => {
-
-    if (inventoryPanel.style.display === "block") {
-        inventoryPanel.style.display = "none";
-    } else {
-        inventoryPanel.style.display = "block";
-    }
-
+    inventoryPanel.style.display = inventoryPanel.style.display === "block" ? "none" : "block";
 });
 
-
-
+// Add initial items
 addItem("Gold");
 addItem("Gold");
 addItem("Thyme");
