@@ -34,6 +34,7 @@ const pauseScreenBtn = document.getElementById('pause-screen-Btn');
 const typeSounds = document.querySelectorAll(".typeSound");
 let lastSoundIndex = -1;
 
+
 // ------------------------
 // GLOBAL STATE VARIABLES
 // ------------------------
@@ -83,6 +84,24 @@ const healHouseDialogue = [
     "Thank you doctor… you’ve given this old man hope."
 ];
 
+// Potion list
+const healingPotions = [
+    "BoneAshRemedy",
+    "CharcoalPowderRemedy",
+    "GarlicBulbRemedy",
+
+    "CharcoalPowderElixir",
+    "GarlicPowderElixir",
+    "SilverLeafElixir",
+
+    "MintHealingTonic",
+    "SilverLeafHealingTonic",
+    "YarrowHealingTonic",
+
+    "FeverHawthornSuppressant",
+    "FeverMintSuppressant",
+    "FeverThymeSuppressant"
+];
 
 // ------------------------
 // HELPER FUNCTIONS
@@ -273,6 +292,18 @@ function nextDialogue() {
                 }
 
                 typeLine(healHouseDialogue[currentLine]);
+
+            } else {
+
+                arrow.style.opacity = 0;
+
+                choiceBox.innerHTML = `
+                <button class="choiceBtn" data-choice="leavePatient">Leave</button>
+                <button class="choiceBtn" data-choice="giveMedicine">Give Medicine</button>
+                `;
+
+                choiceBox.style.display = "flex";
+
             }
             break;
     }
@@ -287,65 +318,70 @@ choiceBox.addEventListener("click", (e) => {
     choiceBox.style.display = "none";
 
     switch (choice) {
-        case "villagers":
-            sceneState = "villagers";
-            currentLine = 0;
-            villager1.style.opacity = 0;
-            worriedVillagerWoman.style.opacity = 1;
-            characterName.textContent = "Worried Wife:";
-            setTimeout(() => {
-                typeLine("Doctor...my husband hasn't woken in two days...");
-            }, 600);
-            break;
 
-        case "rats":
-            sceneState = "rats";
-            currentLine = 0;
-            typeLine("The rats are the plague itself. They scurry through our village, infecting our people. One bite can mean death...");
-            break;
+    case "villagers":
+        sceneState = "villagers";
+        currentLine = 0;
+        villager1.style.opacity = 0;
+        worriedVillagerWoman.style.opacity = 1;
+        characterName.textContent = "Worried Wife:";
+        setTimeout(() => {
+            typeLine("Doctor...my husband hasn't woken in two days...");
+        }, 600);
+        break;
 
-        case "healHouse":
-            sceneState = "healHouse";
-            currentLine = 0;
+    case "rats":
+        sceneState = "rats";
+        currentLine = 0;
+        typeLine("The rats are the plague itself. They scurry through our village, infecting our people. One bite can mean death...");
+        break;
 
-            
-            villager1.style.display = "none";
-            worriedVillagerWoman.style.display = "none";
-            plagueRat.style.display = "none";
+    case "healHouse":
+        sceneState = "healHouse";
+        currentLine = 0;
 
-            
-            document.body.style.backgroundImage = "url('Assets/SickRoom.png')";
+        villager1.style.display = "none";
+        worriedVillagerWoman.style.display = "none";
+        plagueRat.style.display = "none";
 
-            
-            sickVillager.style.display = "block";   
-            sickVillager.style.opacity = 0;          
-            sickVillager.style.transition = "opacity 0.6s ease";
-            sickVillager.style.width = "20vw";      
-            sickVillager.style.bottom = "-3vw";     
-            sickVillager.style.left = "0";         
+        document.body.style.backgroundImage = "url('Assets/SickRoom.png')";
 
-            
-            setTimeout(() => {
-                sickVillager.style.opacity = 1;
-            }, 50);
+        sickVillager.style.display = "block";
+        sickVillager.style.opacity = 0;
+        sickVillager.style.transition = "opacity 0.6s ease";
+        sickVillager.style.width = "20vw";
+        sickVillager.style.bottom = "-3vw";
+        sickVillager.style.left = "0";
 
-            // Set dialogue
-            characterName.textContent = "Sick Villager:";
-            typeLine(healHouseDialogue[currentLine]);
-            break;
+        setTimeout(() => {
+            sickVillager.style.opacity = 1;
+        }, 50);
 
-        case "fightRats":
-            sceneState = "ratEncounter";
-            currentLine = 0;
-            plagueRat.style.opacity = 1;
-            plagueRat.style.transform = "scale(1.8)";
-            characterName.textContent = "Plague Doctor:";
-            typeLine(ratIntroDoctor[currentLine]);
-            break;
+        characterName.textContent = "Sick Villager:";
+        typeLine(healHouseDialogue[currentLine]);
+        break;
 
-        default:
-            break;
-    }
+    case "fightRats":
+        sceneState = "ratEncounter";
+        currentLine = 0;
+        plagueRat.style.opacity = 1;
+        plagueRat.style.transform = "scale(1.8)";
+        characterName.textContent = "Plague Doctor:";
+        typeLine(ratIntroDoctor[currentLine]);
+        break;
+
+    case "leavePatient":
+        console.log("Leaving patient...");
+        break;
+
+    case "giveMedicine":
+        buildPotionButtons();
+        choiceBox.style.display = "grid";
+        break;
+
+    default:
+        break;
+}
 });
 
 // ------------------------
@@ -418,7 +454,82 @@ inventoryButton.addEventListener("click", () => {
     inventoryPanel.style.display = inventoryPanel.style.display === "block" ? "none" : "block";
 });
 
+// ------------------------
+// POTION SYSTEM
+// ------------------------
+function buildPotionButtons(){
+
+    choiceBox.innerHTML = "";
+    choiceBox.style.display = "grid";
+    choiceBox.style.gridTemplateColumns = "repeat(4, 4vw)";
+    choiceBox.style.justifyContent = "start";
+    choiceBox.style.gap = "3vw";
+
+    healingPotions.forEach(potion => {
+
+        const slot = document.createElement("div");
+        slot.classList.add("potionSlot");
+
+        const img = document.createElement("img");
+        img.src = `Assets/${potion}.png`;
+
+        const count = document.createElement("span");
+        count.classList.add("potionCount");
+        count.textContent = inventory[potion];
+
+        slot.appendChild(img);
+        slot.appendChild(count);
+
+        if(inventory[potion] > 0){
+
+            slot.classList.add("potionAvailable");
+
+            slot.addEventListener("click", () => {
+
+                removeItem(potion,1);
+
+                buildPotionButtons();
+
+                console.log("Used:", potion);
+
+            });
+
+        } else {
+
+            slot.classList.add("potionDisabled");
+
+        }
+
+        choiceBox.appendChild(slot);
+
+    });
+
+    // back button
+    const backBtn = document.createElement("button");
+    backBtn.classList.add("choiceBtn");
+    backBtn.textContent = "Back";
+
+    backBtn.addEventListener("click", () => {
+
+   
+    choiceBox.style.display = "flex";
+    choiceBox.style.gridTemplateColumns = "";
+    choiceBox.style.transform = "";
+    choiceBox.style.gap = "";
+
+    choiceBox.innerHTML = `
+        <button class="choiceBtn" data-choice="leavePatient">Leave</button>
+        <button class="choiceBtn" data-choice="giveMedicine">Give Medicine</button>
+    `;
+});
+
+    choiceBox.appendChild(backBtn);
+
+}
+
+
 // Add initial items
 addItem("Gold");
 addItem("Gold");
 addItem("Thyme");
+addItem("MintHealingTonic");

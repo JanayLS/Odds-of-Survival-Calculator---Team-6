@@ -461,3 +461,69 @@ button {
     display: none;      
     position: absolute;  
 }
+
+/*Potions */
+#choiceBox {
+    display: none;
+}
+
+.potionSlot {
+
+    width: 5vw;
+    height: 5vw;
+
+    border: 2px solid #c6a988;
+    background: rgba(0,0,0,0.85);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    position: relative;
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.potionSlot img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+}
+
+.potionCount {
+
+    position: absolute;
+    bottom: 0.2vw;
+    right: 0.3vw;
+
+    font-size: 0.9vw;
+    color: white;
+}
+
+/* usable potion */
+.potionAvailable:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px #7fffd1;
+}
+
+/* unavailable potion */
+.potionDisabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+#treatmentChoiceBox{
+    position:absolute;
+    bottom:8vh;
+    left:50%;
+    transform:translateX(-50%);
+    display:none;
+    gap:20px;
+}
+
+.choiceBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
