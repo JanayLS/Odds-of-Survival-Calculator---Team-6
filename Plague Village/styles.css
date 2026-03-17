@@ -1,0 +1,798 @@
+/* ============================= */
+/* GLOBAL STYLES */
+/* ============================= */
+html,
+body {
+    overflow: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    /* background-image: url(images/backgrounds/toxicVillage.png); */
+    background-size: cover;
+    margin: 0;
+}
+
+button {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+}
+
+/* ============================= */
+/* MAIN MENU */
+/* ============================= */
+#mainMenu {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+#menuImage {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+}
+
+#startGameBtn {
+    position: absolute;
+    bottom: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2vh 2vw;
+    font-size: 2vw;
+}
+
+.glow-btn {
+    background-color: #7fffd1;
+    color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+    animation: plaguePulse 2.5s infinite ease-in-out;
+}
+
+.glow-btn:hover {
+    transform: scale(1.05);
+}
+
+@keyframes plaguePulse {
+    0% {
+        box-shadow: 0 0 5px #7fffd1, 0 0 10px #7fffd1;
+        opacity: 0.95;
+    }
+
+    50% {
+        box-shadow: 0 0 15px #7fffd1, 0 0 30px #7fffd1, 0 0 45px #7fffd1;
+        opacity: 1;
+    }
+
+    100% {
+        box-shadow: 0 0 5px #7fffd1, 0 0 10px #7fffd1;
+        opacity: 0.95;
+    }
+}
+
+/* ============================= */
+/* SCENE BACKGROUNDS */
+/* ============================= */
+#arrivalScene {
+    background-image: url('images/backgrounds/toxicVillage.png');
+}
+
+#villagerHealingScene {
+    background-image: url('images/backgrounds/villager-home-background.png');
+}
+
+#chapelScene {
+    background-image: url('images/backgrounds/chapel-background.png');
+}
+
+#ratScene {
+    background-image: url('images/backgrounds/rat-encounter-background.png');
+}
+
+#shopScene {
+    background-image: url('images/backgrounds/shop-background.png');
+}
+
+#forestScene {
+    background-image: url('images/backgrounds/forest-background.png');
+}
+
+#potionsScene {
+    background-image: url('images/backgrounds/potion-background.png');
+}
+
+.scene {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.4s ease;
+    background-repeat: no-repeat;
+}
+
+/* ============================= */
+/* CHARACTERS */
+/* ============================= */
+#plagueDoctor {
+    position: absolute;
+    right: 1vw;
+    bottom: -3vw;
+    width: 22vw;
+}
+
+#villager1 {
+    position: absolute;
+    left: -4vw;
+    bottom: -3vw;
+    width: 35vw;
+    transition: opacity 0.6s ease;
+    opacity: 1;
+}
+
+#worriedVillagerWoman {
+    position: absolute;
+    left: 1vw;
+    bottom: 0;
+    width: 18vw;
+    transition: opacity 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ============================= */
+/* DIALOGUE SYSTEM */
+/* ============================= */
+#characterName {
+    color: tan;
+}
+
+#dialogueBox {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 50vw;
+    max-width: 50vw;
+
+    padding: 2vh 2vw;
+
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+
+    color: white;
+    font-size: clamp(2vh, 2.2vw, 3vh);
+    line-height: 1.4;
+
+    z-index: 10;
+}
+
+#nextArrow {
+    position: absolute;
+    bottom: 1vh;
+    right: 1.5vw;
+
+    font-size: 2.2vw;
+    color: white;
+    cursor: pointer;
+
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    animation: arrowPulse 1s infinite ease-in-out;
+}
+
+@keyframes arrowPulse {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-0.4vh);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* ============================= */
+/* CHOICE SYSTEM */
+/* ============================= */
+#choiceBox {
+    display: none;
+    flex-direction: column;
+    gap: 1vh;
+    margin-top: 2vh;
+}
+
+.choiceBtn {
+    padding: 1vh 1vw;
+    font-size: 1.2vw;
+    background: #000;
+    border: 2px solid #c6a988;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.choiceBtn:hover {
+    background: #64c19f;
+    transform: scale(1.02);
+}
+
+/* ============================= */
+/* INVENTORY SYSTEM */
+/* ============================= */
+#inventoryBtn {
+    position: fixed;
+    top: 7vh;
+    right: 1vw;
+    padding: .5vh .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 1000;
+}
+
+#inventoryBtn:hover {
+    transform: scale(1.05);
+    background-color: #64c19f;
+    z-index: 1000;
+}
+
+#inventoryPanel {
+    position: fixed;
+    top: 15vh;
+    right: 10vw;
+    width: 50vw;
+    min-height: 40vh;
+    padding: 10px;
+
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blue(6px);
+
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+
+    color: #c6a988;
+    font-size: 2vh;
+    font-weight: bold;
+
+    display: none;
+    z-index: 1000;
+}
+
+#inventoryPanel.open {
+    display: block;
+    z-index: 1000;
+}
+
+.inventoryItem {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+}
+
+#itemDescriptionPanel {
+    position: absolute;
+    top: 45vh;
+    right: 10vw;
+
+    width: 20vw;
+    padding: 10px;
+
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+
+    color: white;
+    font-size: 2vh;
+    font-weight: bold;
+
+    display: none;
+    z-index: 1000;
+}
+
+#itemDescriptionName {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #c6a988;
+}
+
+#itemDescriptionText {
+    font-size: 2vh;
+}
+
+#inventoryHintArrow {
+    position: fixed;
+    top: 4vh;
+    right: 7vw;
+    font-size: 5vh;
+    color: #39ff14;
+
+    opacity: 0;
+    animation: hintPulse 1s infinite ease-in-out;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+@keyframes hintPulse {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* ============================= */
+/* TRAVEL */
+/* ============================= */
+#travelBtn {
+    position: fixed;
+    top: 12vh;
+    right: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 1000;
+}
+
+#travelBtn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#travelBtn:active {
+    transform: scale(0.97);
+}
+
+#travelPanel {
+    position: fixed;
+    top: 15vh;
+    right: 10vw;
+    width: 50vw;
+    min-height: 40vh;
+    padding: 10px;
+
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blue(6px);
+
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+
+    color: #c6a988;
+    font-size: 2vh;
+    font-weight: bold;
+
+    display: none;
+    z-index: 1000;
+}
+
+#travelPanel.open {
+    display: block;
+    z-index: 1000;
+}
+
+.travelLocationBtn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 1.8vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.travelLocationBtn:hover {
+    background-color: #64c19f;
+}
+
+.travelLocationBtn:active {
+    transform: scale(0.97);
+}
+
+/* ============================= */
+/* OBJECTIVES */
+/* ============================= */
+
+#objectiveBtn {
+    position: fixed;
+    top: 35vh;
+    right: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 1000;
+}
+
+#objectiveBtn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#objectiveBtn:active {
+    transform: scale(0.97);
+}
+
+#objectivePanel {
+    position: fixed;
+    top: 20vh;
+    left: 10vw;
+    width: 20vw;
+    min-height: 25vh;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: #f5e6cc;
+    font-size: 2vh;
+    display: none;
+    z-index: 1000;
+}
+
+#objectivePanel.open {
+    display: block;
+    z-index: 1000;
+}
+
+.objectiveItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.objectiveIcon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* ============================= */
+/* MUSIC */
+/* ============================= */
+#musicBtn {
+    position: fixed;
+    top: 1vh;
+    right: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 1000;
+}
+
+#musicBtn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#musicBtn:active {
+    transform: scale(0.97);
+}
+
+/* ============================= */
+/* HEAL VILLAGER IN HOME SCENE */
+/* ============================= */
+
+/* ============================= */
+/* CHAPEL SCENE */
+/* ============================= */
+
+/* ============================= */
+/* RAT ENCOUNTER SCENE */
+/* ============================= */
+
+/* ============================= */
+/* VILLAGE SHOP SCENE */
+/* ============================= */
+#shop-owner {
+    position: absolute;
+    left: -4vw;
+    bottom: -3vw;
+    width: 30vw;
+    transition: opacity 0.6s ease;
+    opacity: 1;
+}
+
+#shopBtn {
+    position: fixed;
+    top: 18vh;
+    right: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 1000;
+}
+
+#shopBtn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#shopBtn:active {
+    transform: scale(0.97);
+}
+
+#shopPanel {
+    position: fixed;
+    top: 15vh;
+    right: 20vw;
+    width: 50vw;
+    min-height: 40vh;
+    padding: 10px;
+
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+
+    color: white;
+    font-size: 2vh;
+    font-weight: bold;
+
+    display: none;
+    z-index: 50;
+}
+
+#shopPanel h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 2rem;
+}
+
+#shopItems {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.shop-item {
+    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(216, 185, 140, 0.6);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+.shop-item img {
+    display: block;
+    width: 30px !important;
+    height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    object-fit: contain;
+    margin-bottom: 0 auto 8px auto;
+}
+
+.shop-item button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #7ddfcb;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.shop-item button:hover {
+    transform: scale(1.03);
+}
+
+.shopItem {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.shopItem:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+    transform: translateY(-6px) scale(1.08);
+    filter: drop-shadow(0 0 6px gold);
+}
+
+/* ============================= */
+/* FOREST SCENE */
+/* ============================= */
+
+/* ============================= */
+/* POTIONS SCENE */
+/* ============================= */
+/* Recipe Book */
+#recipeBookBtn {
+    position: fixed;
+    top: 18vh;
+    right: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#recipeBookBtn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#recipeBookBtn:active {
+    transform: scale(0.97);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.book-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#recipeBookScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(20, 10, 5, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#recipeBookImg {
+    width: 1300px;
+    max-width: 95vw;
+    height: auto;
+    display: block;
+}
+
+.book-page {
+    position: absolute;
+    top: 14%;
+    width: 28%;
+    height: 68%;
+    color: #3f2a1d;
+    font-family: Georgia, serif;
+}
+
+.left-page {
+    left: 17.5%;
+}
+
+.right-page {
+    right: 17.5%;
+}
+
+.recipe-entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.left-page .recipe-title {
+    margin-left: 30px;
+    font-size: 15px;
+}
+
+.right-page .recipe-title {
+    margin-right: 30px;
+    font-size: 15px;
+}
+
+.potion-display img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    margin-bottom: 1px;
+}
+
+.ingredient-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.ingredient {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50px;
+    text-align: center;
+}
+
+.ingredient img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+.ingredient span {
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+#closeRecipeBookBtn {
+    position: fixed;
+    top: 25vh;
+    right: 1vw;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
