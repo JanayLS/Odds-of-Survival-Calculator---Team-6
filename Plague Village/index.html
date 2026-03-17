@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plague Village</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- GLOBAL UI (APPEARS IN ALL SCENES)-->
+    <!-- Music Button -->
+    <button id="musicBtn">Music On</button>
+    <audio id="bgm" src="music/arrivalMusic.mp3" loop></audio>
+    <!-- Inventory -->
+    <!-- Inventory Button -->
+    <button id="inventoryBtn">Inventory</button>
+    <span id="inventoryHintArrow">➤</span>
+    <!-- Inventory Panel -->
+    <div id="inventoryPanel">
+        <h3>Inventory</h3>
+        <div id="inventoryItems"></div>
+    </div>
+    <div id="itemDescriptionPanel">
+        <div id="itemDescriptionName"></div>
+        <div id="itemDescriptionText"></div>
+    </div>
+    <!-- Travel -->
+    <button id="travelBtn">Travel</button>
+    <div id="travelPanel">
+        <div id="travelLocations">
+            <button class="travelLocationBtn" data-scene="villagerHealingScene">Heal Villager in Home</button>
+            <button class="travelLocationBtn" data-scene="chapelScene">Pray at Chapel</button>
+            <button class="travelLocationBtn" data-scene="ratScene">Rat Encounter</button>
+            <button class="travelLocationBtn" data-scene="shopScene">Village Shop</button>
+            <button class="travelLocationBtn" data-scene="forestScene">Search Forest for Ingredients</button>
+            <button class="travelLocationBtn" data-scene="potionsScene">Brew Potions</button>
+            <button class="travelLocationBtn" data-scene="arrivalScene">Main Village</button>
+        </div>
+    </div>
+    <!-- Objectives -->
+    <button id="objectiveBtn">Objectives</button>
+    <div id="objectivePanel">
+        <h2>Objectives</h2>
+        <div id="objectiveContent">No objectives yet.</div>
+    </div>
+    </div>
+
+    <!-- MAIN MENU SCENE -->
+    <div id="mainMenu" class="scene">
+        <img src="images/backgrounds/plagueVillageMenu.png" id="menuImage">
+        <button id="startGameBtn" class="glow-btn">Start</button>
+    </div>
+
+    <!-- ARRIVAL/MAIN VILLAGE SCENE -->
+    <div id="arrivalScene" class="scene">
+        <img id="plagueDoctor" src="images/characters/plagueDoctor.png">
+        <img id="villager1" src="images/characters/villager1.png">
+        <img id="worriedVillagerWoman" src="images/characters/worriedVillagerWoman.png">
+
+        <!-- Dialogue System (Character Name, Dialogue Text, Player Choices, Next Arrow for Navigation) -->
+        <div id="dialogueBox">
+            <div id="characterName">Desperate Villager:</div>
+            <div id="dialogueText"></div>
+            <div id="choiceBox">
+                <button class="choiceBtn" data-choice="villagers">
+                    Ask about the sick villagers
+                </button>
+                <button class="choiceBtn" data-choice="rats">
+                    Ask about the rats
+                </button>
+                <button class="choiceBtn" data-choice="supplies">
+                    Inspect your medical supplies
+                </button>
+            </div>
+            <div id="nextArrow">➤</div>
+        </div>
+
+
+
+    </div>
+
+    <!-- CORE 6 SCENES ARE CALLED BY SCRIPT.JS -->
+    <!-- Villager Healing Scene -->
+    <div id="villagerHealingScene" class="scene"></div>
+    <!-- Chapel Prayer Scene -->
+    <div id="chapelScene" class="scene"></div>
+    <!-- Rat Encounter Scene -->
+    <div id="ratScene" class="scene"></div>
+    <!-- Shop Scene -->
+    <div id="shopScene" class="scene"></div>
+    <!-- Forest Scene -->
+    <div id="forestScene" class="scene"></div>
+    <!-- Potions Scene -->
+    <div id="potionsScene" class="scene"></div>
+
+    <!-- Typing Sounds -->
+    <audio class="typeSound" src="sound-effects/typing-sounds/type1.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type2.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type3.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type4.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type5.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type6.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type7.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type8.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type9.ogg" preload="auto"></audio>
+    <audio class="typeSound" src="sound-effects/typing-sounds/type10.ogg" preload="auto"></audio>
+
+    <!-- Javascript -->
+    <!-- WHEN ADDING SCENES MAKE SURE TO INCLUDE THEIR JS FILE HERE. -->
+    <!-- Data JS files and Script.js should stay ABOVE all over JS files since they need to load first -->
+    <script src="data/items.js"></script>
+    <script src="script.js"></script>
+    <script src="scenes/potions.js"></script>
+    <script src="scenes/shop.js"></script>
+
+</body>
+
+</html>
