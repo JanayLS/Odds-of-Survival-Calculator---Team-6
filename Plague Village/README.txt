@@ -1,1 +1,0 @@
-This folder will restructure the Plague Village scenes into a modular structure.
