@@ -43,6 +43,7 @@ let currentLine = 0;
 let isTyping = false;
 let baseTypingSpeed = 40;
 let typingSpeed = baseTypingSpeed;
+let currentFightPath = null;
 
 //preload so no lag
 const sickRoomBg = new Image();
@@ -101,6 +102,41 @@ const healingPotions = [
     "FeverHawthornSuppressant",
     "FeverMintSuppressant",
     "FeverThymeSuppressant"
+];
+
+//Rat Scene
+const fightOutcomes = {
+    fight: [
+        "Stand back. I will handle this creature.",
+        "A dose of my concoction should suffice.",
+        "Now... hold still, vermin.",
+        "There. The rat is no more."
+    ],
+    run: [
+        "This is not worth the risk. We run away.",
+        "Stay close. Do not look behind you.",
+        "The rat will not chase for long..."
+    ],
+    scare: [
+        "Begone, foul abomination.",
+        "You are no match for a trained physician.",
+        "I am much stronger than you.",
+        "Hmph. It retreats. As expected."
+    ],
+    observe: [
+        "Curious...",
+        "Its movements are deliberate.",
+        "This is no ordinary rat.",
+        "I must study it more."
+    ]
+};
+
+//Heal Scene
+const healResultDialogue = [
+    "This should restore his strength.",
+    "Easy now... let the medicine take effect.",
+    "The symptoms are fading.",
+    "He will live."
 ];
 
 // ------------------------
@@ -266,10 +302,10 @@ function nextDialogue() {
                 plagueRat.style.width = "35vw";
                 choiceBox.classList.add("fightChoiceBox");
                 choiceBox.innerHTML = `
-                    <button class="choiceBtn">Run away</button>
-                    <button class="choiceBtn">Scare him</button>
-                    <button class="choiceBtn">Observe</button>
-                    <button class="choiceBtn">FIGHT</button>
+                    <button class="choiceBtn" data-choice="run">Run away</button>
+                    <button class="choiceBtn" data-choice="scare">Scare him</button>
+                    <button class="choiceBtn" data-choice="observe">Observe</button>
+                    <button class="choiceBtn" data-choice="fight">FIGHT</button>
                 `;
                 choiceBox.style.display = "grid";
             }
@@ -305,6 +341,45 @@ function nextDialogue() {
                 choiceBox.style.display = "flex";
 
             }
+            break;
+        case "fightResult":
+            currentLine++;
+
+            if (currentLine < fightOutcomes[currentFightPath].length) {
+                typeLine(fightOutcomes[currentFightPath][currentLine]);
+            } else {
+
+                arrow.style.opacity = 0;
+
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterFightContinue">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
+        case "afterFightContinue":
+            console.log("Continue story after fight...");
+            // next scene goes here later
+            break;
+
+        case "healResult":
+            currentLine++;
+
+            if (currentLine < healResultDialogue.length) {
+                typeLine(healResultDialogue[currentLine]);
+            } else {
+
+                arrow.style.opacity = 0;
+
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterHeal">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
+            
+        case "afterHeal":
+            console.log("Patient healed, continue story...");
             break;
     }
 }
@@ -378,6 +453,26 @@ choiceBox.addEventListener("click", (e) => {
         buildPotionButtons();
         choiceBox.style.display = "grid";
         break;
+
+    case "fight":
+    case "run":
+    case "scare":
+    case "observe":
+
+        sceneState = "fightResult";
+        currentLine = 0;
+
+        currentFightPath = choice;
+
+        characterName.textContent = "Plague Doctor:";
+
+        choiceBox.style.display = "none";
+        arrow.style.opacity = 1;
+
+        typeLine(fightOutcomes[choice][currentLine]);
+        break;
+
+
 
     default:
         break;
@@ -482,17 +577,21 @@ function buildPotionButtons(){
 
         if(inventory[potion] > 0){
 
-            slot.classList.add("potionAvailable");
-
             slot.addEventListener("click", () => {
 
-                removeItem(potion,1);
+            removeItem(potion, 1);
 
-                buildPotionButtons();
+            // switch to result dialogue
+            sceneState = "healResult";
+            currentLine = 0;
 
-                console.log("Used:", potion);
+            characterName.textContent = "Plague Doctor:";
 
-            });
+            choiceBox.style.display = "none";
+            arrow.style.opacity = 1;
+
+            typeLine(healResultDialogue[currentLine]);
+        });
 
         } else {
 
