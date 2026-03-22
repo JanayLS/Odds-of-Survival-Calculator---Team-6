@@ -666,7 +666,7 @@ button {
 #brewingPanel {
     position: fixed;
     left: 2vw;
-    top: 50%;
+    top: 30%;
     transform: translateY(-50%);
     width: 18vw;
     padding: 1.5vh 1vw;
@@ -724,6 +724,46 @@ button {
     width: 100%;
     padding: 1vh;
     font-size: 1.2vw;
+}
+
+/* Potion Result Panel */
+.result-panel {
+    position: fixed;
+    left: 2vw;
+    bottom: 4%;
+    width: 18vw;
+    padding: 1.5vh 1vw;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: #c6a988;
+    z-index: 20;
+}
+
+.result-slot {
+    width: 5vw;
+    height: 10vh;
+    margin: 10px auto;
+    border: 2px dashed #c6a988;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    margin-bottom: 5vh;
+}
+
+.resultSlot:hover {
+    transform: scale(.5);
+    cursor: pointer;
+    transform: translateY(-2px) scale(.9);
+    filter: drop-shadow(0 0 6px gold);
+}
+
+.result-slot img {
+    width: 70px;
+    height: 70px;
 }
 
 /* Recipe Book */

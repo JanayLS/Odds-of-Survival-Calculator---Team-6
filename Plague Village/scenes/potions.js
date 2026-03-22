@@ -3,6 +3,7 @@ const potionsScene = document.getElementById("potionsScene");
 potionsScene.innerHTML = `
     <img id="plagueDoctor" src="images/characters/plagueDoctor.png">
 
+    <!-- Brewing Area -->
     <div id="brewingPanel">
         <h3>Brewing</h3>
 
@@ -23,6 +24,13 @@ potionsScene.innerHTML = `
         </div>
 
         <button id="brewBtn" class="glow-btn">Brew</button>
+    </div>
+
+    <!-- Potion Result Panel -->
+    <div id="potionResultPanel" class="result-panel">
+        <h3>Result</h3>
+        <div id="potionResultSlot" class="result-slot"></div>
+        <p id="potionResultText">Brew something...</p>
     </div>
         
     <!-- Recipe Book Button -->
@@ -234,11 +242,12 @@ function brewPotion() {
     const ing1 = brewingSlots.ingredient1;
     const ing2 = brewingSlots.ingredient2;
     const ing3 = brewingSlots.ingredient3;
+    const resultSlot = document.getElementById("potionResultSlot");
+    const resultText = document.getElementById("potionResultText");
 
     // Make sure all 3 slots are filled
     if (!ing1 || !ing2 || !ing3) {
-        // TODO: REPLACE CONSOLE.LOG WITH UI MESSAGE LATER
-        console.log("Not enough ingredients");
+        resultText.textContent = "Not enough ingredients.";
         return;
     }
 
@@ -265,7 +274,8 @@ function brewPotion() {
     if (matchedRecipe) {
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();
-        console.log(matchedRecipe.name);
+        resultSlot.innerHTML = `<img src="${matchedRecipe.img}" alt="${matchedRecipe.name}"`;
+        resultText.textContent = matchedRecipe.name;
     } else {
         console.log("Unknown Potion");
     }
