@@ -1,13 +1,40 @@
 const potionsScene = document.getElementById("potionsScene");
 
 potionsScene.innerHTML = `
-        <img id="plagueDoctor" src="images/characters/plagueDoctor.png">
+    <img id="plagueDoctor" src="images/characters/plagueDoctor.png">
 
+    <!-- Brewing Area -->
+    <div id="brewingPanel">
+        <h3>Brewing</h3>
+
+        <div class="brewSection">
+            <span class="brewLabel">Ingredients</span>
+            <div class="brewingSlots">
+                <div class="brewSlot" data-slot="ingredient1"></div>
+                <div class="brewSlot" data-slot="ingredient2"></div>
+                <div class="brewSlot" data-slot="ingredient3"></div>
+            </div>
+        </div>
+
+        <div class="brewSection">
+            <span class="brewLabel">Boost (Optional)</span>
+            <div class="brewingSlots">
+                <div class="brewSlot boostSlot" data-slot="boost"></div>
+            </div>
+        </div>
+
+        <button id="brewBtn" class="glow-btn">Brew</button>
+    </div>
+
+    <!-- Potion Result Panel -->
+    <div id="potionResultPanel" class="result-panel">
+        <h3>Result</h3>
+        <div id="potionResultSlot" class="result-slot"></div>
+        <p id="potionResultText">Brew something...</p>
+    </div>
         
-        <!-- Recipe Book Button -->
-        <button id="recipeBookBtn">Recipe Book</button>
-
-       
+    <!-- Recipe Book Button -->
+    <button id="recipeBookBtn">Recipe Book</button>
 
     <!-- Recipe Book Screen -->
     <div id="recipeBookScreen" class="hidden">
@@ -43,9 +70,9 @@ potionsScene.innerHTML = `
                         </div>
                     </div>
                 </div>
-                <!-- Fever Suppresant Recipe -->
+                <!-- Fever sant Recipe -->
                 <div class="recipe-entry">
-                    <h3 class="recipe-title">Fever Suppresant</h3>
+                    <h3 class="recipe-title">Fever Suppressant</h3>
 
                     <div class="potion-display">
                         <img src="images/potions/fever-suppressant.png">
@@ -149,6 +176,115 @@ potionsScene.innerHTML = `
             </div>
         </div>
 `
+// *************************************
+// POTION BREWING **********************
+//**************************************
+
+// Potion Brewing System
+setupBrewingSlots();
+
+const potionBrewSound = new Audio('sound-effects/potion-sounds/potion-brewed.wav')
+
+let brewingSlots = {
+    ingredient1: null,
+    ingredient2: null,
+    ingredient3: null,
+    boost: null
+}
+
+function setupBrewingSlots() {
+    document.querySelectorAll(".brewSlot").forEach(slot => {
+        slot.addEventListener("click", () => {
+
+            if (!window.selectedItem) return;
+
+            const slotType = slot.dataset.slot;
+            const item = window.selectedItem;
+
+            // Potions cannot go in Brew Panel
+            if (item.category === "potion") return;
+
+            // Only items with "boost" type go in boost slot
+            if (slotType === "boost" && item.category !== "boost") return;
+
+            // Ingredient slots do NOT accept boost items
+            if (slotType !== "boost" && item.category !== "ingredient") return;
+
+            brewingSlots[slotType] = item;
+
+            renderBrewingSlots();
+        })
+    })
+}
+
+function renderBrewingSlots() {
+    document.querySelectorAll(".brewSlot").forEach(slot => {
+        const slotType = slot.dataset.slot;
+        const item = brewingSlots[slotType];
+
+        slot.innerHTML = "";
+
+        if (item) {
+            const img = document.createElement("img");
+            img.src = item.img;
+            img.style.width = "80%";
+            img.style.height = "80%";
+            img.style.objectFit = "contain";
+
+            slot.appendChild(img);
+        }
+    })
+}
+
+document.getElementById("brewBtn").addEventListener("click", brewPotion);
+
+function brewPotion() {
+    const ing1 = brewingSlots.ingredient1;
+    const ing2 = brewingSlots.ingredient2;
+    const ing3 = brewingSlots.ingredient3;
+    const resultSlot = document.getElementById("potionResultSlot");
+    const resultText = document.getElementById("potionResultText");
+
+    // Make sure all 3 slots are filled
+    if (!ing1 || !ing2 || !ing3) {
+        resultText.textContent = "Not enough ingredients.";
+        return;
+    }
+
+    // Get ingredient names and sort so order doesn't matter
+    const ingredients = [ing1.name, ing2.name, ing3.name].sort();
+
+    let matchedRecipe = null;
+
+    for (const key in recipeDatabase) {
+        const recipe = recipeDatabase[key];
+
+        const recipeIngredients = [...recipe.ingredients].sort();
+
+        const isMatch =
+            ingredients.length === recipeIngredients.length &&
+            ingredients.every((item, i) => item === recipeIngredients[i]);
+
+        if (isMatch) {
+            matchedRecipe = recipe;
+            break;
+        }
+    }
+
+    if (matchedRecipe) {
+        potionBrewSound.currentTime = 0;
+        potionBrewSound.play();
+        resultSlot.innerHTML = `<img class="potion-result" src="${matchedRecipe.img}" alt="${matchedRecipe.name}">`;
+        resultText.textContent = matchedRecipe.name;
+    } else {
+        console.log("Unknown Potion");
+    }
+}
+
+// *************************************
+// RECIPE BOOK *************************
+//**************************************
+
 // Recipe Book Button
 const recipeBookBtn = document.getElementById('recipeBookBtn')
 const closeRecipeBookBtn = document.getElementById('closeRecipeBookBtn')

@@ -350,7 +350,6 @@ function getRandomStartItems(itemDatabase, count = 3) {
 
 // Gives 3 random start items when player first checks supplies
 function giveRandomStartItems() {
-    console.log("Items Given");
     if (startItemsGiven) return;
 
     const startItems = getRandomStartItems(itemDatabase, 3);
@@ -378,8 +377,12 @@ function renderInventory() {
 
         inventoryItems.appendChild(img);
 
+        window.selectedItem = null;
+
         img.addEventListener("click", () => {
-            showItemDescription(item);
+            window.selectedItem = item;
+            // Add this back later after I fix it
+            // showItemDescription(item);
         })
 
     })
