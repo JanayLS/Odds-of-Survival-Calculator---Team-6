@@ -274,7 +274,7 @@ function brewPotion() {
     if (matchedRecipe) {
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();
-        resultSlot.innerHTML = `<img src="${matchedRecipe.img}" alt="${matchedRecipe.name}"`;
+        resultSlot.innerHTML = `<img class="potion-result" src="${matchedRecipe.img}" alt="${matchedRecipe.name}">`;
         resultText.textContent = matchedRecipe.name;
     } else {
         console.log("Unknown Potion");
