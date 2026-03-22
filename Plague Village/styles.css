@@ -56,23 +56,6 @@ button {
     transform: scale(1.05);
 }
 
-@keyframes plaguePulse {
-    0% {
-        box-shadow: 0 0 5px #7fffd1, 0 0 10px #7fffd1;
-        opacity: 0.95;
-    }
-
-    50% {
-        box-shadow: 0 0 15px #7fffd1, 0 0 30px #7fffd1, 0 0 45px #7fffd1;
-        opacity: 1;
-    }
-
-    100% {
-        box-shadow: 0 0 5px #7fffd1, 0 0 10px #7fffd1;
-        opacity: 0.95;
-    }
-}
-
 /* ============================= */
 /* SCENE BACKGROUNDS */
 /* ============================= */
@@ -287,6 +270,13 @@ button {
     width: 50px;
     height: 50px;
     margin: 5px;
+}
+
+.inventoryItem:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+    transform: translateY(-6px) scale(1.08);
+    filter: drop-shadow(0 0 6px gold);
 }
 
 #itemDescriptionPanel {
@@ -660,6 +650,82 @@ button {
 /* ============================= */
 /* POTIONS SCENE */
 /* ============================= */
+/* Brewing System */
+.brewSection {
+    margin-bottom: 1vh;
+}
+
+.brewLabel {
+    font-size: 0.9vw;
+    color: #c6a988;
+    opacity: 0.8;
+    display: block;
+    margin-bottom: 0.5vh;
+}
+
+#brewingPanel {
+    position: fixed;
+    left: 2vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18vw;
+    padding: 1.5vh 1vw;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: #c6a988;
+    z-index: 20;
+}
+
+#brewingPanel h3 {
+    text-align: center;
+    margin-bottom: 1vh;
+    font-size: 3vh;
+}
+
+.brewingSlots {
+    display: flex;
+    gap: 0.5vw;
+}
+
+.brewSlot {
+    width: 5vw;
+    height: 10vh;
+    border: 2px dashed #c6a988;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    margin-bottom: 5vh;
+}
+
+.brewSlot:hover {
+    transform: scale(.5);
+    cursor: pointer;
+    transform: translateY(-2px) scale(.9);
+    filter: drop-shadow(0 0 6px gold);
+}
+
+.boostSlot {
+    border-color: #7fffd1;
+    box-shadow: 0 0 10px #39ff14;
+}
+
+.boostSlot:hover {
+    transform: scale(.5);
+    cursor: pointer;
+    transform: translateY(-2px) scale(.9);
+    filter: drop-shadow(0 0 6px gold);
+}
+
+#brewBtn {
+    width: 100%;
+    padding: 1vh;
+    font-size: 1.2vw;
+}
+
 /* Recipe Book */
 #recipeBookBtn {
     position: fixed;
@@ -795,4 +861,24 @@ button {
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.15s ease, background 0.15s ease;
+}
+
+/* ============================= */
+/* GLOBAL ANIMATIONS */
+/* ============================= */
+@keyframes plaguePulse {
+    0% {
+        box-shadow: 0 0 5px #7fffd1, 0 0 10px #7fffd1;
+        opacity: 0.95;
+    }
+
+    50% {
+        box-shadow: 0 0 15px #7fffd1, 0 0 30px #7fffd1, 0 0 45px #7fffd1;
+        opacity: 1;
+    }
+
+    100% {
+        box-shadow: 0 0 5px #7fffd1, 0 0 10px #7fffd1;
+        opacity: 0.95;
+    }
 }
