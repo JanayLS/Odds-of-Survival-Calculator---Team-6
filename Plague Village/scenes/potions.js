@@ -182,8 +182,8 @@ potionsScene.innerHTML = `
 
 // Potion Brewing System
 setupBrewingSlots();
-
 const potionBrewSound = new Audio('sound-effects/potion-sounds/potion-brewed.wav')
+let brewedPotion = null;
 
 let brewingSlots = {
     ingredient1: null,
@@ -210,9 +210,17 @@ function setupBrewingSlots() {
             // Ingredient slots do NOT accept boost items
             if (slotType !== "boost" && item.category !== "ingredient") return;
 
-            brewingSlots[slotType] = item;
+            // If player fills already filled brewing slot with new item, old item returns to inventory and new item fills the slot
+            const oldItem = brewingSlots[slotType]
 
+            if (oldItem) {
+                addItemToInventory(oldItem);
+            }
+
+            brewingSlots[slotType] = item;
+            removeItemFromInventory(item);
             renderBrewingSlots();
+            window.selectedItem = null;
         })
     })
 }
@@ -230,6 +238,12 @@ function renderBrewingSlots() {
             img.style.width = "80%";
             img.style.height = "80%";
             img.style.objectFit = "contain";
+
+            img.addEventListener("click", () => {
+                addItemToInventory(item);
+                brewingSlots[slotType] = null;
+                renderBrewingSlots();
+            });
 
             slot.appendChild(img);
         }
@@ -274,12 +288,25 @@ function brewPotion() {
     if (matchedRecipe) {
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();
+        brewedPotion = itemDatabase[matchedRecipe.result];
         resultSlot.innerHTML = `<img class="potion-result" src="${matchedRecipe.img}" alt="${matchedRecipe.name}">`;
         resultText.textContent = matchedRecipe.name;
     } else {
+        brewedPotion = null;
         console.log("Unknown Potion");
     }
 }
+
+// When player clicks brewed potion, potion is added to inventory, and result slot is cleared.
+document.getElementById("potionResultSlot").addEventListener("click", () => {
+    if (!brewedPotion) return;
+
+    addItemToInventory(brewedPotion);
+
+    brewedPotion = null;
+    document.getElementById("potionResultSlot").innerHTML = "";
+    document.getElementById("potionResultText").textContent = "Brew something...";
+})
 
 // *************************************
 // RECIPE BOOK *************************
