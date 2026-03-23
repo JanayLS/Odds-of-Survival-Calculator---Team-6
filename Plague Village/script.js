@@ -56,6 +56,7 @@ const inventoryPanel = document.getElementById('inventoryPanel');
 const inventoryHintArrow = document.getElementById('inventoryHintArrow');
 const inventoryTabs = document.querySelectorAll(".inventoryTab");
 let activeInventoryTab = "ingredients";
+const menuHoverSound = new Audio('sound-effects/misc-sounds/menu-hover.wav')
 
 // Travel
 const travelBtn = document.getElementById("travelBtn");
@@ -317,6 +318,23 @@ function showScene(sceneID) {
     }
 }
 
+// Add items to inventory (keeps track of quantity and decreases quantity when item is used)
+function addItemToInventory(newItem) {
+    const existingItem = inventory.find(item => item.name === newItem.name);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        inventory.push({
+            ...newItem,
+            quantity: 1
+        });
+    }
+
+    renderInventory();
+}
+
+
 // WHEN PLAYER CHECKS MEDICAL SUPPLIES, 3 RANDOM ITEMS ARE GENERATED
 let inventory = [];
 let startItemsGiven = false;
@@ -357,7 +375,7 @@ function giveRandomStartItems() {
     const startItems = getRandomStartItems(itemDatabase, 3);
 
     startItems.forEach(item => {
-        inventory.push(item);
+        addItemToInventory(item);
     });
 
     startItemsGiven = true;
@@ -386,7 +404,14 @@ function renderInventory() {
         img.className = "inventoryItem";
         img.title = item.name;
 
-        slot.appendChild(img)
+        // Inventory item and quantity
+        slot.appendChild(img);
+
+        const quantityLabel = document.createElement("span");
+        quantityLabel.className = "itemQuantity";
+        quantityLabel.textContent = item.quantity;
+        slot.appendChild(quantityLabel);
+
         inventoryItems.appendChild(slot);
 
         window.selectedItem = null;
@@ -396,6 +421,7 @@ function renderInventory() {
         });
 
         img.addEventListener("mouseenter", () => {
+            menuHoverSound.play();
             showItemDescription(item);
         });
 
@@ -412,6 +438,10 @@ inventoryTabs.forEach(tab => {
 
         activeInventoryTab = tab.dataset.tab;
         renderInventory();
+    })
+
+    tab.addEventListener("mouseover", () => {
+        menuHoverSound.play();
     })
 })
 
