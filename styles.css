@@ -274,26 +274,30 @@ body {
 }
 
 #resumeBtn:hover {
-    transform: scale(1.1);
+    transform: translateX(-50%) scale(1.08);
     background-color: #64c19f;
 }
 
 #resumeBtn:active {
-    transform: scale(0.97);
+    transform: translateX(-50%) scale(0.97);
 }
 
 #resumeBtn {
     position: fixed;
-    top: 1vh;
-    left: 1vw;
-    padding: .5vw .5vh;
+    top: 60vh;
+    left: 50%;
+    transform: translateX(-50%);
+
+    padding: 1.5vh 2vw;
     font-size: 2vh;
     font-weight: bold;
+
     background-color: #7fffd1;
     color: #000;
     border: 2px solid #c6a988;
     border-radius: 8px;
     cursor: pointer;
+
     transition: transform 0.15s ease, background 0.15s ease;
 }
 
@@ -343,14 +347,7 @@ button {
     object-fit: cover;
 }
 
-#resumeBtn {
-    position: absolute;
-    top: 45vh;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 1.5vh 2vw;
-    font-size: 2vh;
-}
+
 
 
 /*Inventory */
@@ -526,4 +523,32 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#endingABtn {
+    position: fixed;
+    top: 70vh; /* below the resume button at 60vh */
+    left: 50%;
+    transform: translateX(-50%);
+
+    padding: 1.5vh 2vw;
+    font-size: 2vh;
+    font-weight: bold;
+
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#endingABtn:hover {
+    transform: translateX(-50%) scale(1.08);
+    background-color: #64c19f;
+}
+
+#endingABtn:active {
+    transform: translateX(-50%) scale(0.97);
 }

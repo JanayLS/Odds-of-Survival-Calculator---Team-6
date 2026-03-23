@@ -139,6 +139,14 @@ const healResultDialogue = [
     "He will live."
 ];
 
+//End A Scene
+const endingADialogue = [
+    "Another day has passed, and the village breathes easier.",
+    "The sick have been tended, and the rats kept at bay.",
+    "Hope lingers in the streets, as families find a moment of peace.",
+    "For today, the plague has not claimed us… we have survived."
+];
+
 // ------------------------
 // HELPER FUNCTIONS
 // ------------------------
@@ -381,6 +389,23 @@ function nextDialogue() {
         case "afterHeal":
             console.log("Patient healed, continue story...");
             break;
+        
+        case "endingA":
+            currentLine++;
+            if (currentLine < endingADialogue.length) {
+                characterName.textContent = "Plague Doctor:";
+                typeLine(endingADialogue[currentLine]);
+            } else {
+                arrow.style.opacity = 0;
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterEndingA">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
+
+
+        
     }
 }
 
@@ -505,6 +530,24 @@ resumeBtn.addEventListener("click", () => {
     pauseScreen.style.display = "none";
     arrivalScene.style.display = "block";
     bgm.play();
+});
+
+const endingABtn = document.getElementById("endingABtn");
+
+endingABtn.addEventListener("click", () => {
+    pauseScreen.style.display = "none";
+    arrivalScene.style.display = "block";
+
+    villager1.style.opacity = 0;
+
+    sceneState = "endingA";
+    currentLine = -1; // start before first line
+
+    characterName.textContent = "Plague Doctor:";
+    dialogueText.textContent = "";
+    arrow.style.opacity = 0;
+
+    nextDialogue(); // type first line automatically
 });
 
 // ------------------------
