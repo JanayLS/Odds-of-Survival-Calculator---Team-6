@@ -266,26 +266,83 @@ button {
     z-index: 1000;
 }
 
+#inventoryTabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5vw;
+    margin-bottom: 0.8vw;
+    flex-wrap: wrap;
+}
+
+.inventoryTab {
+    padding: 0.45vw 0.8vw;
+    font-size: 0.95vw;
+    font-weight: bold;
+    color: #f5e6c8;
+    background: rgba(0, 0, 0, 0.75);
+    border: 2px solid #c6a988;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.inventoryTab:hover {
+    background: rgba(60, 40, 20, 0.9);
+    transform: translateY(-2px);
+}
+
+.inventoryTab.active {
+    background: rgba(120, 90, 40, 0.95);
+    box-shadow: 0 0 8px rgba(198, 169, 136, 0.5);
+}
+
+#inventoryItems {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1vw;
+    justify-items: center;
+    align-items: start;
+
+    width: 90%;
+    margin: 1vw auto 0;
+    padding: 1vw;
+}
+
+.inventorySlot {
+    width: 5vw;
+    height: 5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid rgba(198, 169, 136, 0.45);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.25);
+}
+
 .inventoryItem {
-    width: 50px;
-    height: 50px;
-    margin: 5px;
+    width: 3.5vw;
+    height: 3.5vw;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .inventoryItem:hover {
-    transform: scale(1.1);
+    transform: scale(1.08);
     cursor: pointer;
     transform: translateY(-6px) scale(1.08);
     filter: drop-shadow(0 0 6px gold);
 }
 
 #itemDescriptionPanel {
-    position: absolute;
-    top: 45vh;
+    position: fixed;
+    top: 65vh;
     right: 10vw;
 
-    width: 20vw;
-    padding: 10px;
+    width: 50vw;
+    min-height: 9vh;
+    padding: 0.9vw 1vw;
 
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid #c6a988;
@@ -295,18 +352,22 @@ button {
     font-size: 2vh;
     font-weight: bold;
 
+    box-sizing: border-box;
     display: none;
     z-index: 1000;
 }
 
 #itemDescriptionName {
+    font-size: 1.1vw;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 0.4vw;
     color: #c6a988;
 }
 
 #itemDescriptionText {
-    font-size: 2vh;
+    font-size: 0.95vw;
+    line-height: 1.4;
+    color: #f3eee6;
 }
 
 #inventoryHintArrow {

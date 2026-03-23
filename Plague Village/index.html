@@ -11,23 +11,35 @@
 
 <body>
     <!-- GLOBAL UI (APPEARS IN ALL SCENES)-->
-    <!-- Music Button -->
+    <!-- MUSIC -->
     <button id="musicBtn">Music On</button>
     <audio id="bgm" src="music/arrivalMusic.mp3" loop></audio>
-    <!-- Inventory -->
+
+    <!-- INVENTORY -->
     <!-- Inventory Button -->
     <button id="inventoryBtn">Inventory</button>
     <span id="inventoryHintArrow">➤</span>
+
     <!-- Inventory Panel -->
     <div id="inventoryPanel">
         <h3>Inventory</h3>
+
+        <div id="inventoryTabs">
+            <button class="inventoryTab active" data-tab="ingredients">Ingredients</button>
+            <button class="inventoryTab" data-tab="boost">Boost Items</button>
+            <button class="inventoryTab" data-tab="potions">Potions</button>
+        </div>
+
         <div id="inventoryItems"></div>
     </div>
+
+    <!-- Item Description Panel -->
     <div id="itemDescriptionPanel">
         <div id="itemDescriptionName"></div>
         <div id="itemDescriptionText"></div>
     </div>
-    <!-- Travel -->
+
+    <!-- TRAVEL -->
     <button id="travelBtn">Travel</button>
     <div id="travelPanel">
         <div id="travelLocations">
@@ -40,7 +52,8 @@
             <button class="travelLocationBtn" data-scene="arrivalScene">Main Village</button>
         </div>
     </div>
-    <!-- Objectives -->
+
+    <!-- GAME OBJECTIVES -->
     <button id="objectiveBtn">Objectives</button>
     <div id="objectivePanel">
         <h2>Objectives</h2>
