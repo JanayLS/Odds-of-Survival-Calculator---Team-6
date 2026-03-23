@@ -334,6 +334,22 @@ function addItemToInventory(newItem) {
     renderInventory();
 }
 
+// Remove items from inventory (decreases quantity of item or removes item if quantity was 1)
+function removeItemFromInventory(itemToRemove) {
+    const existingItem = inventory.find(item => item.name === itemToRemove.name);
+
+    if (!existingItem) return;
+
+    existingItem.quantity -= 1;
+
+    if (existingItem.quantity <= 0) {
+        const itemIndex = inventory.findIndex(item => item.name === itemToRemove.name);
+        inventory.splice(itemIndex, 1);
+    }
+
+    renderInventory();
+}
+
 
 // WHEN PLAYER CHECKS MEDICAL SUPPLIES, 3 RANDOM ITEMS ARE GENERATED
 let inventory = [];
