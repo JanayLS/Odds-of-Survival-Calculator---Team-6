@@ -54,6 +54,8 @@ const arrow = document.getElementById('nextArrow');
 const inventoryBtn = document.getElementById('inventoryBtn');
 const inventoryPanel = document.getElementById('inventoryPanel');
 const inventoryHintArrow = document.getElementById('inventoryHintArrow');
+const inventoryTabs = document.querySelectorAll(".inventoryTab");
+let activeInventoryTab = "ingredients";
 
 // Travel
 const travelBtn = document.getElementById("travelBtn");
@@ -368,25 +370,50 @@ function renderInventory() {
     const inventoryItems = document.getElementById("inventoryItems");
     inventoryItems.innerHTML = "";
 
-    inventory.forEach(item => {
+    const filteredItems = inventory.filter(item => {
+        if (activeInventoryTab === "ingredients") return item.type === "ingredient";
+        if (activeInventoryTab === "boost") return item.type === "boost";
+        if (activeInventoryTab === "potions") return item.type === "potion";
+        return false;
+    });
+
+    filteredItems.forEach(item => {
+        const slot = document.createElement("div");
+        slot.className = "inventorySlot";
 
         const img = document.createElement("img");
         img.src = item.img;
         img.className = "inventoryItem";
         img.title = item.name;
 
-        inventoryItems.appendChild(img);
+        slot.appendChild(img)
+        inventoryItems.appendChild(slot);
 
         window.selectedItem = null;
 
         img.addEventListener("click", () => {
             window.selectedItem = item;
-            // Add this back later after I fix it
-            // showItemDescription(item);
-        })
+        });
 
-    })
+        img.addEventListener("mouseenter", () => {
+            showItemDescription(item);
+        });
+
+        img.addEventListener("mouseleave", () => {
+            hideItemDescription();
+        });
+    });
 }
+
+inventoryTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+        inventoryTabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        activeInventoryTab = tab.dataset.tab;
+        renderInventory();
+    })
+})
 
 function showItemDescription(item) {
 
@@ -398,6 +425,11 @@ function showItemDescription(item) {
     text.textContent = item.description;
 
     panel.style.display = "block";
+}
+
+function hideItemDescription() {
+    const panel = document.getElementById("itemDescriptionPanel");
+    panel.style.display = "none";
 }
 
 // Game State Info - Work on this later
