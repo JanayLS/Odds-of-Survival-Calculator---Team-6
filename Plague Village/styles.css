@@ -309,6 +309,8 @@ button {
 }
 
 .inventorySlot {
+    position: relative;
+
     width: 5vw;
     height: 5vw;
     display: flex;
@@ -318,6 +320,27 @@ button {
     border: 2px solid rgba(198, 169, 136, 0.45);
     border-radius: 12px;
     background: rgba(0, 0, 0, 0.25);
+}
+
+.itemQuantity {
+    position: absolute;
+    bottom: -0.67vw;
+    right: -0.67vw;
+
+    min-width: .75vw;
+    height: 1.4vw;
+    padding: 0 0.4vw;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.8vw;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid #c6a988;
+    border-radius: 50%;
 }
 
 .inventoryItem {
