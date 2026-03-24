@@ -98,9 +98,14 @@ const itemDatabase = {
     elixir: {
         name: "Elixir",
         img: "images/potions/elixir.png",
-        description: "Fill in later",
+        description: "Heals Doctor's Infection",
         category: "potion",
-        weight: 4
+        weight: 4,
+        effect: {
+            target: "doctor",
+            stat: "infection",
+            change: -20
+        }
     },
 
     feverSuppressant: {
