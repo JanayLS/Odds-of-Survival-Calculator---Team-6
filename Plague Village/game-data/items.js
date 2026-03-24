@@ -92,7 +92,8 @@ const itemDatabase = {
         img: "images/potions/ash-remedy.png",
         description: "Fill in later",
         category: "potion",
-        weight: 3
+        weight: 3,
+        effectType: "cureDoctorPoison"
     },
 
     elixir: {
@@ -101,11 +102,7 @@ const itemDatabase = {
         description: "Heals Doctor's Infection",
         category: "potion",
         weight: 4,
-        effect: {
-            target: "doctor",
-            stat: "infection",
-            change: -20
-        }
+        effectType: "reduceDoctorInfection"
     },
 
     feverSuppressant: {
@@ -113,7 +110,8 @@ const itemDatabase = {
         img: "images/potions/fever-suppressant.png",
         description: "Fill in later",
         category: "potion",
-        weight: 6
+        weight: 6,
+        effectType: "suppressVillagerInfection"
     },
 
     healingTonic: {
@@ -121,7 +119,8 @@ const itemDatabase = {
         img: "images/potions/healing-tonic.png",
         description: "Fill in later",
         category: "potion",
-        weight: 9
+        weight: 9,
+        effectType: "reduceVillagerInfection"
     },
 
     plagueConcoction: {
@@ -129,34 +128,43 @@ const itemDatabase = {
         img: "images/potions/plague-concoction.png",
         description: "Fill in later",
         category: "potion",
-        weight: 2
+        weight: 2,
+        effectType: "poisonRat"
     },
 
     // *************************************
-    // BOOST ITEMS *************************
+    // CHARM ITEMS *************************
     //**************************************
     driedToad: {
         name: "Dried Toad",
-        img: "images/boost-items/dried-toad.png",
-        description: "A symbol of prosperity, dried toad increases weight of finding rare items",
-        category: "boost",
+        img: "images/charm-items/dried-toad.png",
+        description: "A symbol of prosperity, dried toad increases chance of finding rare items",
+        category: "charm",
         weight: 1
     },
 
     brilliantEmerald: {
         name: "Brilliant Emerald",
-        img: "images/boost-items/shining-emerald.png",
+        img: "images/charm-items/shining-emerald.png",
         description: "A beautiful shimmering emerald, increases potency of potions",
-        category: "boost",
+        category: "charm",
         weight: 0.5
     },
 
     rubyAmulet: {
         name: "Ruby Amulet",
-        img: "images/boost-items/ruby-amulet.png",
+        img: "images/charm-items/ruby-amulet.png",
         description: "Shiny red ruby pendant on a thin gold chain, ruby amulet prevents infection",
-        category: "boost",
+        category: "charm",
         weight: 0.5
     },
+
+    herbSatchel: {
+        name: "Herb Satchel",
+        img: "images/charm-items/herb-satchel.png",
+        description: "Small cloth satchel of dried herbs, suppresses Doctor's infection status from worsening at end of day.",
+        category: "charm",
+        effectType: "suppressDoctorInfection"
+    }
 
 }

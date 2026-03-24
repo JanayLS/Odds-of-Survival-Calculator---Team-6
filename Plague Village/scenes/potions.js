@@ -17,9 +17,9 @@ potionsScene.innerHTML = `
         </div>
 
         <div class="brewSection">
-            <span class="brewLabel">Boost (Optional)</span>
+            <span class="brewLabel">Charm (Optional)</span>
             <div class="brewingSlots">
-                <div class="brewSlot boostSlot" data-slot="boost"></div>
+                <div class="brewSlot charmSlot" data-slot="charm"></div>
             </div>
         </div>
 
@@ -189,7 +189,7 @@ let brewingSlots = {
     ingredient1: null,
     ingredient2: null,
     ingredient3: null,
-    boost: null
+    charm: null
 }
 
 function setupBrewingSlots() {
@@ -204,11 +204,11 @@ function setupBrewingSlots() {
             // Potions cannot go in Brew Panel
             if (item.category === "potion") return;
 
-            // Only items with "boost" type go in boost slot
-            if (slotType === "boost" && item.category !== "boost") return;
+            // Only items with "charm" type go in charm slot
+            if (slotType === "charm" && item.category !== "charm") return;
 
-            // Ingredient slots do NOT accept boost items
-            if (slotType !== "boost" && item.category !== "ingredient") return;
+            // Ingredient slots do NOT accept charm items
+            if (slotType !== "charm" && item.category !== "ingredient") return;
 
             // If player fills already filled brewing slot with new item, old item returns to inventory and new item fills the slot
             const oldItem = brewingSlots[slotType]
