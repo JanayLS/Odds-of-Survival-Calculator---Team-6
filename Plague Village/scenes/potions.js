@@ -50,7 +50,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Healing Tonic</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/healing-tonic.png">
+                        <img src="images/potions/mint-healing-tonic.png">
                     </div>
 
                     <div class="ingredient-row">

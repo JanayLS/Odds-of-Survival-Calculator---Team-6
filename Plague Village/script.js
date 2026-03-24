@@ -596,20 +596,127 @@ travelLocations.addEventListener("click", (e) => {
     travelPanel.classList.remove("open");
 })
 
-// Use Elixir -- CHANGE LATER TO USE ALL POTIONS and to ASK USER BEFORE USING
+// --------------------------------------------------------------
+// ITEM USE FUNCTIONS
+// --------------------------------------------------------------
+// useItem() is the entry point which calls other item use functions.
 function useItem(item) {
-    if (!item.effect) return;
+    if (!item.effectType) return;
 
-    const { target, stat, change } = item.effect;
+    const validation = validateItemUse(item);
 
-    if (target === "doctor" && stat === "infection") {
-        doctorInfection += change;
-
-        if (doctorInfection < 0) doctorInfection = 0;
-        if (doctorInfection > 100) doctorInfection = 100;
-
-        renderDoctorInfection();
+    if (!validation.valid) {
+        alert(validation.message);
+        return;
     }
 
-    removeItemFromInventory(item);
+    const confirmed = confirm(`Use ${item.name}?`);
+    if (!confirmed) return;
+
+    const usedSuccessfully = applyItemEffect(item);
+
+    if (!usedSuccessfully) return;
+
+    if (item.category === "potion") {
+        removeItemFromInventory(item);
+    }
+
+    renderInventory();
 }
+
+// validateItemUse() determines whether item can currently be used.
+function validateItemUse(item) {
+    switch (item.effectType) {
+        case "reduceDoctorInfection":
+            if (doctorInfection <= 0) {
+                return { valid: false, message: "The Doctor is not infected." };
+            }
+            return { valid: true };
+
+        case "reduceVillagerInfection":
+            // Change this later so it only works in context of Heal Villager Scene
+            return { valid: true };
+
+        case "suppressVillagerInfection":
+            // Change this later so it only works in context of Heal Villager Scene
+            return { valid: true };
+
+        case "poisonRat":
+            // Change this later so it only works in context of Rat Encounter Scene
+            return { valid: true };
+
+        case "cureDoctorPoison":
+            return { valid: true };
+
+        default:
+            return { valid: false, message: "This item cannot be used right now." };
+    }
+}
+
+// applyItemEffect() applies the effect of the item.
+function applyItemEffect(item) {
+    switch (item.effectType) {
+        case "reduceDoctorInfection":
+            return applyReduceDoctorInfection(item);
+
+        case "reduceVillagerInfection":
+            return applyReduceVillagerInfection(item);
+
+        case "suppressVillagerInfection":
+            return applySuppressVillagerInfection(item);
+
+        case "poisonRat":
+            return applyPoisonRat(item);
+
+        case "cureDoctorPoison":
+            return applyCureDoctorPoison(item);
+
+        default:
+            return false;
+    }
+}
+
+// applyReduceDoctorInfection - used by Elixir, reduces doctor's plague infection status
+function applyReduceDoctorInfection(item) {
+    doctorInfection -= 20;
+
+    if (doctorInfection < 0) doctorInfection = 0;
+    if (doctorInfection > 100) doctorInfection = 100;
+
+    renderDoctorInfection();
+    return true;
+}
+
+// applyReduceVillagerInfection - used by Healing Tonic, reduces villager's plague infection status
+function applyReduceVillagerInfection(item) {
+    alert("Healing Tonic logic will connect to villager healing scene.");
+    return false;
+}
+
+// applySuppressVillagerInfection - used by Fever Suppressant, keeps active villager infection from worsening at end of day. If it is
+// brewed strong, it also reduces the villager's plague infection status slightly.
+function applySuppressVillagerInfection(item) {
+    alert("Fever Suppressant logic will connect to villager healing scene.");
+    return false;
+}
+
+// applyPoisonRat - used by Plague Concoction, weakens rat attacks in battle
+function applyPoisonRat(item) {
+    alert("Plague Concoction logic will connect to rat encounter scene.");
+    return false;
+}
+
+// applyCureDoctorPoison - used by Ash Remedy, reduces Doctor poison status
+function applyCureDoctorPoison(item) {
+    alert("Ash Remedy can be used by doctor in any scene.");
+}
+
+// --------------------------------------------------------------
+// END OF DAY
+// --------------------------------------------------------------
+// If herb satchel in inventory, Doctor Infection does not increase
+// if (inventory.charms.herbSatchel > 0) {
+//     // Doctor infection does not worsen
+// } else {
+//     // Doctor infection worsens
+// }

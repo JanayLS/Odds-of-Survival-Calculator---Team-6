@@ -2,8 +2,8 @@ const recipeDatabase = {
     healingTonic: {
         name: "Healing Tonic",
         ingredients: ["Silverleaf", "Yarrow", "Mint"],
-        result: "healingTonic",
-        img: "images/potions/healing-tonic.png"
+        result: "mintHealingTonic",
+        img: "images/potions/mint-healing-tonic.png"
     },
 
     feverSuppressant: {
