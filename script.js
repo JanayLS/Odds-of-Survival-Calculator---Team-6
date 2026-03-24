@@ -49,6 +49,12 @@ let currentFightPath = null;
 const sickRoomBg = new Image();
 sickRoomBg.src = "Assets/SickRoom.png";
 
+//RollPotion
+function rollPotionOutcome(potionName) {
+    const chance = potionSuccessRates[potionName] || 0.5; 
+    return Math.random() < chance;
+}
+
 // ------------------------
 // DIALOGUE LINES
 // ------------------------
@@ -87,14 +93,6 @@ const healHouseDialogue = [
 
 // Potion list
 const healingPotions = [
-    "BoneAshRemedy",
-    "CharcoalPowderRemedy",
-    "GarlicBulbRemedy",
-
-    "CharcoalPowderElixir",
-    "GarlicPowderElixir",
-    "SilverLeafElixir",
-
     "MintHealingTonic",
     "SilverLeafHealingTonic",
     "YarrowHealingTonic",
@@ -131,13 +129,6 @@ const fightOutcomes = {
     ]
 };
 
-//Heal Scene
-const healResultDialogue = [
-    "This should restore his strength.",
-    "Easy now... let the medicine take effect.",
-    "The symptoms are fading.",
-    "He will live."
-];
 
 //End A Scene
 const endingADialogue = [
@@ -147,9 +138,47 @@ const endingADialogue = [
     "For today, the plague has not claimed us… we have survived."
 ];
 
+//Potion Dialogue
+const healSuccess1 = [
+    "The treatment is working... his breathing is steadying.",
+    "Color returning to his face.",
+    "He will live."
+];
+
+const healSuccess2 = [
+    "The potion takes effect almost instantly.",
+    "His coughing is fading.",
+    "He will slowly open his eyes... he's alive."
+];
+
+const healFail1 = [
+    "...Something is wrong.",
+    "His coughing grows violent...",
+    "...and then it... stopped.",
+    "The patient has died."
+];
+
+const healFail2 = [
+    "The medicine is not reacting well.",
+    "His body is trembling uncontrollably.",
+    "The life is fading from his eyes.",
+    "I was too late."
+];
+
+const villagerWomanTalk = [
+    "Thank you so much for saving him!!",
+    "We will be forever in debt to you",
+    "Heres a small compensation, its all we have",
+];
+
 // ------------------------
 // HELPER FUNCTIONS
 // ------------------------
+
+// Pick a random element from an array
+function pickRandomVariant(options) {
+    return options[Math.floor(Math.random() * options.length)];
+}
 
 // Play a random typing sound
 function playRandomTypeSound() {
@@ -370,21 +399,6 @@ function nextDialogue() {
             // next scene goes here later
             break;
 
-        case "healResult":
-            currentLine++;
-
-            if (currentLine < healResultDialogue.length) {
-                typeLine(healResultDialogue[currentLine]);
-            } else {
-
-                arrow.style.opacity = 0;
-
-                choiceBox.innerHTML = `
-                    <button class="choiceBtn" data-choice="afterHeal">Continue</button>
-                `;
-                choiceBox.style.display = "flex";
-            }
-            break;
             
         case "afterHeal":
             console.log("Patient healed, continue story...");
@@ -404,7 +418,88 @@ function nextDialogue() {
             }
             break;
 
+        case "healSuccess1":
+            currentLine++;
+            if (currentLine < healSuccess1.length) {
+                typeLine(healSuccess1[currentLine]);
+            } else {
+                arrow.style.opacity = 0;
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterHeal">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
 
+        case "healSuccess2":
+            currentLine++;
+            if (currentLine < healSuccess2.length) {
+                typeLine(healSuccess2[currentLine]);
+            } else {
+                arrow.style.opacity = 0;
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterHeal">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
+
+        case "healFail1":
+            currentLine++;
+            if (currentLine < healFail1.length) {
+                typeLine(healFail1[currentLine]);
+            } else {
+                arrow.style.opacity = 0;
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterHeal">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
+
+        case "healFail2":
+            currentLine++;
+            if (currentLine < healFail2.length) {
+                typeLine(healFail2[currentLine]);
+            } else {
+                arrow.style.opacity = 0;
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterHeal">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
+
+        case "villagerWomanTalk":
+            currentLine++;
+
+            if (currentLine < villagerWomanTalk.length) {
+
+                // Hide sick villager
+                sickVillager.style.display = "none";
+
+                // Show worried wife in same position
+                worriedVillagerWoman.style.display = "block";
+                worriedVillagerWoman.style.opacity = 0;
+                worriedVillagerWoman.style.transition = "opacity 0.6s ease";
+                worriedVillagerWoman.style.width = "20vw";      // match sick villager
+                worriedVillagerWoman.style.bottom = "-3vw";     // match sick villager
+                worriedVillagerWoman.style.left = "0";          // match sick villager
+
+                setTimeout(() => {
+                    worriedVillagerWoman.style.opacity = 1;
+                }, 50);
+
+                characterName.textContent = "Worried Wife:";
+                typeLine(villagerWomanTalk[currentLine]);
+            } else {
+                arrow.style.opacity = 0;
+                choiceBox.innerHTML = `
+                    <button class="choiceBtn" data-choice="afterHeal">Continue</button>
+                `;
+                choiceBox.style.display = "flex";
+            }
+            break;
         
     }
 }
@@ -595,6 +690,16 @@ inventoryButton.addEventListener("click", () => {
 // ------------------------
 // POTION SYSTEM
 // ------------------------
+const potionSuccessRates = {
+    MintHealingTonic: 0.75,
+    SilverLeafHealingTonic: 0.65,
+    YarrowHealingTonic: 0.55,
+
+    FeverHawthornSuppressant: 0.2,
+    FeverMintSuppressant: 0.35,
+    FeverThymeSuppressant: 0.45
+};
+
 function buildPotionButtons(){
 
     choiceBox.innerHTML = "";
@@ -620,21 +725,46 @@ function buildPotionButtons(){
 
         if(inventory[potion] > 0){
 
-            slot.addEventListener("click", () => {
+        slot.addEventListener("click", () => {
 
-            removeItem(potion, 1);
+        removeItem(potion, 1);
 
-            // switch to result dialogue
-            sceneState = "healResult";
-            currentLine = 0;
+        const success = rollPotionOutcome(potion);
 
-            characterName.textContent = "Plague Doctor:";
+        choiceBox.style.display = "none";
+        arrow.style.opacity = 1;
 
-            choiceBox.style.display = "none";
-            arrow.style.opacity = 1;
+        characterName.textContent = "Plague Doctor:";
 
-            typeLine(healResultDialogue[currentLine]);
-        });
+        if (success) {
+            const variant = pickRandomVariant(["healSuccess1", "healSuccess2"]);
+            sceneState = variant;
+        } else {
+            const variant = pickRandomVariant(["healFail1", "healFail2"]);
+            sceneState = variant;
+        }
+
+        currentLine = -1; 
+        nextDialogue();
+
+        
+        if (success) {
+            
+            const oldNextDialogue = nextDialogue; 
+            nextDialogue = function() {
+                oldNextDialogue();
+                if (sceneState === "healSuccess1" || sceneState === "healSuccess2") {
+                    if (currentLine >= (sceneState === "healSuccess1" ? healSuccess1.length - 1 : healSuccess2.length - 1)) {
+                        
+                        sceneState = "villagerWomanTalk";
+                        currentLine = -1;
+                        nextDialogue();
+                    }
+                }
+            };
+        }
+
+    });
 
         } else {
 
@@ -645,6 +775,8 @@ function buildPotionButtons(){
         choiceBox.appendChild(slot);
 
     });
+
+
 
     // back button
     const backBtn = document.createElement("button");
