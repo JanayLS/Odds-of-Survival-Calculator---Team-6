@@ -134,9 +134,10 @@ button {
 /* ============================= */
 #doctorInfectionUI {
     position: fixed;
-    top: 2vw;
-    left: 2vw;
-    width: 16vw;
+    bottom: 2vw;
+    right: 2vw;
+    width: 11vw;
+    height: 10vh;
     padding: 0.8vw;
     background: rgba(0, 0, 0, 0.75);
     border: 2px solid #c6a988;
