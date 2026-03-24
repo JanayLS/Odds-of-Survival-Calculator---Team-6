@@ -835,12 +835,12 @@ button {
     filter: drop-shadow(0 0 6px gold);
 }
 
-.boostSlot {
+.charmSlot {
     border-color: #7fffd1;
     box-shadow: 0 0 10px #39ff14;
 }
 
-.boostSlot:hover {
+.charmSlot:hover {
     transform: scale(.5);
     cursor: pointer;
     transform: translateY(-2px) scale(.9);

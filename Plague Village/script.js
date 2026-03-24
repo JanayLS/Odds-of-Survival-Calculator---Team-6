@@ -418,7 +418,7 @@ function renderInventory() {
 
     const filteredItems = inventory.filter(item => {
         if (activeInventoryTab === "ingredients") return item.type === "ingredient";
-        if (activeInventoryTab === "boost") return item.type === "boost";
+        if (activeInventoryTab === "charm") return item.type === "charm";
         if (activeInventoryTab === "potions") return item.type === "potion";
         return false;
     });
