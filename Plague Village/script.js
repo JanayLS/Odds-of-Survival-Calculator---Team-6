@@ -67,6 +67,18 @@ const travelLocations = document.getElementById("travelLocations");
 const objectiveBtn = document.getElementById("objectiveBtn");
 const objectivePanel = document.getElementById("objectivePanel");
 
+// Doctor Infection Status (Start at 50 for now while testing, change later)
+let doctorInfection = 50;
+
+function renderDoctorInfection() {
+    const bar = document.getElementById("doctorInfectionBar");
+    const value = document.getElementById("doctorInfectionValue");
+
+    bar.style.width = `${doctorInfection}%`;
+    value.textContent = `${doctorInfection}%`;
+}
+
+renderDoctorInfection();
 
 // TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
 // ------------------------------------------------
@@ -433,7 +445,11 @@ function renderInventory() {
         window.selectedItem = null;
 
         img.addEventListener("click", () => {
-            window.selectedItem = item;
+            if (activeInventoryTab === "potions") {
+                useItem(item);
+            } else {
+                window.selectedItem = item;
+            }
         });
 
         img.addEventListener("mouseenter", () => {
@@ -579,3 +595,21 @@ travelLocations.addEventListener("click", (e) => {
 
     travelPanel.classList.remove("open");
 })
+
+// Use Elixir -- CHANGE LATER TO USE ALL POTIONS and to ASK USER BEFORE USING
+function useItem(item) {
+    if (!item.effect) return;
+
+    const { target, stat, change } = item.effect;
+
+    if (target === "doctor" && stat === "infection") {
+        doctorInfection += change;
+
+        if (doctorInfection < 0) doctorInfection = 0;
+        if (doctorInfection > 100) doctorInfection = 100;
+
+        renderDoctorInfection();
+    }
+
+    removeItemFromInventory(item);
+}
