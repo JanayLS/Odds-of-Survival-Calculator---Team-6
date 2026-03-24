@@ -87,6 +87,7 @@ const itemDatabase = {
     // *************************************
     // POTIONS *****************************
     //**************************************
+    // Ash Remedy (Bone Ash Remedy - Weak, Garlic Ash Remedy - Mid, Charcoal Ash Remedy - Strong)
     ashRemedy: {
         name: "Ash Remedy",
         img: "images/potions/ash-remedy.png",
@@ -96,6 +97,7 @@ const itemDatabase = {
         effectType: "cureDoctorPoison"
     },
 
+    // Elixir (Silverleaf Elixir - Weak, Garlic Elixir - Mid, Charcoal Elixir - Strong)
     elixir: {
         name: "Elixir",
         img: "images/potions/elixir.png",
@@ -105,6 +107,7 @@ const itemDatabase = {
         effectType: "reduceDoctorInfection"
     },
 
+    // Fever Suppressant (Thyme Fever Suppressant - Weak, Hawthorne Fever Suppressant - Mid, Mint Fever Suppressant - Strong)
     feverSuppressant: {
         name: "Fever Suppressant",
         img: "images/potions/fever-suppressant.png",
@@ -114,15 +117,38 @@ const itemDatabase = {
         effectType: "suppressVillagerInfection"
     },
 
-    healingTonic: {
-        name: "Healing Tonic",
-        img: "images/potions/healing-tonic.png",
+    // Healing Tonic (Silverleaf Healing Tonic - Weak, Yarrow Heaing Tonic - Mid, Mint Healing Tonic - Strong)
+    silverleafHealingTonic: {
+        name: "Silverleaf Healing Tonic",
+        img: "images/potions/silverleaf-healing-tonic.png",
         description: "Fill in later",
         category: "potion",
         weight: 9,
-        effectType: "reduceVillagerInfection"
+        effectType: "reduceVillagerInfection",
+        tier: "weak"
     },
 
+    yarrowHealingTonic: {
+        name: "Yarrow Healing Tonic",
+        img: "images/potions/yarrow-healing-tonic.png",
+        description: "Fill in later",
+        category: "potion",
+        weight: 9,
+        effectType: "reduceVillagerInfection",
+        tier: "mid"
+    },
+
+    mintHealingTonic: {
+        name: "Mint Healing Tonic",
+        img: "images/potions/mint-healing-tonic.png",
+        description: "Fill in later",
+        category: "potion",
+        weight: 9,
+        effectType: "reduceVillagerInfection",
+        tier: "strong"
+    },
+
+    // Plague Concoction (Mushroom Plague Concoction - Weak, Molded Plague Concoction - Mid, Charcoal Plague Concoction - Strong)
     plagueConcoction: {
         name: "Plague Concoction",
         img: "images/potions/plague-concoction.png",
@@ -163,8 +189,7 @@ const itemDatabase = {
         name: "Herb Satchel",
         img: "images/charm-items/herb-satchel.png",
         description: "Small cloth satchel of dried herbs, suppresses Doctor's infection status from worsening at end of day.",
-        category: "charm",
-        effectType: "suppressDoctorInfection"
+        category: "charm"
     }
 
 }
