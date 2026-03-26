@@ -323,8 +323,8 @@ function chooseWeightedPotionTier(familyName) {
     const roll = Math.random();
 
     if (roll < 0.2) return weakPotion; // 20% chance of weak potion
-    if (roll < 0.8) return midPotion; // 80% chance of mid potion
-    return strongPotion; // 20% chance of strong potion
+    if (roll < 0.7) return midPotion; // 50% chance of mid potion
+    return strongPotion; // 30% chance of strong potion
 }
 
 // *************************************
