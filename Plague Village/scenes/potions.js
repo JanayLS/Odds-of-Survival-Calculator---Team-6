@@ -286,11 +286,13 @@ function brewPotion() {
     }
 
     if (matchedRecipe) {
+        // Potion Brewing Sound Effect
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();
-        brewedPotion = itemDatabase[matchedRecipe.result];
-        resultSlot.innerHTML = `<img class="potion-result" src="${matchedRecipe.img}" alt="${matchedRecipe.name}">`;
-        resultText.textContent = matchedRecipe.name;
+
+        brewedPotion = chooseWeightedPotionTier(matchedRecipe.result);
+        resultSlot.innerHTML = `<img class="potion-result" src="${brewedPotion.img}" alt="${brewedPotion.name}">`;
+        resultText.textContent = brewedPotion.name;
     } else {
         brewedPotion = null;
         console.log("Unknown Potion");
@@ -307,6 +309,23 @@ document.getElementById("potionResultSlot").addEventListener("click", () => {
     document.getElementById("potionResultSlot").innerHTML = "";
     document.getElementById("potionResultText").textContent = "Brew something...";
 })
+
+// Potion Tier Randomness
+function chooseWeightedPotionTier(familyName) {
+    const matchingPotions = Object.values(itemDatabase).filter(item =>
+        item.category === "potion" && item.family === familyName
+    );
+
+    const weakPotion = matchingPotions.find(item => item.tier === "weak");
+    const midPotion = matchingPotions.find(item => item.tier === "mid");
+    const strongPotion = matchingPotions.find(item => item.tier === "strong");
+
+    const roll = Math.random();
+
+    if (roll < 0.2) return weakPotion; // 20% chance of weak potion
+    if (roll < 0.8) return midPotion; // 80% chance of mid potion
+    return strongPotion; // 20% chance of strong potion
+}
 
 // *************************************
 // RECIPE BOOK *************************

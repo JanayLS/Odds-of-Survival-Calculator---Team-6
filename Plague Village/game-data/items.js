@@ -87,75 +87,174 @@ const itemDatabase = {
     // *************************************
     // POTIONS *****************************
     //**************************************
-    // Ash Remedy (Bone Ash Remedy - Weak, Garlic Ash Remedy - Mid, Charcoal Ash Remedy - Strong)
-    ashRemedy: {
-        name: "Ash Remedy",
-        img: "images/potions/ash-remedy.png",
-        description: "Fill in later",
-        category: "potion",
-        weight: 3,
-        effectType: "cureDoctorPoison"
-    },
-
-    // Elixir (Silverleaf Elixir - Weak, Garlic Elixir - Mid, Charcoal Elixir - Strong)
-    elixir: {
-        name: "Elixir",
-        img: "images/potions/elixir.png",
-        description: "Heals Doctor's Infection",
-        category: "potion",
-        weight: 4,
-        effectType: "reduceDoctorInfection"
-    },
-
-    // Fever Suppressant (Thyme Fever Suppressant - Weak, Hawthorne Fever Suppressant - Mid, Mint Fever Suppressant - Strong)
-    feverSuppressant: {
-        name: "Fever Suppressant",
-        img: "images/potions/fever-suppressant.png",
-        description: "Fill in later",
-        category: "potion",
-        weight: 6,
-        effectType: "suppressVillagerInfection"
-    },
-
     // Healing Tonic (Silverleaf Healing Tonic - Weak, Yarrow Heaing Tonic - Mid, Mint Healing Tonic - Strong)
     silverleafHealingTonic: {
         name: "Silverleaf Healing Tonic",
         img: "images/potions/silverleaf-healing-tonic.png",
-        description: "Fill in later",
+        description: "A silvery, faintly shimmering healing tonic. Reduces villager infection. Effect: Weak.",
         category: "potion",
         weight: 9,
         effectType: "reduceVillagerInfection",
+        family: "healingTonic",
         tier: "weak"
     },
 
     yarrowHealingTonic: {
         name: "Yarrow Healing Tonic",
         img: "images/potions/yarrow-healing-tonic.png",
-        description: "Fill in later",
+        description: "A golden yellow bubbling healing tonic. Reduces villager infection. Effect: Mid.",
         category: "potion",
         weight: 9,
         effectType: "reduceVillagerInfection",
+        family: "healingTonic",
         tier: "mid"
     },
 
     mintHealingTonic: {
         name: "Mint Healing Tonic",
         img: "images/potions/mint-healing-tonic.png",
-        description: "Fill in later",
+        description: "A vibrant green healing tonic. Reduces villager infection. Effect: Strong.",
         category: "potion",
         weight: 9,
         effectType: "reduceVillagerInfection",
+        family: "healingTonic",
+        tier: "strong"
+    },
+
+    // Fever Suppressant (Thyme Fever Suppressant - Weak, Hawthorne Fever Suppressant - Mid, Mint Fever Suppressant - Strong)
+    thymeFeverSuppressant: {
+        name: "Thyme Fever Suppressant",
+        img: "images/potions/thyme-fever-suppressant.png",
+        description: "A fizzy green fever suppressant. Stabilizes villager's infection for 1 day. Effect: Weak.",
+        category: "potion",
+        weight: 6,
+        effectType: "suppressVillagerInfection",
+        family: "feverSuppressant",
+        tier: "weak"
+    },
+
+    hawthorneFeverSuppressant: {
+        name: "Hawthorne Fever Suppressant",
+        img: "images/potions/hawthorne-fever-suppressant.png",
+        description: "A thick orange-red fever suppressant. Stabilizes villager's infection for 1 day and slightly reduces infection. Effect: Mid.",
+        category: "potion",
+        weight: 6,
+        effectType: "suppressVillagerInfection",
+        family: "feverSuppressant",
+        tier: "mid"
+    },
+
+    mintFeverSuppressant: {
+        name: "Mint-Fever Suppressant",
+        img: "images/potions/mint-fever-suppressant.png",
+        description: "A bright green fever suppressant. Stabilizes villager's infection for 1 day and slightly reduces infection. Effect: Strong.",
+        category: "potion",
+        weight: 6,
+        effectType: "suppressVillagerInfection",
+        family: "feverSuppressant",
         tier: "strong"
     },
 
     // Plague Concoction (Mushroom Plague Concoction - Weak, Molded Plague Concoction - Mid, Charcoal Plague Concoction - Strong)
-    plagueConcoction: {
-        name: "Plague Concoction",
-        img: "images/potions/plague-concoction.png",
-        description: "Fill in later",
+    bitterPlagueConcoction: {
+        name: "Bitter Plague Concoction",
+        img: "images/potions/bitter-plague-concoction.png",
+        description: "A swirling amber plague concoction with a bitter taste. Poisons rats. Effect: Weak.",
         category: "potion",
         weight: 2,
-        effectType: "poisonRat"
+        effectType: "poisonRat",
+        family: "plagueConcoction",
+        tier: "weak"
+    },
+
+    moldyPlagueConcoction: {
+        name: "Moldy Plague Concoction",
+        img: "images/potions/moldy-plague-concoction.png",
+        description: "A syrupy dark green plague concoction with bits of moldy tree bark. Poisons rats. Effect: Mid.",
+        category: "potion",
+        weight: 2,
+        effectType: "poisonRat",
+        family: "plagueConcoction",
+        tier: "mid"
+    },
+
+    charcoalPlagueConcoction: {
+        name: "Charcoal Plague Concoction",
+        img: "images/potions/charcoal-plague-concoction.png",
+        description: "A powerful thick black plague concoction. Poisons rats. Effect: Strong.",
+        category: "potion",
+        weight: 2,
+        effectType: "poisonRat",
+        family: "plagueConcoction",
+        tier: "strong"
+    },
+
+    // Ash Remedy (Bone Ash Remedy - Weak, Garlic Ash Remedy - Mid, Charcoal Ash Remedy - Strong)
+    boneAshRemedy: {
+        name: "Bone Ash Remedy",
+        img: "images/potions/bone-ash-remedy.png",
+        description: "A milky white ash remedy. Cures Doctor's poison status. Effect: Weak.",
+        category: "potion",
+        weight: 3,
+        effectType: "cureDoctorPoison",
+        family: "ashRemedy",
+        tier: "weak"
+    },
+
+    garlicAshRemedy: {
+        name: "Garlic Ash Remedy",
+        img: "images/potions/garlic-ash-remedy.png",
+        description: "A bright yellow ash remedy. Cure's Doctor's poison status. Effect: Mid.",
+        category: "potion",
+        weight: 3,
+        effectType: "cureDoctorPoison",
+        family: "ashRemedy",
+        tier: "mid"
+    },
+
+    charcoalAshRemedy: {
+        name: "Charcoal Ash Remedy",
+        img: "images/potions/charcoal-ash-remedy.png",
+        description: "A powdery black ash remedy. Cure's Doctor's poison status. Effect: Strong.",
+        category: "potion",
+        weight: 3,
+        effectType: "cureDoctorPoison",
+        family: "ashRemedy",
+        tier: "strong"
+    },
+
+    // Elixir (Silverleaf Elixir - Weak, Garlic Elixir - Mid, Charcoal Elixir - Strong)
+    silverleafElixir: {
+        name: "Silverleaf Elixir",
+        img: "images/potions/silverleaf-elixir.png",
+        description: "A pale, silvery elixir. Heals Doctor's Infection. Effect: Weak.",
+        category: "potion",
+        weight: 4,
+        effectType: "reduceDoctorInfection",
+        family: "elixir",
+        tier: "weak"
+    },
+
+    garlicElixir: {
+        name: "Garlic Elixir",
+        img: "images/potions/garlic-elixir.png",
+        description: "A thick yellow elixir with garlic taste. Heals Doctor's Infection. Effect: Mid.",
+        category: "potion",
+        weight: 4,
+        effectType: "reduceDoctorInfection",
+        family: "elixir",
+        tier: "mid"
+    },
+
+    charcoalElixir: {
+        name: "Charcoal Elixir",
+        img: "images/potions/charcoal-elixir.png",
+        description: "A strong black elixir with a very unpleasant taste. Heals Doctor's Infection. Effect: Strong.",
+        category: "potion",
+        weight: 4,
+        effectType: "reduceDoctorInfection",
+        family: "elixir",
+        tier: "strong"
     },
 
     // *************************************
