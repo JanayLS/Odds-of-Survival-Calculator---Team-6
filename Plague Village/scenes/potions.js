@@ -75,7 +75,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Fever Suppressant</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/fever-suppressant.png">
+                        <img src="images/potions/hawthorne-fever-suppressant.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -100,7 +100,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Plague Concoction</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/plague-concoction.png">
+                        <img src="images/potions/charcoal-plague-concoction.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -128,7 +128,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Ash Remedy</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/ash-remedy.png">
+                        <img src="images/potions/bone-ash-remedy.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -153,7 +153,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Elixir</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/elixir.png">
+                        <img src="images/potions/silverleaf-elixir.png">
                     </div>
 
                     <div class="ingredient-row">
