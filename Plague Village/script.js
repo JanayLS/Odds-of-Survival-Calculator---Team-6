@@ -678,7 +678,23 @@ function applyItemEffect(item) {
 
 // applyReduceDoctorInfection - used by Elixir, reduces doctor's plague infection status
 function applyReduceDoctorInfection(item) {
-    doctorInfection -= 20;
+    let reductionAmt = 0;
+
+    switch (item.tier) {
+        case "weak":
+            reductionAmt = 10;
+            break;
+        case "mid":
+            reductionAmt = 20;
+            break;
+        case "strong":
+            reductionAmt = 30;
+            break;
+        default:
+            reductionAmt = 20;
+    }
+
+    doctorInfection -= reductionAmt;
 
     if (doctorInfection < 0) doctorInfection = 0;
     if (doctorInfection > 100) doctorInfection = 100;
