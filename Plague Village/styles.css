@@ -42,6 +42,10 @@ button {
     font-size: 2vw;
 }
 
+#startGameBtn:hover {
+    transform: translate(-50%) scale(1.1);
+}
+
 .glow-btn {
     background-color: #7fffd1;
     color: black;
@@ -50,10 +54,6 @@ button {
     border-radius: 6px;
     transition: transform 0.2s ease;
     animation: plaguePulse 2.5s infinite ease-in-out;
-}
-
-.glow-btn:hover {
-    transform: scale(1.05);
 }
 
 /* ============================= */
@@ -905,6 +905,27 @@ button {
     animation: potionAppear 0.5s ease-out forwards, potionGlow 2s ease-in-out infinite;
 }
 
+.emerald-boosted {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px #39ff14) drop-shadow(0 0 12px #39ff14);
+    animation: emeraldPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes emeraldPulse {
+    0% {
+        filter: drop-shadow(0 0 6px #39ff14) drop-shadow(0 0 12px #39ff14);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 10px #7fff7f) drop-shadow(0 0 18px #39ff14);
+    }
+
+    100% {
+        filter: drop-shadow(0 0 6px #39ff14) drop-shadow(0 0 12px #39ff14);
+    }
+}
+
 @keyframes potionAppear {
     0% {
         opacity: 0;
@@ -918,19 +939,6 @@ button {
         filter: blur(0);
     }
 }
-
-@keyframes potionGlow {
-
-    0%,
-    100% {
-        filter: drop-shadow(0 0 6px rgba(100, 255, 200, 0.4));
-    }
-
-    50% {
-        filter: drop-shadow(0 0 16px rgba(100, 255, 200, 0.9));
-    }
-}
-
 
 /* Recipe Book */
 #recipeBookBtn {
