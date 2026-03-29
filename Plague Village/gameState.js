@@ -13,18 +13,56 @@ const gameState = {
     currentScene: "arrivalScene",
     doctorInfection: 0,
     doctorPoison: 0,
+
     villagers: {
-        villager1: { infectionLevel: 80, dead: false, healed: false },
-        villager2: { infectionLevel: 60, dead: false, healed: false },
-        villager3: { infectionLevel: 100, dead: true, healed: false },
-        villager4: { infectionLevel: 0, dead: false, healed: true },
-        villager5: { infectionLevel: 20, dead: false, healed: false },
-        villager6: { infectionLevel: 10, dead: false, healed: false },
-        villager7: { infectionLevel: 0, dead: false, healed: true },
-        villager8: { infectionLevel: 0, dead: false, healed: true },
-        villager9: { infectionLevel: 0, dead: false, healed: true },
-        villager10: { infectionLevel: 0, dead: false, healed: true }
+
+        villager1: {
+            name: "Villager Name 1",
+            infectionLevel: 70,
+            dead: false,
+            healed: false,
+            bg: "images/backgrounds/villager-home-1.png",
+            portrait: "images/characters/villager1.png"
+        },
+
+        villager2: {
+            name: "Villager Name 2",
+            infectionLevel: 90,
+            dead: false,
+            healed: false,
+            bg: "images/backgrounds/villager-home-2.png",
+            portrait: "images/characters/villager2.png"
+        },
+
+        villager3: {
+            name: "Villager Name 3",
+            infectionLevel: 60,
+            dead: false,
+            healed: false,
+            bg: "images/backgrounds/villager-home-3.png",
+            portrait: "images/characters/villager3.png"
+        },
+
+        villager4: {
+            name: "Villager Name 3",
+            infectionLevel: 60,
+            dead: false,
+            healed: false,
+            bg: "images/backgrounds/villager-home-3.png",
+            portrait: "images/characters/villager3.png"
+        },
+
+        villager5: {
+            name: "Villager Name 3",
+            infectionLevel: 60,
+            dead: false,
+            healed: false,
+            bg: "images/backgrounds/villager-home-3.png",
+            portrait: "images/characters/villager3.png"
+        }
+
     },
+
     rats: {
         rat1: { hp: 100, dead: false },
         rat2: { hp: 100, dead: false },
@@ -36,6 +74,7 @@ const gameState = {
         rat8: { hp: 0, dead: true },
         rat9: { hp: 50, dead: false }
     }
+
 };
 
-export default gameState;
+// export default gameState;
