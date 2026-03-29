@@ -421,9 +421,9 @@ function renderInventory() {
     inventoryItems.innerHTML = "";
 
     const filteredItems = inventory.filter(item => {
-        if (activeInventoryTab === "ingredients") return item.type === "ingredient";
-        if (activeInventoryTab === "charm") return item.type === "charm";
-        if (activeInventoryTab === "potions") return item.type === "potion";
+        if (activeInventoryTab === "ingredients") return item.category === "ingredient";
+        if (activeInventoryTab === "charm") return item.category === "charm";
+        if (activeInventoryTab === "potions") return item.category === "potion";
         return false;
     });
 
