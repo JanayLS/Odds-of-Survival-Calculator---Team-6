@@ -323,6 +323,11 @@ function showScene(sceneID) {
 
     document.getElementById(sceneID).style.display = "block";
 
+    // Renders villager infection when player enters villager healing scene
+    if (sceneID === "villagerHealingScene") {
+        renderVillagerInfection();
+    }
+
     // Music within Scenes
     if (sceneID === "potionsScene") {
         bgm.src = "music/potionsMusic.mp3";
@@ -643,7 +648,11 @@ function validateItemUse(item) {
             return { valid: true };
 
         case "reduceVillagerInfection":
-            // Change this later so it only works in context of Heal Villager Scene
+            // Only works in context of Heal Villager Scene
+            if (document.getElementById("villagerHealingScene").style.display !== "block") {
+                return { valid: false, message: "Healing Tonic can only be used in the villager healing scene." };
+            }
+
             return { valid: true };
 
         case "suppressVillagerInfection":
@@ -718,8 +727,65 @@ function applyReduceDoctorInfection(item) {
 
 // applyReduceVillagerInfection - used by Healing Tonic, reduces villager's plague infection status
 function applyReduceVillagerInfection(item) {
-    alert("Healing Tonic logic will connect to villager healing scene.");
-    return false;
+
+    const villagerSceneVisible = document.getElementById("villagerHealingScene").style.display === "block";
+
+    if (!villagerSceneVisible) {
+        alert("Healing Tonic can only be used to heal villagers.");
+        return false;
+    }
+
+    const villager = getActiveVillager();
+
+    if (!villager) {
+        alert("No active villager found.");
+        return false;
+    }
+
+    if (villager.dead) {
+        alert("This villager is dead.");
+        return false;
+    }
+
+    if (villager.healed) {
+        alert("This villager has already been healed.")
+        return false;
+    }
+
+    let reductionAmt = 0;
+
+    switch (item.tier) {
+        case "weak":
+            reductionAmt = 10;
+            break;
+        case "mid":
+            reductionAmt = 20;
+            break;
+        case "strong":
+            reductionAmt = 30;
+            break;
+        default:
+            reductionAmt = 20;
+    }
+
+    if (item.boostType === "emerald") {
+        reductionAmt += 20;
+    }
+
+    villager.infectionLevel -= reductionAmt;
+
+    if (villager.infectionLevel < 0) {
+        villagerInfectionLevel = 0;
+    }
+
+    if (villager.infectionLevel === 0) {
+        villager.healed = true;
+        gameState.villagersHealed += 1;
+    }
+
+    renderVillagerInfection();
+    return true;
+
 }
 
 // applySuppressVillagerInfection - used by Fever Suppressant, keeps active villager infection from worsening at end of day. If it is
