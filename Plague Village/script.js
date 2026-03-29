@@ -367,7 +367,7 @@ function removeItemFromInventory(itemToRemove) {
 let inventory = [];
 let startItemsGiven = false;
 
-function getRandomStartItems(itemDatabase, count = 3) {
+function getRandomStartItems(itemDatabase, count = 5) {
     const itemPool = Object.entries(itemDatabase).map(([key, item]) => ({
         key,
         ...item
@@ -376,7 +376,7 @@ function getRandomStartItems(itemDatabase, count = 3) {
     const selectedItems = [];
 
     while (selectedItems.length < count && itemPool.length > 0) {
-        const totalWeight = itemPool.reduce((sum, item) => sum + item.weight, 0);
+        const totalWeight = itemPool.reduce((sum, item) => sum + (item.weight ?? 1), 0);
         let randomNum = Math.random() * totalWeight;
 
         let selectedIndex = 0;
@@ -400,7 +400,7 @@ function getRandomStartItems(itemDatabase, count = 3) {
 function giveRandomStartItems() {
     if (startItemsGiven) return;
 
-    const startItems = getRandomStartItems(itemDatabase, 3);
+    const startItems = getRandomStartItems(itemDatabase, 5);
 
     startItems.forEach(item => {
         addItemToInventory(item);
@@ -726,6 +726,43 @@ function applyPoisonRat(item) {
 function applyCureDoctorPoison(item) {
     alert("Ash Remedy can be used by doctor in any scene.");
 }
+
+// --------------------------------------------------------------
+// MONEY
+// --------------------------------------------------------------
+let money = 0;
+
+function renderMoney() {
+    document.getElementById("moneyValue").textContent = money;
+}
+
+function addMoney(amount) {
+    money += amount;
+    renderMoney();
+}
+
+function spendMoney(amount) {
+    if (money < amount) return false;
+    money -= amount;
+    renderMoney();
+    return true;
+}
+
+function loseMoney(amount) {
+    money -= amount;
+    if (money < 0) {
+        money = 0;
+    }
+
+    renderMoney();
+}
+
+function setRandomStartMoney() {
+    money = Math.floor(Math.random() * 6) + 100;
+    renderMoney();
+}
+
+setRandomStartMoney();
 
 // --------------------------------------------------------------
 // END OF DAY
