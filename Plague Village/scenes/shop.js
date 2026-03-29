@@ -24,6 +24,7 @@ shopScene.innerHTML = `
 const shopPanel = document.getElementById('shopPanel')
 const boostItems = Object.values(itemDatabase).filter(item => item.category === "charm");
 const randomItem = boostItems[Math.floor(Math.random() * boostItems.length)];
+const shopItemSound = new Audio('sound-effects/misc-sounds/buy-item.wav');
 
 // Dynamically Stores Items
 let shopItems = [];
@@ -89,6 +90,7 @@ function buyShopItem(item) {
         return;
     }
 
+    shopItemSound.play();
     addItemToInventory(item);
 
     const itemIndex = shopItems.indexOf(item);

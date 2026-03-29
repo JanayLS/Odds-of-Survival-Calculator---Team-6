@@ -290,14 +290,27 @@ function brewPotion() {
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();
 
-        brewedPotion = chooseWeightedPotionTier(matchedRecipe.result);
-        resultSlot.innerHTML = `<img class="potion-result" src="${brewedPotion.img}" alt="${brewedPotion.name}">`;
+        let basePotion = chooseWeightedPotionTier(matchedRecipe.result);
+
+        if (brewingSlots.charm && brewingSlots.charm.name === "Brilliant Emerald") {
+            brewedPotion = {
+                ...basePotion,
+                name: `${basePotion.name} +`,
+                boostType: "emerald"
+            };
+        } else {
+            brewedPotion = basePotion;
+        }
+
+        resultSlot.innerHTML = `<img class="potion-result ${brewedPotion.boostType === "emerald" ? "emerald-boosted" : ""}" src="${brewedPotion.img}" alt="${brewedPotion.name}">`;
         resultText.textContent = brewedPotion.name;
+
     } else {
         brewedPotion = null;
         console.log("Unknown Potion");
     }
 }
+
 
 // When player clicks brewed potion, potion is added to inventory, and result slot is cleared.
 document.getElementById("potionResultSlot").addEventListener("click", () => {

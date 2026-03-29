@@ -84,6 +84,10 @@ renderDoctorInfection();
 // ------------------------------------------------
 showScene("mainMenu")
 
+startGameBtn.addEventListener("mouseover", () => {
+    menuHoverSound.play();
+})
+
 startGameBtn.addEventListener("click", () => {
 
     // Hide main menu and show Arrival scene
@@ -432,6 +436,11 @@ function renderInventory() {
         img.className = "inventoryItem";
         img.title = item.name;
 
+        // Add glow if item is emerald-boosted
+        if (item.boostType === "emerald") {
+            img.classList.add("emerald-boosted");
+        }
+
         // Inventory item and quantity
         slot.appendChild(img);
 
@@ -692,6 +701,10 @@ function applyReduceDoctorInfection(item) {
             break;
         default:
             reductionAmt = 20;
+    }
+
+    if (item.boostType === "emerald") {
+        reductionAmt += 20;
     }
 
     doctorInfection -= reductionAmt;
