@@ -265,7 +265,8 @@ const itemDatabase = {
         img: "images/charm-items/dried-toad.png",
         description: "A symbol of prosperity, dried toad increases chance of finding rare items",
         category: "charm",
-        weight: 1
+        weight: 3,
+        price: 50
     },
 
     brilliantEmerald: {
@@ -273,7 +274,8 @@ const itemDatabase = {
         img: "images/charm-items/brilliant-emerald.png",
         description: "A beautiful shimmering emerald, increases potency of potions",
         category: "charm",
-        weight: 0.5
+        weight: 2,
+        price: 100
     },
 
     rubyAmulet: {
@@ -281,14 +283,16 @@ const itemDatabase = {
         img: "images/charm-items/ruby-amulet.png",
         description: "Shiny red ruby pendant on a thin gold chain, ruby amulet prevents infection",
         category: "charm",
-        weight: 0.5
+        weight: 1,
+        price: 500
     },
 
     herbSatchel: {
         name: "Herb Satchel",
         img: "images/charm-items/herb-satchel.png",
         description: "Small cloth satchel of dried herbs, suppresses Doctor's infection status from worsening at end of day.",
-        category: "charm"
+        category: "charm",
+        price: 30
     }
 
 }
