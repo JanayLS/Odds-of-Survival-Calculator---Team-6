@@ -17,9 +17,9 @@ potionsScene.innerHTML = `
         </div>
 
         <div class="brewSection">
-            <span class="brewLabel">Boost (Optional)</span>
+            <span class="brewLabel">Charm (Optional)</span>
             <div class="brewingSlots">
-                <div class="brewSlot boostSlot" data-slot="boost"></div>
+                <div class="brewSlot charmSlot" data-slot="charm"></div>
             </div>
         </div>
 
@@ -50,7 +50,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Healing Tonic</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/healing-tonic.png">
+                        <img src="images/potions/mint-healing-tonic.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -75,7 +75,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Fever Suppressant</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/fever-suppressant.png">
+                        <img src="images/potions/hawthorne-fever-suppressant.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -100,7 +100,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Plague Concoction</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/plague-concoction.png">
+                        <img src="images/potions/charcoal-plague-concoction.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -128,7 +128,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Ash Remedy</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/ash-remedy.png">
+                        <img src="images/potions/bone-ash-remedy.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -153,7 +153,7 @@ potionsScene.innerHTML = `
                     <h3 class="recipe-title">Elixir</h3>
 
                     <div class="potion-display">
-                        <img src="images/potions/elixir.png">
+                        <img src="images/potions/silverleaf-elixir.png">
                     </div>
 
                     <div class="ingredient-row">
@@ -182,14 +182,14 @@ potionsScene.innerHTML = `
 
 // Potion Brewing System
 setupBrewingSlots();
-
 const potionBrewSound = new Audio('sound-effects/potion-sounds/potion-brewed.wav')
+let brewedPotion = null;
 
 let brewingSlots = {
     ingredient1: null,
     ingredient2: null,
     ingredient3: null,
-    boost: null
+    charm: null
 }
 
 function setupBrewingSlots() {
@@ -204,15 +204,23 @@ function setupBrewingSlots() {
             // Potions cannot go in Brew Panel
             if (item.category === "potion") return;
 
-            // Only items with "boost" type go in boost slot
-            if (slotType === "boost" && item.category !== "boost") return;
+            // Only items with "charm" type go in charm slot
+            if (slotType === "charm" && item.category !== "charm") return;
 
-            // Ingredient slots do NOT accept boost items
-            if (slotType !== "boost" && item.category !== "ingredient") return;
+            // Ingredient slots do NOT accept charm items
+            if (slotType !== "charm" && item.category !== "ingredient") return;
+
+            // If player fills already filled brewing slot with new item, old item returns to inventory and new item fills the slot
+            const oldItem = brewingSlots[slotType]
+
+            if (oldItem) {
+                addItemToInventory(oldItem);
+            }
 
             brewingSlots[slotType] = item;
-
+            removeItemFromInventory(item);
             renderBrewingSlots();
+            window.selectedItem = null;
         })
     })
 }
@@ -230,6 +238,12 @@ function renderBrewingSlots() {
             img.style.width = "80%";
             img.style.height = "80%";
             img.style.objectFit = "contain";
+
+            img.addEventListener("click", () => {
+                addItemToInventory(item);
+                brewingSlots[slotType] = null;
+                renderBrewingSlots();
+            });
 
             slot.appendChild(img);
         }
@@ -272,13 +286,58 @@ function brewPotion() {
     }
 
     if (matchedRecipe) {
+        // Potion Brewing Sound Effect
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();
-        resultSlot.innerHTML = `<img class="potion-result" src="${matchedRecipe.img}" alt="${matchedRecipe.name}">`;
-        resultText.textContent = matchedRecipe.name;
+
+        let basePotion = chooseWeightedPotionTier(matchedRecipe.result);
+
+        if (brewingSlots.charm && brewingSlots.charm.name === "Brilliant Emerald") {
+            brewedPotion = {
+                ...basePotion,
+                name: `${basePotion.name} +`,
+                boostType: "emerald"
+            };
+        } else {
+            brewedPotion = basePotion;
+        }
+
+        resultSlot.innerHTML = `<img class="potion-result ${brewedPotion.boostType === "emerald" ? "emerald-boosted" : ""}" src="${brewedPotion.img}" alt="${brewedPotion.name}">`;
+        resultText.textContent = brewedPotion.name;
+
     } else {
+        brewedPotion = null;
         console.log("Unknown Potion");
     }
+}
+
+
+// When player clicks brewed potion, potion is added to inventory, and result slot is cleared.
+document.getElementById("potionResultSlot").addEventListener("click", () => {
+    if (!brewedPotion) return;
+
+    addItemToInventory(brewedPotion);
+
+    brewedPotion = null;
+    document.getElementById("potionResultSlot").innerHTML = "";
+    document.getElementById("potionResultText").textContent = "Brew something...";
+})
+
+// Potion Tier Randomness
+function chooseWeightedPotionTier(familyName) {
+    const matchingPotions = Object.values(itemDatabase).filter(item =>
+        item.category === "potion" && item.family === familyName
+    );
+
+    const weakPotion = matchingPotions.find(item => item.tier === "weak");
+    const midPotion = matchingPotions.find(item => item.tier === "mid");
+    const strongPotion = matchingPotions.find(item => item.tier === "strong");
+
+    const roll = Math.random();
+
+    if (roll < 0.2) return weakPotion; // 20% chance of weak potion
+    if (roll < 0.7) return midPotion; // 50% chance of mid potion
+    return strongPotion; // 30% chance of strong potion
 }
 
 // *************************************

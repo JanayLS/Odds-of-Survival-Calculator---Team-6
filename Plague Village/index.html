@@ -11,23 +11,52 @@
 
 <body>
     <!-- GLOBAL UI (APPEARS IN ALL SCENES)-->
-    <!-- Music Button -->
+
+    <!-- PLAGUE DOCTOR STATUS -->
+    <!-- Doctor Infection -->
+    <div id="doctorInfectionUI">
+        <div id="doctorInfectionLabel">Doctor Infection</div>
+        <div id="doctorInfectionContainer">
+            <div id="doctorInfectionBar"></div>
+        </div>
+        <div id="doctorInfectionValue">50%</div>
+    </div>
+
+    <!-- MONEY -->
+    <div id="moneyUI">
+        <img id="coinIcon" src="images/misc-images/coin.png" alt="Coin icon">
+        <span id="moneyValue">0</span>
+    </div>
+
+    <!-- MUSIC -->
     <button id="musicBtn">Music On</button>
     <audio id="bgm" src="music/arrivalMusic.mp3" loop></audio>
-    <!-- Inventory -->
+
+    <!-- INVENTORY -->
     <!-- Inventory Button -->
     <button id="inventoryBtn">Inventory</button>
     <span id="inventoryHintArrow">➤</span>
+
     <!-- Inventory Panel -->
     <div id="inventoryPanel">
         <h3>Inventory</h3>
+
+        <div id="inventoryTabs">
+            <button class="inventoryTab active" data-tab="ingredients">Ingredients</button>
+            <button class="inventoryTab" data-tab="charm">Charms</button>
+            <button class="inventoryTab" data-tab="potions">Potions</button>
+        </div>
+
         <div id="inventoryItems"></div>
     </div>
+
+    <!-- Item Description Panel -->
     <div id="itemDescriptionPanel">
         <div id="itemDescriptionName"></div>
         <div id="itemDescriptionText"></div>
     </div>
-    <!-- Travel -->
+
+    <!-- TRAVEL -->
     <button id="travelBtn">Travel</button>
     <div id="travelPanel">
         <div id="travelLocations">
@@ -40,7 +69,8 @@
             <button class="travelLocationBtn" data-scene="arrivalScene">Main Village</button>
         </div>
     </div>
-    <!-- Objectives -->
+
+    <!-- GAME OBJECTIVES -->
     <button id="objectiveBtn">Objectives</button>
     <div id="objectivePanel">
         <h2>Objectives</h2>
@@ -110,12 +140,14 @@
 
     <!-- Javascript -->
     <!-- WHEN ADDING SCENES MAKE SURE TO INCLUDE THEIR JS FILE HERE. -->
-    <!-- game-data JS files and Script.js should stay ABOVE all over JS files since they need to load first -->
+    <!-- game-data JS files, Script.js, and gameState.js should stay ABOVE all over JS files since they need to load first -->
     <script src="game-data/items.js"></script>
     <script src="game-data/recipes.js"></script>
+    <script src="gameState.js"></script>
     <script src="script.js"></script>
     <script src="scenes/potions.js"></script>
     <script src="scenes/shop.js"></script>
+    <script src="scenes/villager-home.js"></script>
 
 </body>
 

@@ -54,6 +54,9 @@ const arrow = document.getElementById('nextArrow');
 const inventoryBtn = document.getElementById('inventoryBtn');
 const inventoryPanel = document.getElementById('inventoryPanel');
 const inventoryHintArrow = document.getElementById('inventoryHintArrow');
+const inventoryTabs = document.querySelectorAll(".inventoryTab");
+let activeInventoryTab = "ingredients";
+const menuHoverSound = new Audio('sound-effects/misc-sounds/menu-hover.wav')
 
 // Travel
 const travelBtn = document.getElementById("travelBtn");
@@ -64,10 +67,26 @@ const travelLocations = document.getElementById("travelLocations");
 const objectiveBtn = document.getElementById("objectiveBtn");
 const objectivePanel = document.getElementById("objectivePanel");
 
+// Doctor Infection Status (Start at 50 for now while testing, change later)
+let doctorInfection = 50;
+
+function renderDoctorInfection() {
+    const bar = document.getElementById("doctorInfectionBar");
+    const value = document.getElementById("doctorInfectionValue");
+
+    bar.style.width = `${doctorInfection}%`;
+    value.textContent = `${doctorInfection}%`;
+}
+
+renderDoctorInfection();
 
 // TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
 // ------------------------------------------------
 showScene("mainMenu")
+
+startGameBtn.addEventListener("mouseover", () => {
+    menuHoverSound.play();
+})
 
 startGameBtn.addEventListener("click", () => {
 
@@ -304,6 +323,11 @@ function showScene(sceneID) {
 
     document.getElementById(sceneID).style.display = "block";
 
+    // Renders villager infection when player enters villager healing scene
+    if (sceneID === "villagerHealingScene") {
+        renderVillagerInfection();
+    }
+
     // Music within Scenes
     if (sceneID === "potionsScene") {
         bgm.src = "music/potionsMusic.mp3";
@@ -315,11 +339,44 @@ function showScene(sceneID) {
     }
 }
 
+// Add items to inventory (keeps track of quantity and decreases quantity when item is used)
+function addItemToInventory(newItem) {
+    const existingItem = inventory.find(item => item.name === newItem.name);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        inventory.push({
+            ...newItem,
+            quantity: 1
+        });
+    }
+
+    renderInventory();
+}
+
+// Remove items from inventory (decreases quantity of item or removes item if quantity was 1)
+function removeItemFromInventory(itemToRemove) {
+    const existingItem = inventory.find(item => item.name === itemToRemove.name);
+
+    if (!existingItem) return;
+
+    existingItem.quantity -= 1;
+
+    if (existingItem.quantity <= 0) {
+        const itemIndex = inventory.findIndex(item => item.name === itemToRemove.name);
+        inventory.splice(itemIndex, 1);
+    }
+
+    renderInventory();
+}
+
+
 // WHEN PLAYER CHECKS MEDICAL SUPPLIES, 3 RANDOM ITEMS ARE GENERATED
 let inventory = [];
 let startItemsGiven = false;
 
-function getRandomStartItems(itemDatabase, count = 3) {
+function getRandomStartItems(itemDatabase, count = 5) {
     const itemPool = Object.entries(itemDatabase).map(([key, item]) => ({
         key,
         ...item
@@ -328,7 +385,7 @@ function getRandomStartItems(itemDatabase, count = 3) {
     const selectedItems = [];
 
     while (selectedItems.length < count && itemPool.length > 0) {
-        const totalWeight = itemPool.reduce((sum, item) => sum + item.weight, 0);
+        const totalWeight = itemPool.reduce((sum, item) => sum + (item.weight ?? 1), 0);
         let randomNum = Math.random() * totalWeight;
 
         let selectedIndex = 0;
@@ -352,10 +409,10 @@ function getRandomStartItems(itemDatabase, count = 3) {
 function giveRandomStartItems() {
     if (startItemsGiven) return;
 
-    const startItems = getRandomStartItems(itemDatabase, 3);
+    const startItems = getRandomStartItems(itemDatabase, 5);
 
     startItems.forEach(item => {
-        inventory.push(item);
+        addItemToInventory(item);
     });
 
     startItemsGiven = true;
@@ -368,25 +425,71 @@ function renderInventory() {
     const inventoryItems = document.getElementById("inventoryItems");
     inventoryItems.innerHTML = "";
 
-    inventory.forEach(item => {
+    const filteredItems = inventory.filter(item => {
+        if (activeInventoryTab === "ingredients") return item.category === "ingredient";
+        if (activeInventoryTab === "charm") return item.category === "charm";
+        if (activeInventoryTab === "potions") return item.category === "potion";
+        return false;
+    });
+
+    filteredItems.forEach(item => {
+        const slot = document.createElement("div");
+        slot.className = "inventorySlot";
 
         const img = document.createElement("img");
         img.src = item.img;
         img.className = "inventoryItem";
         img.title = item.name;
 
-        inventoryItems.appendChild(img);
+        // Add glow if item is emerald-boosted
+        if (item.boostType === "emerald") {
+            img.classList.add("emerald-boosted");
+        }
+
+        // Inventory item and quantity
+        slot.appendChild(img);
+
+        const quantityLabel = document.createElement("span");
+        quantityLabel.className = "itemQuantity";
+        quantityLabel.textContent = item.quantity;
+        slot.appendChild(quantityLabel);
+
+        inventoryItems.appendChild(slot);
 
         window.selectedItem = null;
 
         img.addEventListener("click", () => {
-            window.selectedItem = item;
-            // Add this back later after I fix it
-            // showItemDescription(item);
-        })
+            if (activeInventoryTab === "potions") {
+                useItem(item);
+            } else {
+                window.selectedItem = item;
+            }
+        });
 
-    })
+        img.addEventListener("mouseenter", () => {
+            menuHoverSound.play();
+            showItemDescription(item);
+        });
+
+        img.addEventListener("mouseleave", () => {
+            hideItemDescription();
+        });
+    });
 }
+
+inventoryTabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+        inventoryTabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        activeInventoryTab = tab.dataset.tab;
+        renderInventory();
+    })
+
+    tab.addEventListener("mouseover", () => {
+        menuHoverSound.play();
+    })
+})
 
 function showItemDescription(item) {
 
@@ -398,6 +501,11 @@ function showItemDescription(item) {
     text.textContent = item.description;
 
     panel.style.display = "block";
+}
+
+function hideItemDescription() {
+    const panel = document.getElementById("itemDescriptionPanel");
+    panel.style.display = "none";
 }
 
 // Game State Info - Work on this later
@@ -501,3 +609,246 @@ travelLocations.addEventListener("click", (e) => {
 
     travelPanel.classList.remove("open");
 })
+
+// --------------------------------------------------------------
+// ITEM USE FUNCTIONS
+// --------------------------------------------------------------
+// useItem() is the entry point which calls other item use functions.
+function useItem(item) {
+    if (!item.effectType) return;
+
+    const validation = validateItemUse(item);
+
+    if (!validation.valid) {
+        alert(validation.message);
+        return;
+    }
+
+    const confirmed = confirm(`Use ${item.name}?`);
+    if (!confirmed) return;
+
+    const usedSuccessfully = applyItemEffect(item);
+
+    if (!usedSuccessfully) return;
+
+    if (item.category === "potion") {
+        removeItemFromInventory(item);
+    }
+
+    renderInventory();
+}
+
+// validateItemUse() determines whether item can currently be used.
+function validateItemUse(item) {
+    switch (item.effectType) {
+        case "reduceDoctorInfection":
+            if (doctorInfection <= 0) {
+                return { valid: false, message: "The Doctor is not infected." };
+            }
+            return { valid: true };
+
+        case "reduceVillagerInfection":
+            // Only works in context of Heal Villager Scene
+            if (document.getElementById("villagerHealingScene").style.display !== "block") {
+                return { valid: false, message: "Healing Tonic can only be used in the villager healing scene." };
+            }
+
+            return { valid: true };
+
+        case "suppressVillagerInfection":
+            // Change this later so it only works in context of Heal Villager Scene
+            return { valid: true };
+
+        case "poisonRat":
+            // Change this later so it only works in context of Rat Encounter Scene
+            return { valid: true };
+
+        case "cureDoctorPoison":
+            return { valid: true };
+
+        default:
+            return { valid: false, message: "This item cannot be used right now." };
+    }
+}
+
+// applyItemEffect() applies the effect of the item.
+function applyItemEffect(item) {
+    switch (item.effectType) {
+        case "reduceDoctorInfection":
+            return applyReduceDoctorInfection(item);
+
+        case "reduceVillagerInfection":
+            return applyReduceVillagerInfection(item);
+
+        case "suppressVillagerInfection":
+            return applySuppressVillagerInfection(item);
+
+        case "poisonRat":
+            return applyPoisonRat(item);
+
+        case "cureDoctorPoison":
+            return applyCureDoctorPoison(item);
+
+        default:
+            return false;
+    }
+}
+
+// applyReduceDoctorInfection - used by Elixir, reduces doctor's plague infection status
+function applyReduceDoctorInfection(item) {
+    let reductionAmt = 0;
+
+    switch (item.tier) {
+        case "weak":
+            reductionAmt = 10;
+            break;
+        case "mid":
+            reductionAmt = 20;
+            break;
+        case "strong":
+            reductionAmt = 30;
+            break;
+        default:
+            reductionAmt = 20;
+    }
+
+    if (item.boostType === "emerald") {
+        reductionAmt += 20;
+    }
+
+    doctorInfection -= reductionAmt;
+
+    if (doctorInfection < 0) doctorInfection = 0;
+    if (doctorInfection > 100) doctorInfection = 100;
+
+    renderDoctorInfection();
+    return true;
+}
+
+// applyReduceVillagerInfection - used by Healing Tonic, reduces villager's plague infection status
+function applyReduceVillagerInfection(item) {
+
+    const villagerSceneVisible = document.getElementById("villagerHealingScene").style.display === "block";
+
+    if (!villagerSceneVisible) {
+        alert("Healing Tonic can only be used to heal villagers.");
+        return false;
+    }
+
+    const villager = getActiveVillager();
+
+    if (!villager) {
+        alert("No active villager found.");
+        return false;
+    }
+
+    if (villager.dead) {
+        alert("This villager is dead.");
+        return false;
+    }
+
+    if (villager.healed) {
+        alert("This villager has already been healed.")
+        return false;
+    }
+
+    let reductionAmt = 0;
+
+    switch (item.tier) {
+        case "weak":
+            reductionAmt = 10;
+            break;
+        case "mid":
+            reductionAmt = 20;
+            break;
+        case "strong":
+            reductionAmt = 30;
+            break;
+        default:
+            reductionAmt = 20;
+    }
+
+    if (item.boostType === "emerald") {
+        reductionAmt += 20;
+    }
+
+    villager.infectionLevel -= reductionAmt;
+
+    if (villager.infectionLevel < 0) {
+        villagerInfectionLevel = 0;
+    }
+
+    if (villager.infectionLevel === 0) {
+        villager.healed = true;
+        gameState.villagersHealed += 1;
+    }
+
+    renderVillagerInfection();
+    return true;
+
+}
+
+// applySuppressVillagerInfection - used by Fever Suppressant, keeps active villager infection from worsening at end of day. If it is
+// brewed strong, it also reduces the villager's plague infection status slightly.
+function applySuppressVillagerInfection(item) {
+    alert("Fever Suppressant logic will connect to villager healing scene.");
+    return false;
+}
+
+// applyPoisonRat - used by Plague Concoction, weakens rat attacks in battle
+function applyPoisonRat(item) {
+    alert("Plague Concoction logic will connect to rat encounter scene.");
+    return false;
+}
+
+// applyCureDoctorPoison - used by Ash Remedy, reduces Doctor poison status
+function applyCureDoctorPoison(item) {
+    alert("Ash Remedy can be used by doctor in any scene.");
+}
+
+// --------------------------------------------------------------
+// MONEY
+// --------------------------------------------------------------
+let money = 0;
+
+function renderMoney() {
+    document.getElementById("moneyValue").textContent = money;
+}
+
+function addMoney(amount) {
+    money += amount;
+    renderMoney();
+}
+
+function spendMoney(amount) {
+    if (money < amount) return false;
+    money -= amount;
+    renderMoney();
+    return true;
+}
+
+function loseMoney(amount) {
+    money -= amount;
+    if (money < 0) {
+        money = 0;
+    }
+
+    renderMoney();
+}
+
+function setRandomStartMoney() {
+    money = Math.floor(Math.random() * 6) + 100;
+    renderMoney();
+}
+
+setRandomStartMoney();
+
+// --------------------------------------------------------------
+// END OF DAY
+// --------------------------------------------------------------
+// If herb satchel in inventory, Doctor Infection does not increase
+// if (inventory.charms.herbSatchel > 0) {
+//     // Doctor infection does not worsen
+// } else {
+//     // Doctor infection worsens
+// }

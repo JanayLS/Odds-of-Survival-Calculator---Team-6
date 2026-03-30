@@ -35,6 +35,7 @@ const inventoryBtn = document.getElementById("inventoryBtn");
 const inventoryPanel = document.getElementById("inventoryPanel");
 const inventoryHintArrow = document.getElementById("inventoryHintArrow");
 
+
 // --------------------------------------------------------------------------------
 // AUDIO HELPERS (minimal additions)
 // --------------------------------------------------------------------------------
@@ -113,7 +114,8 @@ inventoryBtn.addEventListener("click", () => {
 // TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
 // ----------------------------------------------------------------------------------
 // Start the first line after start game button is clicked
-startGameBtn.addEventListener("click", async () => {
+
+async function startGame() {
   // Hide main menu and show Arrival scene
   mainMenu.style.display = "none";
   arrivalScene.style.display = "block";
@@ -126,7 +128,97 @@ startGameBtn.addEventListener("click", async () => {
   currentLine = 0;
   dialogueText.innerHTML = "";
   typeLine(dialogueLines[currentLine]);
+}
+
+// --- Login overlay elements ---
+const loginOverlay = document.getElementById("loginOverlay");
+const loginForm = document.getElementById("loginForm");
+const loginCancel = document.getElementById("loginCancel");
+const loginUsername = document.getElementById("loginUsername");
+const loginPassword = document.getElementById("loginPassword");
+const loginError = document.getElementById("loginError"); // optional
+const createAccount = document.getElementById("createAccount"); // optional
+
+if (!loginForm) console.error("Missing #loginForm");
+if (!loginUsername) console.error("Missing #loginUsername");
+if (!loginPassword) console.error("Missing #loginPassword");
+
+function showLogin() {
+  if (!loginOverlay) return;
+  loginOverlay.classList.remove("hidden");
+  loginOverlay.setAttribute("aria-hidden", "false");
+  if (loginError) loginError.style.display = "none";
+  if (loginUsername) loginUsername.value = "";
+  if (loginPassword) loginPassword.value = "";
+  loginUsername?.focus();
+}
+
+function hideLogin() {
+  if (!loginOverlay) return;
+  loginOverlay.classList.add("hidden");
+  loginOverlay.setAttribute("aria-hidden", "true");
+}
+
+startGameBtn.addEventListener("click", () => {
+  showLogin();
 });
+
+loginCancel?.addEventListener("click", hideLogin);
+
+loginForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  console.log("LOGIN SUBMIT fired");
+
+  const username = (loginUsername?.value || "").trim();
+  const password = (loginPassword?.value || "").trim();
+  const create = createAccount?.checked === true;
+
+  console.log("payload:", { username, passwordLen: password.length, create });
+
+  if (!username || !password) {
+    if (loginError) {
+      loginError.textContent = "Enter username and password.";
+      loginError.style.display = "block";
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        username,
+        password,
+        create: document.getElementById("createAccount")?.checked === true
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    console.log("login response:", res.status, data);
+
+    if (!res.ok) throw new Error(data.error || `Login failed (${res.status})`);
+
+    hideLogin();
+
+    // If you already have startGame(), call it; otherwise log.
+    if (typeof startGame === "function") {
+      await startGame();
+    } else {
+      console.warn("startGame() not found");
+    }
+  } catch (err) {
+    console.error("Login failed:", err);
+    if (loginError) {
+      loginError.textContent = err?.message || "Login failed";
+      loginError.style.display = "block";
+    } else {
+      alert(err?.message || "Login failed");
+    }
+  }
+});
+
 
 // DIALOGUE SYSTEM AND CHOICES
 // ------------------------------------------------------------------------------------
