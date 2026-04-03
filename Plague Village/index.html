@@ -28,6 +28,12 @@
         <span id="moneyValue">0</span>
     </div>
 
+    <!-- ACTION TOKENS -->
+    <div id="actionTokensUI">
+        <div id="actionTokensLabel">Action Tokens</div>
+        <div id="actionTokensValue">3 / 3</div>
+    </div>
+
     <!-- MUSIC -->
     <button id="musicBtn">Music On</button>
     <audio id="bgm" src="music/arrivalMusic.mp3" loop></audio>
@@ -125,6 +131,16 @@
     <div id="forestScene" class="scene"></div>
     <!-- Potions Scene -->
     <div id="potionsScene" class="scene"></div>
+
+    <!-- END OF DAY REPORT (TRIGGERED WHEN USER RETURNS TO MAIN VILLAGE WITH 0 ACTION TOKENS)-->
+    <div id="endOfDayOverlay" class="hidden">
+        <div id="endOfDayPanel">
+            <h2>End of Day Report</h2>
+            <p>The day is over.</p>
+            <button id="closeEndOfDayBtn">Close</button>
+        </div>
+    </div>
+
 
     <!-- Typing Sounds -->
     <audio class="typeSound" src="sound-effects/typing-sounds/type1.ogg" preload="auto"></audio>

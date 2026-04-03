@@ -259,6 +259,11 @@ function brewPotion() {
     const resultSlot = document.getElementById("potionResultSlot");
     const resultText = document.getElementById("potionResultText");
 
+    // If Player has no Action Tokens, they are unable to brew potions.
+    if (!canSpendActionToken(1)) {
+        return;
+    }
+
     // Make sure all 3 slots are filled
     if (!ing1 || !ing2 || !ing3) {
         resultText.textContent = "Not enough ingredients.";
@@ -286,6 +291,9 @@ function brewPotion() {
     }
 
     if (matchedRecipe) {
+        // 1 Action Token is spent each time a potion is successfully brewed
+        spendActionToken(1);
+
         // Potion Brewing Sound Effect
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();

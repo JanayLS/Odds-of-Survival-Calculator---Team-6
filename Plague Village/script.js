@@ -67,6 +67,10 @@ const travelLocations = document.getElementById("travelLocations");
 const objectiveBtn = document.getElementById("objectiveBtn");
 const objectivePanel = document.getElementById("objectivePanel");
 
+// End of Day Elements
+const endOfDayOverlay = document.getElementById("endOfDayOverlay");
+const closeEndOfDayBtn = document.getElementById("closeEndOfDayBtn");
+
 // Doctor Infection Status (Start at 50 for now while testing, change later)
 let doctorInfection = 50;
 
@@ -322,6 +326,11 @@ function showScene(sceneID) {
     });
 
     document.getElementById(sceneID).style.display = "block";
+
+    // If Player has no Action Tokens, End of Day report will be shown when they return to Arrival (Main Village) Scene
+    if (sceneID === "arrivalScene" && actionTokens <= 0) {
+        showEndOfDayReport();
+    }
 
     // Renders villager infection when player enters villager healing scene
     if (sceneID === "villagerHealingScene") {
@@ -843,9 +852,60 @@ function setRandomStartMoney() {
 
 setRandomStartMoney();
 
+// ACTION TOKENS
+let actionTokens = 3;
+let maxActionTokens = 3;
+
+function renderActionTokens() {
+    const actionTokensValue = document.getElementById("actionTokensValue");
+    actionTokensValue.textContent = `${actionTokens} / ${maxActionTokens}`;
+}
+
+renderActionTokens();
+
+// Spending Action Tokens
+function spendActionToken(amount = 1) {
+    if (actionTokens <= 0 || actionTokens < amount) {
+        return false;
+    }
+
+    actionTokens -= amount;
+
+    if (actionTokens < 0) {
+        actionTokens = 0;
+    }
+
+    renderActionTokens();
+    return true;
+}
+
+// Checks to see if user has enough Action Tokens for an action
+function canSpendActionToken(amount = 1) {
+    if (actionTokens < amount) {
+        alert("No action tokens remaining. Return to the village to end the day.");
+        return false;
+    }
+
+    return true;
+
+}
+
 // --------------------------------------------------------------
 // END OF DAY
 // --------------------------------------------------------------
+// End of Day Report
+function showEndOfDayReport() {
+    endOfDayOverlay.classList.remove("hidden");
+}
+
+function hideEndOfDayReport() {
+    endOfDayOverlay.classList.add("hidden");
+}
+
+closeEndOfDayBtn.addEventListener("click", () => {
+    hideEndOfDayReport();
+})
+
 // If herb satchel in inventory, Doctor Infection does not increase
 // if (inventory.charms.herbSatchel > 0) {
 //     // Doctor infection does not worsen
