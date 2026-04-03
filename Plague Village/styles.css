@@ -204,6 +204,36 @@ button {
 }
 
 /* ============================= */
+/* ACTION TOKENS */
+/* ============================= */
+#actionTokensUI {
+    position: fixed;
+    top: 8vh;
+    left: 1vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2vw;
+    padding: 0.5vw 0.7vw;
+    background: rgba(0, 0, 0, 0.75);
+    border: 2px solid #c6a988;
+    border-radius: 10px;
+    color: white;
+    font-size: 1vw;
+    font-weight: bold;
+    z-index: 1000;
+}
+
+#actionTokensLabel {
+    color: #c6a988;
+    font-size: 1.1vw;
+}
+
+#actionTokensValue {
+    color: #f5e6c8;
+    font-size: 1.1vw;
+}
+
+/* ============================= */
 /* DIALOGUE SYSTEM */
 /* ============================= */
 #characterName {
@@ -671,7 +701,7 @@ button {
 /* Villager Infection UI */
 #villagerTreatmentUI {
     position: fixed;
-    top: 8vh;
+    top: 19vh;
     left: 1vw;
     width: 18vw;
     padding: 1vw;
@@ -837,7 +867,7 @@ button {
 #brewingPanel {
     position: fixed;
     left: 2vw;
-    top: 30%;
+    top: 47%;
     transform: translateY(-50%);
     width: 18vw;
     padding: 1.5vh 1vw;
@@ -901,7 +931,8 @@ button {
 .result-panel {
     position: fixed;
     left: 2vw;
-    bottom: 4%;
+    bottom: 0%;
+    height: 22vh;
     width: 18vw;
     padding: 1.5vh 1vw;
     background: rgba(0, 0, 0, 0.6);
@@ -909,6 +940,7 @@ button {
     border: 2px solid #c6a988;
     border-radius: 12px;
     color: #c6a988;
+    font-size: 1.5vh;
     z-index: 20;
 }
 
@@ -1117,6 +1149,47 @@ button {
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.15s ease, background 0.15s ease;
+}
+
+/* ============================= */
+/* END OF DAY REPORT */
+/* ============================= */
+#endOfDayOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+#endOfDayPanel {
+    width: 40vw;
+    min-height: 25vh;
+    padding: 2vw;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+}
+
+#endOfDayPanel h2 {
+    color: #c6a988;
+    margin-top: 0;
+}
+
+#closeEndOfDayBtn {
+    margin-top: 1.5vh;
+    padding: 0.6vw 1vw;
+    font-size: 1vw;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 /* ============================= */
