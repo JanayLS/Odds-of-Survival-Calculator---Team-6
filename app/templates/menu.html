@@ -84,6 +84,27 @@
         <button id="startGameBtn" class="glow-btn">Start</button>
     </div>
 
+      <!-- Login Overlay -->
+    <div id="loginOverlay" class="overlay hidden" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+        <h2 id="loginTitle">Sign in</h2>
+
+        <form id="loginForm">
+            <input id="loginUsername" type="text" autocomplete="username" required />
+            <input id="loginPassword" type="password" autocomplete="current-password" required />
+
+            
+            <button type="submit" class="glow-btn">Login</button>
+
+            <button id="loginCancel" type="button">Cancel</button>
+
+            
+            <input id="createAccount" type="checkbox" />
+            <p id="loginError" style="display:none;"></p>
+        </form>
+        </div>
+    </div>
+
     <!-- ARRIVAL/MAIN VILLAGE SCENE -->
     <div id="arrivalScene" class="scene">
         <img id="plagueDoctor" src="{{ url_for('static', filename='img/characters/plagueDoctor.png') }}">

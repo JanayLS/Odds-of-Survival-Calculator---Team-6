@@ -1137,3 +1137,65 @@ button {
         opacity: 0.95;
     }
 }
+
+/* Login overlay (ADD) */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.hidden {
+  display: none;
+}
+
+.modal {
+  width: min(420px, calc(100vw - 32px));
+  border-radius: 12px;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  border: 1px solid rgba(198, 169, 136, 0.6);
+}
+
+.modal h2 {
+  margin: 0 0 12px 0;
+}
+
+.modal label {
+  display: block;
+  margin: 10px 0;
+}
+
+.modal input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(198, 169, 136, 0.6);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.modal .row {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@keyframes hintPulse {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
