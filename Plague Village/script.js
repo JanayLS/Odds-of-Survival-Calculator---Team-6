@@ -189,38 +189,14 @@ function nextDialogue() {
             typeLine(dialogueLines[currentLine]);
         } else {
             arrow.style.opacity = 0;
-            choiceBox.style.display = "flex";
+            showIntroChoices();
         }
 
-        // Choice 1: Ask about Villagers
-    } else if (sceneState == "villagers") {
+
+    } else if (sceneState == "introResponse") {
         arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn" data-choice="heal-villager">Heal Villager in Home</button>
-        <button class="choiceBtn" data-choice="chapel">Pray at Chapel</button>`;
-
-        choiceBox.style.display = "flex";
-
-        // Choice 2: Ask about Rats
-    } else if (sceneState == "rats") {
-        arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn" data-choice="fight-rats">Fight Rats</button>
-        <button class="choiceBtn" data-choice="shop">Shop for Defense</button>`;
-
-        choiceBox.style.display = "flex";
-
-        // Choice 3: Ask about supplies
-    } else if (sceneState == "supplies") {
-        arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn" data-choice="forest">Search Forest for Ingredients</button>
-        <button class="choiceBtn" data-choice="potions">Brew Potions</button>`;
-
-        choiceBox.style.display = "flex";
+        showIntroChoices();
+        sceneState = "intro";
     }
 };
 
@@ -235,43 +211,51 @@ choiceBox.addEventListener("click", (e) => {
 
     // Choice 1: Villager
     if (choice == "villagers") {
-        sceneState = "villagers";
-        currentLine = 0;
-
+        sceneState = "introResponse";
         characterName.textContent = "Worried Wife:";
-
         villager1.style.opacity = 0;
         worriedVillagerWoman.style.opacity = 1;
+
+        // currentLine = 0;
 
         setTimeout(() => {
             typeLine("Doctor...my husband hasn't woken in two days...")
         }, 600);
 
-        // Calls function that generates # of villagers to be healed
-        const villagersCount = generateVillagersObjective();
+        // Generate Objective 1: # of villagers to be healed
+        // const villagersCount = 
+        generateVillagersObjective();
         updateObjectivePanel();
     }
 
     // Choice 2: Rats
     else if (choice == "rats") {
-        sceneState = "rats";
-        currentLine = 0;
+        sceneState = "introResponse";
+        characterName.textContent = "Desperate Villager:";
+        villager1.style.opacity = 1;
+        worriedVillagerWoman.style.opacity = 0;
+
+        // currentLine = 0;
 
         typeLine("The rats are the plague itself. They scurry through our village, infecting our people. One bite can mean death...");
 
-        // Calls function that generates # of rats to fight
-        const ratCount = generateRatObjective();
+        // Generates Objective 2: # of rats to fight
+        // const ratCount = 
+        generateRatObjective();
         updateObjectivePanel();
     }
 
     // Choice 3: Supplies
     else if (choice == "supplies") {
-        sceneState = "supplies";
-        currentLine = 0;
-
+        sceneState = "introResponse";
         characterName.textContent = "";
 
+        villager1.style.opacity = 1;
+        worriedVillagerWoman.style.opacity = 0;
+
         inventoryHintArrow.style.opacity = "1";
+
+        // currentLine = 0;
 
         setTimeout(() => {
             inventoryHintArrow.style.opacity = "0";
@@ -314,6 +298,22 @@ choiceBox.addEventListener("click", (e) => {
         showScene("potionsScene");
     }
 });
+
+// Shows Intro Choices
+function showIntroChoices() {
+    choiceBox.innerHTML = `
+        <button class="choiceBtn" data-choice="villagers">
+            Ask about the sick villagers
+        </button>
+        <button class="choiceBtn" data-choice="rats">
+            Ask about the rats
+        </button>
+        <button class="choiceBtn" data-choice="supplies">
+            Inspect your medical supplies
+        </button>
+    `;
+    choiceBox.style.display = "flex";
+}
 
 // --------------------------------------------------------------
 // SCENE SWITCHING FUNCTION 
@@ -555,11 +555,10 @@ objectiveBtn.addEventListener("click", () => {
 // Updates game objectives (Rats, Villagers)
 function updateObjectivePanel() {
     const objectiveContent = document.getElementById("objectiveContent");
-
-    // let html = "";
+    let html = "";
 
     if (ratObjective !== null) {
-        objectiveContent.innerHTML = `
+        html += `
         <div class="objectiveItem">
             <img src="images/misc-images/ratObjectiveIcon.png" class="objectiveIcon" alt="Rat objective icon">
             <span>Defeat ${ratObjective} rats. Progress: ${ratsDefeated}/${ratObjective}</span>
@@ -568,7 +567,7 @@ function updateObjectivePanel() {
     }
 
     if (villagersObjective !== null) {
-        objectiveContent.innerHTML = `
+        html += `
         <div class="objectiveItem">
             <img src="images/misc-images/villagersObjectiveIcon.png" class="objectiveIcon" alt="Villagers objective icon">
             <span>Heal ${villagersObjective} villagers. Progress: ${villagersHealed}/${villagersObjective}</span>
@@ -576,11 +575,11 @@ function updateObjectivePanel() {
         `;
     }
 
-    // if (html === "") {
-    //     objectiveContent.textContent = "No active objectives.";
-    // } else {
-    //     objectiveContent.innerHTML = html; 
-    // }
+    if (html === "") {
+        objectiveContent.textContent = "No active objectives.";
+    } else {
+        objectiveContent.innerHTML = html;
+    }
 
 }
 
