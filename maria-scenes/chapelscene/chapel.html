@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plague Village - Chapel</title>
+  <link rel="stylesheet" href="chapel.css">
+</head>
+
+<body>
+
+  <!-- Background -->
+  <img id="sceneBackground" src="assets/Chapel.png">
+
+  <!-- Player -->
+  <img id="plagueDoctor" src="assets/plagueDoctor1.png">
+
+  <!-- Villagers -->
+  <img id="oldMan" class="chapelCharacter" src="assets/OldManVillagerConcerned.png">
+  <img id="woman1" class="chapelCharacter" src="assets/WomanVillagerConcernedTransparent.png">
+  <img id="woman2" class="chapelCharacter" src="assets/WomanVillagerConcerened2Transparent.png">
+
+  <!-- Dialogue -->
+  <div id="dialogueBox">
+
+    <div id="characterName">Narrator</div>
+    <div id="dialogueText"></div>
+
+    <div id="choiceBox">
+      <button class="choiceBtn" data-choice="reflect">
+        Reflect with the villagers
+      </button>
+
+      <button class="choiceBtn" data-choice="comfort">
+        Comfort the frightened villagers
+      </button>
+
+      <button class="choiceBtn" data-choice="leave">
+        Leave the chapel
+      </button>
+    </div>
+
+    <div id="nextArrow">➤</div>
+  </div>
+
+  <!-- Gameplay Popup -->
+  <div id="effectPopup">
+    <div id="effectPopupTitle">Chapel Effect</div>
+    <div id="effectPopupText"></div>
+
+    <button id="closeEffectPopupBtn">Continue</button>
+
+    <button id="leaveChapelBtn" style="display:none;">
+      Leave Chapel
+    </button>
+  </div>
+
+  <!-- Reflection Timer -->
+  <div id="reflectionTimerBox">
+    <div id="reflectionTimerText"></div>
+  </div>
+
+  <script src="chapel.js"></script>
+
+</body>
+</html>

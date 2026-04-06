@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plague Village - Forest Gathering</title>
+    <link rel="stylesheet" href="forest.css">
+</head>
+<body>
+
+    <!-- Forest background -->
+    <img id="sceneBackground" src="assets/Forest4.png" alt="Forest Background">
+
+    <!-- Player -->
+   <img id="plagueDoctor" src="assets/Plaguedoc.png" alt="Plague Doctor">
+
+    <!-- Dialogue box -->
+    <div id="dialogueBox">
+        <div id="characterName">Narrator:</div>
+        <div id="dialogueText">You step into the forest at the edge of the village.</div>
+
+        <div id="choiceBox">
+            <button class="choiceBtn" data-choice="search">Search for ingredients</button>
+            <button class="choiceBtn" data-choice="deeper">Go deeper into the forest</button>
+            <button class="choiceBtn" data-choice="return">Return to village</button>
+        </div>
+
+        <div id="nextArrow">➤</div>
+    </div>
+
+    <!-- Loot popup -->
+    <div id="lootPopup">
+        <h2>You Found</h2>
+        <div id="lootItems"></div>
+        <button id="closePopupBtn">Close</button>
+    </div>
+
+    <script src="forest.js"></script>
+</body>
+</html>

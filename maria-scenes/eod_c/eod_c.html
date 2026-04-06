@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ending C - Village Collapses</title>
+  <link rel="stylesheet" href="eod_c.css">
+</head>
+<body>
+
+  <div class="scene-container">
+    <img src="assets/village_collapse.png" class="background">
+    <img id="doctorSprite" src="assets/plagueDoctor_normal.png" class="doctor">
+
+    <div class="dialogue-box">
+      <div id="characterName" class="character-name">Narrator:</div>
+      <div id="dialogueText" class="dialogue-text"></div>
+      <div id="nextArrow" class="next-arrow">➤</div>
+    </div>
+
+    <div id="statsBox" class="stats-box hidden">
+      <p id="savedToday"></p>
+      <p id="totalAlive"></p>
+      <p id="plagueLevel"></p>
+      <p id="doctorInfection"></p>
+      <button onclick="goToCredits()">Continue</button>
+    </div>
+  </div>
+
+  <script src="eod_c.js"></script>
+</body>
+</html>

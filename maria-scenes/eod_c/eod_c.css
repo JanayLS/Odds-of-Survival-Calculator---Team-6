@@ -1,0 +1,127 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Georgia, serif;
+  background: black;
+}
+
+.scene-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Background */
+.background {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Doctor */
+.doctor {
+  position: absolute;
+  bottom: 0;
+  left: 35px;
+  height: 75%;
+  z-index: 2;
+  opacity: 0.95;
+}
+
+/* Dialogue box (MATCHED TO FOREST) */
+.dialogue-box {
+  position: fixed;
+  bottom: 3vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50vw;
+  max-width: 50vw;
+  padding: 2vh 2vw;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  border: 2px solid #c6a988;
+  border-radius: 12px;
+  color: white;
+  font-size: clamp(2vh, 2.2vw, 3vh);
+  line-height: 1.4;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+/* Name */
+.character-name {
+  color: tan;
+  font-weight: bold;
+  margin-bottom: 0.6vh;
+}
+
+/* Dialogue text */
+.dialogue-text {
+  color: white;
+  padding-right: 3vw;
+}
+
+/* Arrow */
+.next-arrow {
+  position: absolute;
+  bottom: 1vh;
+  right: 1.5vw;
+  font-size: 2.2vw;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  animation: arrowPulse 1s infinite ease-in-out;
+}
+
+@keyframes arrowPulse {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-0.4vh); }
+  100% { transform: translateY(0); }
+}
+
+/* Stats box */
+.stats-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 42vw;
+  min-height: 24vh;
+  padding: 2vh 2vw;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  border: 2px solid #c6a988;
+  border-radius: 12px;
+  color: white;
+  z-index: 30;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.stats-box p {
+  font-size: 1.2rem;
+  margin: 12px 0;
+}
+
+.stats-box button {
+  padding: 1vh 1vw;
+  font-size: 1rem;
+  background: #000;
+  border: 2px solid #c6a988;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.stats-box button:hover {
+  background: rgba(10, 97, 23, 0.921);
+  transform: scale(1.02);
+}
+
+.hidden {
+  display: none;
+}
