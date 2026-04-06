@@ -1,66 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plague Village - Intro/Arrival</title>
 
-  <!-- Flask static path -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plague Village</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <!-- Plague Village Menu -->
-  <div id="mainMenu">
-    <img src="{{ url_for('static', filename='img/plagueVillageMenu.png') }}" id="menuImage" />
-    <button id="startGameBtn" class="glow-btn">Start</button>
-  </div>
+    <!-- GLOBAL UI (APPEARS IN ALL SCENES)-->
 
-  <!-- Arrival Scene -->
-  <div id="arrivalScene">
-    <img id="plagueDoctor" src="{{ url_for('static', filename='img/plagueDoctor.png') }}" />
-    <img id="villager1" src="{{ url_for('static', filename='img/villager1.png') }}" />
-
-    <!-- Keep element for future; frontend uses it in script -->
-    <img id="worriedVillagerWoman" src="{{ url_for('static', filename='img/worriedVillagerWoman.png') }}" />
-
-    <!-- Dialogue System -->
-    <div id="dialogueBox">
-      <div id="characterName">Desperate Villager:</div>
-      <div id="dialogueText"></div>
-
-      <div id="choiceBox">
-        <button class="choiceBtn" data-choice="villagers">Ask about the sick villagers</button>
-        <button class="choiceBtn" data-choice="rats">Ask about the rats</button>
-        <button class="choiceBtn" data-choice="supplies">Inspect your medical supplies</button>
-      </div>
-
-      <div id="nextArrow">➤</div>
+    <!-- PLAGUE DOCTOR STATUS -->
+    <!-- Doctor Infection -->
+    <div id="doctorInfectionUI">
+        <div id="doctorInfectionLabel">Doctor Infection</div>
+        <div id="doctorInfectionContainer">
+            <div id="doctorInfectionBar"></div>
+        </div>
+        <div id="doctorInfectionValue">50%</div>
     </div>
 
-    <!-- Their music control button (we keep it, but make it control BOTH tracks + mute) -->
-    <button id="turn-music-on">Music On</button>
+    <!-- MONEY -->
+    <div id="moneyUI">
+        <img id="coinIcon" src="{{ url_for('static', filename='img/misc-images/coin.png') }}" alt="Coin icon">
+        <span id="moneyValue">0</span>
+    </div>
 
-    <!-- Inventory (keep their markup; you can remove later if desired) -->
+    <!-- MUSIC -->
+    <button id="musicBtn">Music On</button>
+    <audio id="bgm" src="{{ url_for('static', filename='audio/arrivalMusic.mp3') }}" loop></audio>
+
+    <!-- INVENTORY -->
+    <!-- Inventory Button -->
     <button id="inventoryBtn">Inventory</button>
     <span id="inventoryHintArrow">➤</span>
 
-    <div id="inventoryPanel" style="display: none;">
-      <h3>Inventory</h3>
-      <div id="inventoryItems"></div>
+    <!-- Inventory Panel -->
+    <div id="inventoryPanel">
+        <h3>Inventory</h3>
+
+        <div id="inventoryTabs">
+            <button class="inventoryTab active" data-tab="ingredients">Ingredients</button>
+            <button class="inventoryTab" data-tab="charm">Charms</button>
+            <button class="inventoryTab" data-tab="potions">Potions</button>
+        </div>
+
+        <div id="inventoryItems"></div>
     </div>
-  </div>
 
-  <!-- Audio: keep arrivalMusic + add your menu music -->
-  <audio id="menuBgm" preload="auto" loop>
-    <source src="{{ url_for('static', filename='audio/menu.mp3') }}" type="audio/mpeg" />
-  </audio>
+    <!-- Item Description Panel -->
+    <div id="itemDescriptionPanel">
+        <div id="itemDescriptionName"></div>
+        <div id="itemDescriptionText"></div>
+    </div>
 
-  <audio id="bgm" preload="auto" loop>
-    <source src="{{ url_for('static', filename='audio/arrivalMusic.mp3') }}" type="audio/mpeg" />
-  </audio>
+    <!-- TRAVEL -->
+    <button id="travelBtn">Travel</button>
+    <div id="travelPanel">
+        <div id="travelLocations">
+            <button class="travelLocationBtn" data-scene="villagerHealingScene">Heal Villager in Home</button>
+            <button class="travelLocationBtn" data-scene="chapelScene">Pray at Chapel</button>
+            <button class="travelLocationBtn" data-scene="ratScene">Rat Encounter</button>
+            <button class="travelLocationBtn" data-scene="shopScene">Village Shop</button>
+            <button class="travelLocationBtn" data-scene="forestScene">Search Forest for Ingredients</button>
+            <button class="travelLocationBtn" data-scene="potionsScene">Brew Potions</button>
+            <button class="travelLocationBtn" data-scene="arrivalScene">Main Village</button>
+        </div>
+    </div>
 
-  <!-- Flask static path -->
-  <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+    <!-- GAME OBJECTIVES -->
+    <button id="objectiveBtn">Objectives</button>
+    <div id="objectivePanel">
+        <h2>Objectives</h2>
+        <div id="objectiveContent">No objectives yet.</div>
+    </div>
+    </div>
+
+    <!-- MAIN MENU SCENE -->
+    <div id="mainMenu" class="scene">
+        <img src="{{ url_for('static', filename='img/backgrounds/plagueVillageMenu.png') }}" id="menuImage">
+        <button id="startGameBtn" class="glow-btn">Start</button>
+    </div>
+
+    <!-- ARRIVAL/MAIN VILLAGE SCENE -->
+    <div id="arrivalScene" class="scene">
+        <img id="plagueDoctor" src="{{ url_for('static', filename='img/characters/plagueDoctor.png') }}">
+        <img id="villager1" src="{{ url_for('static', filename='img/characters/villager1.png') }}">
+        <img id="worriedVillagerWoman" src="{{ url_for('static', filename='img/characters/worriedVillagerWoman.png') }}">
+
+        <!-- Dialogue System (Character Name, Dialogue Text, Player Choices, Next Arrow for Navigation) -->
+        <div id="dialogueBox">
+            <div id="characterName">Desperate Villager:</div>
+            <div id="dialogueText"></div>
+            <div id="choiceBox">
+                <button class="choiceBtn" data-choice="villagers">
+                    Ask about the sick villagers
+                </button>
+                <button class="choiceBtn" data-choice="rats">
+                    Ask about the rats
+                </button>
+                <button class="choiceBtn" data-choice="supplies">
+                    Inspect your medical supplies
+                </button>
+            </div>
+            <div id="nextArrow">➤</div>
+        </div>
+
+
+
+    </div>
+
+    <!-- CORE 6 SCENES ARE CALLED BY SCRIPT.JS -->
+    <!-- Villager Healing Scene -->
+    <div id="villagerHealingScene" class="scene"></div>
+    <!-- Chapel Prayer Scene -->
+    <div id="chapelScene" class="scene"></div>
+    <!-- Rat Encounter Scene -->
+    <div id="ratScene" class="scene"></div>
+    <!-- Shop Scene -->
+    <div id="shopScene" class="scene"></div>
+    <!-- Forest Scene -->
+    <div id="forestScene" class="scene"></div>
+    <!-- Potions Scene -->
+    <div id="potionsScene" class="scene"></div>
+
+    <!-- Typing Sounds -->
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type1.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type2.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type3.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type4.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type5.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type6.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type7.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type8.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type9.ogg') }}" preload="auto"></audio>
+    <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type10.ogg') }}" preload="auto"></audio>
+
+    <!-- Javascript -->
+    <!-- WHEN ADDING SCENES MAKE SURE TO INCLUDE THEIR JS FILE HERE. -->
+    <!-- game-data JS files, Script.js, and gameState.js should stay ABOVE all over JS files since they need to load first -->
+    <script src="{{ url_for('static', filename='js/items.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/recipes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gameState.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/potions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/villager-home.js') }}"></script>
+
 </body>
+
 </html>

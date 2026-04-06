@@ -16,4 +16,8 @@ def create_app():
 
     app.register_blueprint(profile_bp, url_prefix="/profile")
 
+    from app.routes.auth_save import auth_save_bp
+
+    app.register_blueprint(auth_save_bp)
+
     return app
