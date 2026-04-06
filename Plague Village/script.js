@@ -517,34 +517,18 @@ function hideItemDescription() {
     panel.style.display = "none";
 }
 
-// Game State Info - Work on this later
-// let gameState = {
-//     inventory: [],
-//     coins: 10,
-//     villagersHealed: 0,
-//     plagueInfectionRate: 5,
-// };
-
-// Randomly Generates # of Rats to Fight, # of Villagers to Heal
-// When a rat is defeated, ratsDefeated will be incremented. When ratsDefeated >= ratsObjective, no rats remain.
-// When a villager is healed, villagersHealed will be incremented. When villagersHealed >= villagerObjective, all villagers are healed.
-let ratObjective = null;
-let ratsDefeated = 0;
-let villagersObjective = null;
-let villagersHealed = 0;
-
 function generateRatObjective() {
-    if (ratObjective !== null) return ratObjective;
+    if (gameState.ratsToKill > 0) return gameState.ratsToKill;
 
-    ratObjective = Math.floor(Math.random() * 5) + 3;
-    return ratObjective;
+    gameState.ratsToKill = Math.floor(Math.random() * 5) + 3;
+    return gameState.ratsToKill;
 }
 
 function generateVillagersObjective() {
-    if (villagersObjective !== null) return villagersObjective;
+    if (gameState.villagersToHeal > 0) return gameState.villagersToHeal;
 
-    villagersObjective = Math.floor(Math.random() * 4) + 3;
-    return villagersObjective;
+    gameState.villagersToHeal = Math.floor(Math.random() * 4) + 3;
+    return gameState.villagersToHeal;
 }
 
 // Open Objectives Panel
@@ -557,20 +541,20 @@ function updateObjectivePanel() {
     const objectiveContent = document.getElementById("objectiveContent");
     let html = "";
 
-    if (ratObjective !== null) {
+    if (gameState.ratsToKill > 0) {
         html += `
         <div class="objectiveItem">
             <img src="images/misc-images/ratObjectiveIcon.png" class="objectiveIcon" alt="Rat objective icon">
-            <span>Defeat ${ratObjective} rats. Progress: ${ratsDefeated}/${ratObjective}</span>
+            <span>Defeat ${gameState.ratsToKill} rats. Progress: ${gameState.ratsKilled}/${gameState.ratsToKill}</span>
         </div>
         `;
     }
 
-    if (villagersObjective !== null) {
+    if (gameState.villagersToHeal > 0) {
         html += `
         <div class="objectiveItem">
             <img src="images/misc-images/villagersObjectiveIcon.png" class="objectiveIcon" alt="Villagers objective icon">
-            <span>Heal ${villagersObjective} villagers. Progress: ${villagersHealed}/${villagersObjective}</span>
+            <span>Heal ${gameState.villagersToHeal} villagers. Progress: ${gameState.villagersHealed}/${gameState.villagersToHeal}</span>
         </div>
         `;
     }
