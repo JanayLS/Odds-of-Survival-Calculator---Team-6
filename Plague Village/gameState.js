@@ -1,23 +1,34 @@
 // gameState.js holds a JSON structure of game data that will be saved/loaded with backend API integration.
 
 const gameState = {
-    // Example Data, Will contain real game state data that backend will use for saving/loading the game
+    // Day
     day: 1,
     maxDays: 3,
 
+    // Action Tokens
     actionTokens: 3,
     maxActionTokens: 3,
 
+    // Inventory & Money
     inventory: [],
     money: 5,
+
+    // Rats Objective
     ratsKilled: 0,
     ratsToKill: 0,
+
+    // Villagers Objective
     villagersHealed: 0,
     villagersToHeal: 0,
+
+    // Current Scene
     currentScene: "arrivalScene",
+
+    // Doctor Status
     doctorInfection: 0,
     doctorPoison: 0,
 
+    // Status of Each Villager
     villagers: {
 
         villager1: {
@@ -67,6 +78,7 @@ const gameState = {
 
     },
 
+    // Status of Each Rat
     rats: {
         rat1: { hp: 100, dead: false },
         rat2: { hp: 100, dead: false },
@@ -80,5 +92,3 @@ const gameState = {
     }
 
 };
-
-// export default gameState;
