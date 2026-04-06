@@ -3,7 +3,11 @@
 const gameState = {
     // Example Data, Will contain real game state data that backend will use for saving/loading the game
     day: 1,
-    actionTokens: 7,
+    maxDays: 3,
+
+    actionTokens: 3,
+    maxActionTokens: 3,
+
     inventory: [],
     money: 5,
     ratsKilled: 0,
