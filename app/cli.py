@@ -1,31 +1,36 @@
 from datetime import datetime
-import random
-import getpass
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 from app.domain.models import UserProfile
 
 from app.storage.journal_store import JournalStore
 
 from app.services.probability_service import (
+    # Data class
+    EncounterResult,
+    # Probability helpers
     parse_prob,
+    sample_prob,
     total_survival,
     avg_prob_for_type,
-    sample_prob,
     cumulative_for_character,
+    # HP helpers
     compute_hp,
     hp_fraction,
     hp_bar,
+    # Fixed-prob helpers
+    load_fixed_map,
+    set_fixed_prob,
+    clear_character,
+    # High-level resolution
+    resolve_encounter,
     _norm,
 )
 
 from app.services.summary_service import (
     unique_characters,
     character_summaries,
-)
-
-from app.services.fixed_prob_service import (
-    load_fixed_map,
-    set_fixed_prob,
-    clear_character,
 )
 
 
@@ -83,12 +88,8 @@ def print_character_summaries(rows: list[dict]) -> None:
 
 
 def list_encounter_types(rows: list[dict]) -> None:
-    """
-    Print all unique encounter types recorded across all characters.
-    """
-    # Collect all encounter names
+    """Print all unique encounter types recorded across all characters."""
     types = {r["encounter"].lower() for r in rows if r.get("algo") != "meta"}
-
     if not types:
         print("No encounter types logged yet.")
     else:
@@ -99,32 +100,75 @@ def list_encounter_types(rows: list[dict]) -> None:
 
 
 def collect_user_profile() -> UserProfile:
-    """
-    One-time prompt when the journal is empty.
-    Stores minimal user metadata as a 'meta' row inside the encrypted file.
-    """
+    """One-time prompt when the journal is empty."""
     name = input("Profile name (press Enter to reuse character name later): ").strip()
     location = input("Location (optional): ").strip()
     email = input("Contact email (optional): ").strip()
     return UserProfile(name=name or "", location=location, email=email)
 
+def create_encounter(
+    session: JournalStore, 
+    name: str,
+    enc_name: str,
+    mode: str,
+    damage: float,
+    fixed_probability: float = None,
+) -> EncounterResult:
+    """
+    Functions just like main() but without the main loop, so it can be used for the main game loop
+    
+    Params:
+     -- session: the database session (rows, store, password)
+     -- name: chatracter name
+     -- enc_name: encounter name
+     -- mode: "fixed" or "random
+     -- damage: amount of damage to deal
+     -- fixed_probability: probability to use when set to fixed
+
+    Returns:
+    -- EncounterResult with outcome, HP before/after, selected probability, etc
+
+    Raises:
+     -- ValueError If damage is negative, mode is "fixed" but no probability is given, or fixed_probability is out of range
+    """
+
+    if damage < 0:
+        raise ValueError("Damage must be >= 0.")
+
+    fixed_map = load_fixed_map(session.rows)
+    key = _norm(enc_name)
+
+    if mode == "f" or mode == "fixed":
+        if key in fixed_map:
+            p = fixed_map[key]
+        else:
+            if fixed_probability is None:
+                raise ValueError(
+                    f"No saved probability for '{enc_name}'. "
+                    "Provide fixed_probability to set one."
+                )
+            p = parse_prob(str(fixed_probability))
+            set_fixed_prob(session.rows, enc_name, p)
+            session.store.replace_all(session.password, session.rows)
+        algo_label = "fixed"
+    else:
+        p = sample_prob(enc_name)
+        algo_label = "random"
+
+    result = resolve_encounter(enc_name, p, damage, session.rows, name)
+
+    entry = result.to_row(algo=algo_label)
+    session.rows.append(entry)
+    session.store.append_row(session.password, entry)
+
+    return result
+
 
 def main() -> None:
-    """
-    App entrypoint: open/create the encrypted journal, ensure first-run profile,
-    then run a simple menu so the user can:
-      - Add an encounter (validate prob; save encrypted)
-      - List known encounter types (user can choose from known encounter type or enter new encounter type)
-      - List a characters history with running total
-      - Clear a characters entries
-      - Change the journal password (re-encrypt in place)
-      - Reset (delete) the journal file
-      - Quit
-    All calculations come from the persisted (decrypted) rows in memory.
-    """
+
     print("Welcome to Group 2 MVP")
 
-    store = JournalStore()  # uses data/journal.db by default
+    store = JournalStore()
     rows, password = store.open_or_create_journal()
     if not password:
         return
@@ -145,7 +189,7 @@ def main() -> None:
     while True:
         print(
             "\nMenu: [A]dd Encounter [E]ncounter Types  [L]ist History  [N]ames  [S]ummary  "
-            "[C]lear Character  [P]asswd Change  [R]eset Journal  [Q]uit"
+            "[C]lear Character  [P]asswd Change  [R]eset Journal  [Q]uit >"
         )
         choice = input("> ").strip().lower()
 
@@ -159,8 +203,8 @@ def main() -> None:
 
             # ---- choose probability mode (Fixed or Random) ----
             mode = input("Probability mode [F]ixed / [R]andom? ").strip().lower()
-            fixed_map = load_fixed_map(rows)  # requires helper
-            key = _norm(enc_name)  # requires helper
+            fixed_map = load_fixed_map(rows)
+            key = _norm(enc_name)
 
             if mode == "f":
                 if key in fixed_map:
@@ -168,20 +212,18 @@ def main() -> None:
                     print(f"Using saved fixed p={p:.3f} for '{enc_name}'.")
                 else:
                     while True:
-                        raw = input("Set fixed probability (0.0–1.0): ").strip()
+                        raw = input("Set fixed probability (0.0–1.0 or e.g. 70%): ").strip()
                         try:
-                            p = float(raw)
-                            if 0.0 <= p <= 1.0:
-                                break
-                        except ValueError:
-                            pass
-                        print("Invalid. Enter a number between 0 and 1.")
-                    set_fixed_prob(rows, enc_name, p)  # persist fixed p as meta row
+                            p = parse_prob(raw)
+                            break
+                        except ValueError as e:
+                            print(f"Invalid: {e}")
+                    set_fixed_prob(rows, enc_name, p)
                     store.replace_all(password, rows)
                     print(f"Saved fixed p={p:.3f} for '{enc_name}'.")
                 algo_label = "fixed"
             else:
-                p = sample_prob(enc_name)  # requires helper + _rng
+                p = sample_prob(enc_name)
                 algo_label = "random"
 
             # ---- damage ----
@@ -195,48 +237,36 @@ def main() -> None:
                     pass
                 print("Invalid. Enter a number ≥ 0.")
 
-            # ---- run Bernoulli(p) to decide hit/miss, then apply damage on hit ----
-            curr_hp = compute_hp(rows, name, 100.0)  # requires helper
-            hit = random.random() < p
-            outcome = "hit" if hit else "miss"
-            new_hp = max(0.0, curr_hp - (dmg if hit else 0.0))
+            # ---- resolve encounter via probability module ----
+            result: EncounterResult = resolve_encounter(enc_name, p, dmg, rows, name)
 
             # ---- record encounter ----
-            ts = datetime.now().isoformat(timespec="seconds")
-            entry = {
-                "timestamp": ts,
-                "character": name,
-                "encounter": enc_name,
-                "probability": f"{p:.6f}",
-                "damage": f"{dmg:.2f}",
-                "outcome": outcome,
-                "algo": algo_label,  # "fixed" or "random"
-                "note": "",
-            }
+            entry = result.to_row(algo=algo_label)
             rows.append(entry)
             store.append_row(password, entry)
 
             # ---- feedback ----
-            bar = hp_bar(new_hp / 100.0, width=20)  # requires your hp_bar()
+            bar = hp_bar(result.hp_after / 100.0, width=20)
             print(
-                f"Result: {outcome.upper()} | p={p:.3f}, dmg={dmg:.0f} | HP {new_hp:0.1f}"
+                f"Result: {result.outcome.upper()} | p={result.probability:.3f}, "
+                f"dmg={result.damage:.0f} | HP {result.hp_after:0.1f}"
             )
             print(bar)
 
-        elif choice == "e":  # List known encounter types
+        elif choice == "e":
             list_encounter_types(rows)
 
-        elif choice == "l":  # List history
+        elif choice == "l":
             name = input("Character to list: ").strip()
             print_history(rows, name)
 
-        elif choice == "n":  # list names only
+        elif choice == "n":
             print_names(rows)
 
-        elif choice == "s":  # list names with cumulative probability and entry count
+        elif choice == "s":
             print_character_summaries(rows)
 
-        elif choice == "c":  # Clear character entries
+        elif choice == "c":
             name = input("Character to clear: ").strip()
             confirm = input(f'Type "YES" to clear all entries for {name}: ').strip()
             if confirm == "YES":
@@ -246,12 +276,12 @@ def main() -> None:
             else:
                 print("Canceled.")
 
-        elif choice == "p":  # Change password
+        elif choice == "p":
             new_pwd = store.change_password(password, rows)
             if new_pwd:
                 password = new_pwd
 
-        elif choice == "r":  # Reset journal file
+        elif choice == "r":
             confirm = input('Type "YES" to reset/delete the journal: ').strip()
             if confirm == "YES":
                 store.reset()
@@ -261,7 +291,7 @@ def main() -> None:
             else:
                 print("Canceled.")
 
-        elif choice == "q":  # Quit
+        elif choice == "q":
             break
 
         else:

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Plague Survival Simulator</title>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Plague Survival Simulator</h1>
+        <h2>Login</h2>
+        
+        <!-- Display flash messages (success/error) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('profile.login') }}">
+            <div>
+                <label for="password">Enter your journal password:</label>
+                <input type="password" id="password" name="password" required autofocus>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        
+        <p><a href="{{ url_for('profile.index') }}">Back to Main Menu</a></p>
+    </div>
+</body>
+</html>
