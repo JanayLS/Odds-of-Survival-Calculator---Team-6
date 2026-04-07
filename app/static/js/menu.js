@@ -82,22 +82,149 @@ renderDoctorInfection();
 
 // TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
 // ------------------------------------------------
+// --- Login overlay elements ---
+
+// async function startGame() {
+//   // Hide main menu and show Arrival scene
+//   mainMenu.style.display = "none";
+//   arrivalScene.style.display = "block";
+
+//   // Start audio swap (menu -> arrival)
+//   await tryPlay(menuBgm);
+//   await crossfade(menuBgm, bgm);
+
+//   // Start villager NPC dialogue
+//   currentLine = 0;
+//   dialogueText.innerHTML = "";
+//   typeLine(dialogueLines[currentLine]);
+// }
+
+const loginOverlay = document.getElementById("loginOverlay");
+const loginForm = document.getElementById("loginForm");
+const loginCancel = document.getElementById("loginCancel");
+const loginUsername = document.getElementById("loginUsername");
+const loginPassword = document.getElementById("loginPassword");
+const loginError = document.getElementById("loginError");
+const createAccount = document.getElementById("createAccount");
+
+if (!loginOverlay) console.error("Missing #loginOverlay");
+if (!loginForm) console.error("Missing #loginForm");
+if (!loginUsername) console.error("Missing #loginUsername");
+if (!loginPassword) console.error("Missing #loginPassword");
+if (!startGameBtn) console.error("Missing #startGameBtn");
+
+function showLogin() {
+  if (!loginOverlay) return;
+
+  loginOverlay.classList.remove("hidden");
+  loginOverlay.setAttribute("aria-hidden", "false");
+
+  if (loginError) {
+    loginError.textContent = "";
+    loginError.style.display = "none";
+  }
+
+  if (loginUsername) loginUsername.value = "";
+  if (loginPassword) loginPassword.value = "";
+
+  loginUsername?.focus();
+}
+
+function hideLogin() {
+  if (!loginOverlay) return;
+
+  loginOverlay.classList.add("hidden");
+  loginOverlay.setAttribute("aria-hidden", "true");
+}
+
+async function startGame() {
+  showScene("arrivalScene");
+
+  currentLine = 0;
+  dialogueText.innerHTML = "";
+  typeLine(dialogueLines[currentLine]);
+}
+
+startGameBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  showLogin();
+});
+
+loginCancel?.addEventListener("click", (e) => {
+  e.preventDefault();
+  hideLogin();
+});
+
+loginForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  console.log("LOGIN SUBMIT fired");
+
+  const username = (loginUsername?.value || "").trim();
+  const password = (loginPassword?.value || "").trim();
+  const create = createAccount?.checked === true;
+
+  if (!username || !password) {
+    if (loginError) {
+      loginError.textContent = "Enter username and password.";
+      loginError.style.display = "block";
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        username,
+        password,
+        create,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(data.error || `Login failed (${res.status})`);
+    }
+
+    hideLogin();
+    await startGame();
+  } catch (err) {
+    console.error("Login failed:", err);
+
+    if (loginError) {
+      loginError.textContent = err?.message || "Login failed";
+      loginError.style.display = "block";
+    } else {
+      alert(err?.message || "Login failed");
+    }
+  }
+});
+
+
+
+
 showScene("mainMenu")
 
 startGameBtn.addEventListener("mouseover", () => {
     menuHoverSound.play();
 })
 
-startGameBtn.addEventListener("click", () => {
+// startGameBtn.addEventListener("click", () => {
 
-    // Hide main menu and show Arrival scene
-    showScene("arrivalScene");
+//     // Hide main menu and show Arrival scene
+//     showScene("arrivalScene");
 
-    // Start villager NPC dialogue
-    currentLine = 0;
-    dialogueText.innerHTML = "";
-    typeLine(dialogueLines[currentLine]);
-})
+//     // Start villager NPC dialogue
+//     currentLine = 0;
+//     dialogueText.innerHTML = "";
+//     typeLine(dialogueLines[currentLine]);
+// })
 
 // DIALOGUE SYSTEM AND CHOICES 
 // -------------------------------------------------
