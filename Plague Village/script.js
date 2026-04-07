@@ -84,6 +84,61 @@ function renderDoctorInfection() {
 
 renderDoctorInfection();
 
+// VILLAGE INFECTION STATUS IS CALCULATED FROM # OF ACTIVE VILLAGERS WHO ARE HEALED/UNHEALED
+function getVillageInfectionPercent() {
+
+    const villagerKeys = Object.keys(gameState.villagers);
+
+    const activeVillagers = villagerKeys.filter((key) => {
+        return gameState.villagers[key].active === true;
+    });
+
+    // If no infected villagers have been selected yet, keep village looking toxic for now
+    if (activeVillagers.length === 0) {
+        return 100;
+    }
+
+    const unresolvedVillagers = activeVillagers.filter((key) => {
+        const villager = gameState.villagers[key];
+        return villager.healed === false;
+    });
+
+    const infectionPercent = (unresolvedVillagers.length / activeVillagers.length) * 100;
+
+    return infectionPercent;
+}
+
+// RENDERS VILLAGE INFECTION IN THE VILLAGE INFECTION BAR
+function renderVillageInfection() {
+    const bar = document.getElementById("villageInfectionBar");
+    const value = document.getElementById("villageInfectionValue");
+
+    const villageInfection = getVillageInfectionPercent();
+
+    bar.style.width = `${villageInfection}%`;
+    value.textContent = `${Math.round(villageInfection)}%`
+}
+
+// CHANGES MAIN VILLAGE BACKGROUND DEPENDING ON VILLAGE INFECTION %
+function updateVillageBackground() {
+    const arrivalScene = document.getElementById("arrivalScene");
+    const villageInfection = getVillageInfectionPercent();
+
+    if (villageInfection < 30) {
+        arrivalScene.style.backgroundImage = "url('images/backgrounds/healthyVillage.png')";
+    } else if (villageInfection <= 70) {
+        arrivalScene.style.backgroundImage = "url('images/backgrounds/midHealthVillage.png')";
+    } else {
+        arrivalScene.style.backgroundImage = "url('images/backgrounds/toxicVillage.png')";
+    }
+}
+
+// UPDATES VILLAGE INFECTION BAR AND MAIN VILLAGE BACKGROUND SCENE
+function updateVillageVisual() {
+    renderVillageInfection();
+    updateVillageBackground();
+}
+
 // TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
 // ------------------------------------------------
 showScene("mainMenu")
@@ -225,7 +280,9 @@ choiceBox.addEventListener("click", (e) => {
         // Generate Objective 1: # of villagers to be healed
         // const villagersCount = 
         generateVillagersObjective();
+        activateVillagersForRun();
         updateObjectivePanel();
+        updateVillageVisual();
     }
 
     // Choice 2: Rats
@@ -517,6 +574,7 @@ function hideItemDescription() {
     panel.style.display = "none";
 }
 
+// GENERATE OBJECTIVES (RATS TO DEFEAT AND VILLAGERS TO HEAL)
 function generateRatObjective() {
     if (gameState.ratsToKill > 0) return gameState.ratsToKill;
 
@@ -530,6 +588,36 @@ function generateVillagersObjective() {
     gameState.villagersToHeal = Math.floor(Math.random() * 4) + 3;
     return gameState.villagersToHeal;
 }
+
+// WHEN VILLAGER OBJECTIVE IS GENERATED, RANDOM VILLAGERS ARE CHOSEN FROM THE VILLAGER DATABASE TO BE USED IN CURRENT PLAYTHROUGH
+function activateVillagersForRun() {
+    const villagerKeys = Object.keys(gameState.villagers);
+    const alreadyActive = villagerKeys.some((key) => gameState.villagers[key].active);
+
+    if (alreadyActive) return;
+
+    // Reset all villagers first
+    villagerKeys.forEach((key) => {
+        gameState.villagers[key].active = false;
+        gameState.villagers[key].healed = false;
+        gameState.villagers[key].dead = false;
+        gameState.villagers[key].infectionLevel = 100;
+    });
+
+    // Shuffle villager keys for randomness
+    const shuffledKeys = [...villagerKeys].sort(() => Math.random() - 0.5);
+    // Select however many villagers this run needs
+    const selectedKeys = shuffledKeys.slice(0, gameState.villagersToHeal);
+
+    // Mark selected villagers as active
+    selectedKeys.forEach((key) => {
+        gameState.villagers[key].active = true;
+    });
+
+    console.log("Active villagers for this run:", selectedKeys);
+    console.log("Updated villager state:", gameState.villagers);
+}
+
 
 // Open Objectives Panel
 objectiveBtn.addEventListener("click", () => {
@@ -895,3 +983,5 @@ closeEndOfDayBtn.addEventListener("click", () => {
 // } else {
 //     // Doctor infection worsens
 // }
+
+updateVillageVisual();
