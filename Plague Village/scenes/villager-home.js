@@ -58,11 +58,11 @@ function renderVillagerScene() {
 
     villagerHealingScene.style.backgroundImage = `url('${villagerData.bg}')`;
 
-    // if (villagerState.healed) {
-    //     portrait.src = villagerData.portrait_healthy;
-    // } else {
-    //     portrait.src = villagerData.portrait_sick;
-    // }
+    if (villagerState.healed) {
+        portrait.src = villagerData.portrait_healthy;
+    } else {
+        portrait.src = villagerData.portrait_sick;
+    }
 }
 
 renderVillagerInfection();
