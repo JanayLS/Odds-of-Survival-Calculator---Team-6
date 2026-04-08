@@ -904,18 +904,16 @@ function applyReduceVillagerInfection(item) {
 
     villager.infectionLevel -= reductionAmt;
 
-    if (villager.infectionLevel < 0) {
-        villagerInfectionLevel = 0;
-    }
-
-    if (villager.infectionLevel === 0) {
+    if (villager.infectionLevel <= 0) {
+        villager.infectionLevel = 0;
         villager.healed = true;
         gameState.villagersHealed += 1;
     }
 
     renderVillagerInfection();
-    return true;
+    renderVillagerScene();
 
+    return true;
 }
 
 // applySuppressVillagerInfection - used by Fever Suppressant, keeps active villager infection from worsening at end of day. If it is
