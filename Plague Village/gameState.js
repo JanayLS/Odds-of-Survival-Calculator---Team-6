@@ -32,48 +32,73 @@ const gameState = {
     villagers: {
 
         villager1: {
-            name: "Villager Name 1",
-            infectionLevel: 70,
-            dead: false,
+            active: false,
             healed: false,
-            bg: "images/backgrounds/villager-home-1.png",
-            portrait: "images/characters/villager1.png"
+            infectionLevel: 100,
+            dead: false,
         },
 
         villager2: {
-            name: "Villager Name 2",
-            infectionLevel: 90,
-            dead: false,
+            active: false,
             healed: false,
-            bg: "images/backgrounds/villager-home-2.png",
-            portrait: "images/characters/villager2.png"
+            infectionLevel: 100,
+            dead: false,
         },
 
         villager3: {
-            name: "Villager Name 3",
-            infectionLevel: 60,
-            dead: false,
+            active: false,
             healed: false,
-            bg: "images/backgrounds/villager-home-3.png",
-            portrait: "images/characters/villager3.png"
+            infectionLevel: 100,
+            dead: false,
         },
 
         villager4: {
-            name: "Villager Name 3",
-            infectionLevel: 60,
-            dead: false,
+            active: false,
             healed: false,
-            bg: "images/backgrounds/villager-home-3.png",
-            portrait: "images/characters/villager3.png"
+            infectionLevel: 100,
+            dead: false,
         },
 
         villager5: {
-            name: "Villager Name 3",
-            infectionLevel: 60,
-            dead: false,
+            active: false,
             healed: false,
-            bg: "images/backgrounds/villager-home-3.png",
-            portrait: "images/characters/villager3.png"
+            infectionLevel: 100,
+            dead: false,
+        },
+
+        villager6: {
+            active: false,
+            healed: false,
+            infectionLevel: 100,
+            dead: false,
+        },
+
+        villager7: {
+            active: false,
+            healed: false,
+            infectionLevel: 100,
+            dead: false,
+        },
+
+        villager8: {
+            active: false,
+            healed: false,
+            infectionLevel: 100,
+            dead: false,
+        },
+
+        villager9: {
+            active: false,
+            healed: false,
+            infectionLevel: 100,
+            dead: false,
+        },
+
+        villager10: {
+            active: false,
+            healed: false,
+            infectionLevel: 100,
+            dead: false,
         }
 
     },
