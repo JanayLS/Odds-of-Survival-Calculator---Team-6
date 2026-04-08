@@ -91,6 +91,15 @@
         </div>
     </div>
 
+    <!-- VILLAGER SELECT OVERLAY -->
+    <div id="villagerSelectOverlay" class="hidden">
+        <div id="villagersSelectPanel">
+            <h2>Select a Villager</h2>
+            <div id="villagerSelectList"></div>
+            <button id="closeVillagerSelectBtn">Close</button>
+        </div>
+    </div>
+
     <!-- GAME OBJECTIVES -->
     <button id="objectiveBtn">Objectives</button>
     <div id="objectivePanel">
@@ -174,6 +183,7 @@
     <!-- game-data JS files, Script.js, and gameState.js should stay ABOVE all over JS files since they need to load first -->
     <script src="game-data/items.js"></script>
     <script src="game-data/recipes.js"></script>
+    <script src="game-data/villagers.js"></script>
     <script src="gameState.js"></script>
     <script src="script.js"></script>
     <script src="scenes/potions.js"></script>

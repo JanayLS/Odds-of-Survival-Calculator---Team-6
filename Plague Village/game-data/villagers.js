@@ -3,7 +3,7 @@ const villagerDatabase = {
 
     villager1: {
         name: "Villager Name 1",
-        bg: "images/backgrounds/villager-home-1.png",
+        bg: "images/backgrounds/villager-homes/villager1-home.png",
         portrait_sick: "images/characters/villager1-sick.png",
         portrait_healthy: "images/characters/villager1-healthy.png"
     },

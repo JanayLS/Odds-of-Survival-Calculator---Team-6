@@ -63,6 +63,12 @@ const travelBtn = document.getElementById("travelBtn");
 const travelPanel = document.getElementById("travelPanel");
 const travelLocations = document.getElementById("travelLocations");
 
+// Villager Select Overlay
+const villagerSelectOverlay = document.getElementById("villagerSelectOverlay");
+const villagerSelectList = document.getElementById("villagerSelectList");
+const closeVillagerSelectBtn = document.getElementById("closeVillagerSelectBtn");
+let currentVillagerKey = null;
+
 // Objectives
 const objectiveBtn = document.getElementById("objectiveBtn");
 const objectivePanel = document.getElementById("objectivePanel");
@@ -574,7 +580,7 @@ function hideItemDescription() {
     panel.style.display = "none";
 }
 
-// GENERATE OBJECTIVES (RATS TO DEFEAT AND VILLAGERS TO HEAL)
+// GENERATE RAT OBJECTIVE
 function generateRatObjective() {
     if (gameState.ratsToKill > 0) return gameState.ratsToKill;
 
@@ -582,6 +588,7 @@ function generateRatObjective() {
     return gameState.ratsToKill;
 }
 
+// GENERATE VILLAGER OBJECTIVE
 function generateVillagersObjective() {
     if (gameState.villagersToHeal > 0) return gameState.villagersToHeal;
 
@@ -601,7 +608,6 @@ function activateVillagersForRun() {
         gameState.villagers[key].active = false;
         gameState.villagers[key].healed = false;
         gameState.villagers[key].dead = false;
-        gameState.villagers[key].infectionLevel = 100;
     });
 
     // Shuffle villager keys for randomness
@@ -618,6 +624,28 @@ function activateVillagersForRun() {
     console.log("Updated villager state:", gameState.villagers);
 }
 
+// GET ACTIVE VILLAGERS FOR TRAVELING/HEALING
+function getActiveVillagerKeys() {
+    return Object.keys(gameState.villagers).filter((key) => {
+        return gameState.villagers[key].active === true;
+    })
+}
+
+// ADD ACTIVE VILLAGERS TO VILLAGER TRAVEL LIST
+function renderVillagerSelectList() {
+    villagerSelectList.innerHTML = "";
+
+    const activeVillagers = getActiveVillagerKeys();
+
+    activeVillagers.forEach((villagerKey) => {
+        const villagerBtn = document.createElement("button");
+        villagerBtn.className = "villagerSelectBtn";
+        villagerBtn.dataset.villager = villagerKey;
+        villagerBtn.textContent = villagerDatabase[villagerKey].name;
+
+        villagerSelectList.appendChild(villagerBtn);
+    });
+}
 
 // Open Objectives Panel
 objectiveBtn.addEventListener("click", () => {
@@ -685,9 +713,31 @@ travelLocations.addEventListener("click", (e) => {
 
     const targetScene = e.target.dataset.scene;
 
-    showScene(targetScene);
+    if (targetScene === "villagerHealingScene") {
+        renderVillagerSelectList();
+        villagerSelectOverlay.classList.remove("hidden");
+        travelPanel.classList.remove("open");
+        return;
+    }
 
+    showScene(targetScene);
     travelPanel.classList.remove("open");
+})
+
+villagerSelectList.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("villagerSelectBtn")) return;
+
+    currentVillagerKey = e.target.dataset.villager;
+    villagerSelectOverlay.classList.add("hidden");
+
+    setActiveVillager(currentVillagerKey);
+    showScene("villagerHealingScene");
+
+    console.log("Selected villager:", currentVillagerKey);
+})
+
+closeVillagerSelectBtn.addEventListener("click", () => {
+    villagerSelectOverlay.classList.add("hidden");
 })
 
 // --------------------------------------------------------------
