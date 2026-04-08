@@ -8,7 +8,6 @@ body {
 
 body {
     font-family: 'Poppins', sans-serif;
-    /* background-image: url(images/backgrounds/toxicVillage.png); */
     background-size: cover;
     margin: 0;
 }
@@ -64,7 +63,7 @@ button {
 }
 
 #villagerHealingScene {
-    background-image: url('images/backgrounds/villager-home-background.png');
+    background-image: url('images/backgrounds/villager-homes/villager1-home.png');
 }
 
 #chapelScene {
@@ -677,6 +676,70 @@ button {
 }
 
 /* ============================= */
+/* TRAVEL - SELECT VILLAGER */
+/* ============================= */
+#villagerSelectOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+#villagerSelectPanel {
+    width: 35vw;
+    min-height: 30vh;
+    padding: 2vw;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+}
+
+#villagerSelectPanel h2 {
+    margin-top: 0;
+    color: #c6a988;
+}
+
+#villagerSelectList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.villagerSelectBtn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.villagerSelectBtn:hover {
+    background-color: #64c19f;
+}
+
+#closeVillagerSelectBtn {
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ============================= */
 /* OBJECTIVES */
 /* ============================= */
 
@@ -813,6 +876,14 @@ button {
 #villagerInfectionValue {
     margin-top: 0.35vw;
     font-size: 0.9vw;
+}
+
+#villagerPortrait {
+    position: absolute;
+    left: 2vw;
+    bottom: 0;
+    width: 20vw;
+    z-index: 40;
 }
 
 /* ============================= */

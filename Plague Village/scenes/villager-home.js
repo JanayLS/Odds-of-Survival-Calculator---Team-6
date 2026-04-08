@@ -5,7 +5,8 @@ const villagerHealingScene = document.getElementById("villagerHealingScene");
 
 // 1. ADD YOUR SCENE'S HTML CODE INSIDE THE INNERHTML TEMPLATE LITERAL BELOW
 villagerHealingScene.innerHTML = `
-    <!-- Villager Treatment UI -->
+    <img id="villagerPortrait" src="" alt="Villager portrait">
+
     <div id="villagerTreatmentUI">
         <div id="villagerTreatmentLabel">Villager Infection</div>
 
@@ -21,7 +22,13 @@ villagerHealingScene.innerHTML = `
 // If needed, rename your local variables to avoid conflicts with script.js
 
 // Tracks which villager is being treated
-let activeVillagerKey = "villager1";
+let activeVillagerKey = null;
+
+function setActiveVillager(villagerKey) {
+    activeVillagerKey = villagerKey;
+    renderVillagerScene();
+    renderVillagerInfection();
+}
 
 function getActiveVillager() {
     return gameState.villagers[activeVillagerKey];
@@ -37,6 +44,25 @@ function renderVillagerInfection() {
 
     bar.style.width = `${villager.infectionLevel}%`;
     value.textContent = `${villager.infectionLevel}%`;
+}
+
+function renderVillagerScene() {
+    if (!activeVillagerKey) return;
+
+    const villagerData = villagerDatabase[activeVillagerKey];
+    const villagerState = gameState.villagers[activeVillagerKey];
+
+    const portrait = document.getElementById("villagerPortrait");
+
+    if (!villagerData || !villagerState || !portrait) return;
+
+    villagerHealingScene.style.backgroundImage = `url('${villagerData.bg}')`;
+
+    // if (villagerState.healed) {
+    //     portrait.src = villagerData.portrait_healthy;
+    // } else {
+    //     portrait.src = villagerData.portrait_sick;
+    // }
 }
 
 renderVillagerInfection();
