@@ -1140,62 +1140,166 @@ button {
 
 /* Login overlay (ADD) */
 .overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 6000;
-  display: grid;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.65);
+    position: fixed;
+    inset: 0;
+    z-index: 6000;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.65);
+    padding: 16px;
 }
 
 .hidden {
-  display: none;
+    display: none !important;
+}
+
+.overlay,
+.overlay *,
+.modal,
+.modal * {
+    box-sizing: border-box;
 }
 
 .modal {
-  width: min(420px, calc(100vw - 32px));
-  border-radius: 12px;
-  padding: 18px;
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
-  border: 1px solid rgba(198, 169, 136, 0.6);
+    width: min(460px, calc(100vw - 32px));
+    border-radius: 12px;
+    padding: 18px;
+    background: rgba(0, 0, 0, 0.88);
+    color: #fff;
+    border: 1px solid rgba(198, 169, 136, 0.6);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
 .modal h2 {
-  margin: 0 0 12px 0;
+    margin: 0 0 14px 0;
+    font-size: 2rem;
+    line-height: 1.1;
 }
 
-.modal label {
-  display: block;
-  margin: 10px 0;
+.loginFormLayout {
+    width: 100%;
 }
 
-.modal input {
-  width: 100%;
-  margin-top: 6px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(198, 169, 136, 0.6);
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+.loginField {
+    width: 100%;
+    margin-bottom: 12px;
 }
 
-.modal .row {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
+.loginFieldLabel {
+    display: block;
+    margin-bottom: 6px;
+    color: #f5e6c8;
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
-@keyframes hintPulse {
-    0% {
-        transform: translateX(0);
+.modal input[type="text"],
+.modal input[type="password"] {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(198, 169, 136, 0.6);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-size: 1rem;
+}
+
+.modal input[type="text"]::placeholder,
+.modal input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.modal input[type="text"]:focus,
+.modal input[type="password"]:focus {
+    outline: none;
+    border-color: #7fffd1;
+    box-shadow: 0 0 0 2px rgba(127, 255, 209, 0.18);
+}
+
+.loginOptionsRow {
+    display: flex;
+    justify-content: flex-end;
+    margin: 8px 0 10px;
+}
+
+.checkboxLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #f5e6c8;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.loginError {
+    min-height: 20px;
+    margin: 0 0 10px;
+    color: #ff9b9b;
+    font-size: 0.95rem;
+}
+
+.loginActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.loginActionsLeft,
+.loginActionsRight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loginActionBtn {
+    padding: 10px 16px;
+    font-size: 18px;
+    border-radius: 8px;
+}
+
+.cancelBtn {
+    background: #e6e6e6;
+    color: #111;
+    border: none;
+    cursor: pointer;
+}
+
+.guestBtn {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(198, 169, 136, 0.75);
+    cursor: pointer;
+}
+
+.guestBtn:hover,
+.cancelBtn:hover {
+    transform: scale(1.03);
+}
+
+@media (max-width: 520px) {
+    .loginActions {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    50% {
-        transform: translateX(-5px);
+    .loginActionsLeft,
+    .loginActionsRight {
+        justify-content: flex-start;
+        flex-wrap: wrap;
     }
 
-    100% {
-        transform: translateX(0);
+    .loginActionsRight {
+        justify-content: flex-end;
     }
 }

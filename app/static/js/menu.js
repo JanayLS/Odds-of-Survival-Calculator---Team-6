@@ -106,6 +106,7 @@ const loginUsername = document.getElementById("loginUsername");
 const loginPassword = document.getElementById("loginPassword");
 const loginError = document.getElementById("loginError");
 const createAccount = document.getElementById("createAccount");
+const guestLoginBtn = document.getElementById("guestLoginBtn");
 
 if (!loginOverlay) console.error("Missing #loginOverlay");
 if (!loginForm) console.error("Missing #loginForm");
@@ -153,6 +154,12 @@ startGameBtn?.addEventListener("click", (e) => {
 loginCancel?.addEventListener("click", (e) => {
   e.preventDefault();
   hideLogin();
+});
+
+guestLoginBtn?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  hideLogin();
+  await startGame();
 });
 
 loginForm?.addEventListener("submit", async (e) => {
