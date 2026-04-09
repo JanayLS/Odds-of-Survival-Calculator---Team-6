@@ -32,22 +32,21 @@ const forestLoot = [
     "Hawthorn berries",
     "Charcoal powder",
     "Bone ash",
-    "Garlic bulbs",
+    "Garlic bulb",
     "Nothing Useful"
 ];
 
-// Real filenames in your assets folder
 const ingredientImages = {
-    "Silverleaf": "assets/SilverLeaf.png",
-    "Yarrow": "assets/Yarrow.png",
-    "Thyme": "assets/Thyme.png",
-    "Mint leaves": "assets/Mint Leaves.png",
-    "Bitter mushroom": "assets/BitterMushroom.png",
-    "Molded bark": "assets/Moldy Wood.png",
-    "Hawthorn berries": "assets/Hawthorn Berries.png",
-    "Charcoal powder": "assets/Charcoal Powder.png",
-    "Bone ash": "assets/Bone Ash.png",
-    "Garlic bulbs": "assets/Golden Garlic Bulb.png"
+    "Silverleaf": "assets/silverleaf.png",
+    "Yarrow": "assets/yarrow.png",
+    "Thyme": "assets/thyme.png",
+    "Mint leaves": "assets/mint.png",
+    "Bitter mushroom": "assets/bitter-mushroom.png",
+    "Molded bark": "assets/molded-bark.png",
+    "Hawthorn berries": "assets/hawthorne.png",
+    "Charcoal powder": "assets/charcoal-powder.png",
+    "Bone ash": "assets/bone-ash.png",
+    "Garlic bulb": "assets/garlic-bulb.png"
 };
 
 // --------------------------------------------------
@@ -58,13 +57,13 @@ const forestIntroDialogue = [
     "The air is damp, and the woods seem watchful.",
     "Medicinal plants may still grow here, if the plague has not spoiled them.",
     "You steady your breath and search the shadows ahead.",
-    "But be careful,the forest can be dangerous, rats and worse may lurk within."
+    "But be careful, the forest can be dangerous. Rats and worse may lurk within."
 ];
 
 const deepForestDialogue = [
     "You move deeper into the forest.",
     "The trees grow thicker, and the path becomes harder to follow.",
-    "It is darker here and the rats are harder to spot."
+    "It is darker here, and the rats are harder to spot."
 ];
 
 const deeperForestDialogue = [
@@ -219,13 +218,13 @@ function updateForestScene() {
     characterName.textContent = "Narrator:";
 
     if (forestLevel === 1) {
-        background.src = "assets/Forest4.png";
+        background.src = "assets/forest-background.png";
         currentDialogue = forestIntroDialogue;
     } else if (forestLevel === 2) {
-        background.src = "assets/Forest5.png";
+        background.src = "assets/forest-background2.png";
         currentDialogue = deepForestDialogue;
     } else {
-        background.src = "assets/Forest6.png";
+        background.src = "assets/forest-background3.png";
         currentDialogue = deeperForestDialogue;
     }
 

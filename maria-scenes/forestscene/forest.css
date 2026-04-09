@@ -2,6 +2,7 @@
 body {
     margin: 0;
     overflow: hidden;
+    font-family: Georgia, serif;
 }
 
 /* Background */
@@ -20,6 +21,7 @@ body {
     left: -3vw;
     bottom: -1vw;
     width: 30vw;
+    max-width: 420px;
     z-index: 2;
     filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.6));
     animation: doctorIdle 3s ease-in-out infinite;
@@ -38,44 +40,54 @@ body {
 }
 
 /* Dialogue system */
-#characterName {
-    color: tan;
-}
-
 #dialogueBox {
     position: fixed;
     bottom: 3vh;
     left: 50%;
     transform: translateX(-50%);
     width: 50vw;
-    max-width: 50vw;
+    max-width: 720px;
+    min-height: 140px;
     padding: 2vh 2vw;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(6px);
     border: 2px solid #c6a988;
     border-radius: 12px;
     color: white;
-    font-size: clamp(2vh, 2.2vw, 3vh);
+    font-size: clamp(18px, 1.3vw, 26px);
     line-height: 1.4;
     z-index: 10;
+    box-sizing: border-box;
+}
+
+#characterName {
+    color: tan;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#dialogueText {
+    min-height: 60px;
+    padding-right: 40px;
 }
 
 /* Choices */
 #choiceBox {
     display: none;
     flex-direction: column;
-    gap: 1vh;
-    margin-top: 2vh;
+    gap: 10px;
+    margin-top: 18px;
 }
 
 .choiceBtn {
-    padding: 1vh 1vw;
-    font-size: 1.2vw;
+    padding: 10px 14px;
+    font-size: 18px;
     background: #000;
     border: 2px solid #c6a988;
     color: white;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.1s ease;
+    border-radius: 8px;
 }
 
 .choiceBtn:hover {
@@ -86,9 +98,9 @@ body {
 /* Next arrow */
 #nextArrow {
     position: absolute;
-    bottom: 1vh;
-    right: 1.5vw;
-    font-size: 2.2vw;
+    bottom: 10px;
+    right: 18px;
+    font-size: 28px;
     color: white;
     cursor: pointer;
     opacity: 0;
@@ -101,7 +113,7 @@ body {
         transform: translateY(0);
     }
     50% {
-        transform: translateY(-0.4vh);
+        transform: translateY(-4px);
     }
     100% {
         transform: translateY(0);
@@ -116,6 +128,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 42vw;
+    max-width: 700px;
     min-height: 24vh;
     padding: 2vh 2vw;
     background: rgba(0, 0, 0, 0.75);
@@ -125,6 +138,7 @@ body {
     color: white;
     z-index: 30;
     text-align: center;
+    box-sizing: border-box;
 }
 
 #lootPopup h2 {
@@ -146,6 +160,7 @@ body {
     border: 2px solid #c6a988;
     border-radius: 10px;
     padding: 10px;
+    box-sizing: border-box;
 }
 
 .lootCard img {
@@ -162,13 +177,14 @@ body {
 }
 
 #closePopupBtn {
-    padding: 1vh 1vw;
+    padding: 10px 16px;
     font-size: 1rem;
     background: #000;
     border: 2px solid #c6a988;
     color: white;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.1s ease;
+    border-radius: 8px;
 }
 
 #closePopupBtn:hover {
