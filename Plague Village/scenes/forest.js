@@ -231,6 +231,38 @@ function resetForestScene() {
     setForestDialogueForLevel();
 }
 
+function registerForestSceneEnterHook(sceneID, callback) {
+    if (!window.__sceneEnterHooks) {
+        window.__sceneEnterHooks = {};
+    }
+
+    if (!window.__sceneEnterHooks[sceneID]) {
+        window.__sceneEnterHooks[sceneID] = [];
+    }
+
+    if (!window.__sceneEnterHooks[sceneID].includes(callback)) {
+        window.__sceneEnterHooks[sceneID].push(callback);
+    }
+
+    if (typeof window.showScene === "function" && !window.showScene.__sceneHookWrapped) {
+        const originalShowScene = window.showScene;
+
+        const wrappedShowScene = function (nextSceneID) {
+            originalShowScene(nextSceneID);
+
+            const sceneHooks = window.__sceneEnterHooks[nextSceneID] || [];
+            sceneHooks.forEach((hook) => hook());
+        };
+
+        wrappedShowScene.__sceneHookWrapped = true;
+        window.showScene = wrappedShowScene;
+
+        if (typeof showScene === "function") {
+            showScene = wrappedShowScene;
+        }
+    }
+}
+
 forestNextArrow.addEventListener("click", () => {
     if (forestIsTyping) return;
 
@@ -301,27 +333,5 @@ forestClosePopupBtn.addEventListener("click", () => {
     forestLootPopup.style.display = "none";
 });
 
-// Hook scene reset into the app's existing showScene() with minimal change
-if (!window.__sceneEnterHooksInstalled) {
-    window.__sceneEnterHooksInstalled = true;
-    window.__sceneEnterHooks = {};
-
-    const originalShowScene = typeof showScene === "function" ? showScene : window.showScene;
-    const wrappedShowScene = function (sceneID) {
-        originalShowScene(sceneID);
-
-        if (window.__sceneEnterHooks[sceneID]) {
-            window.__sceneEnterHooks[sceneID].forEach(fn => fn());
-        }
-    };
-
-    window.showScene = wrappedShowScene;
-    showScene = wrappedShowScene;
-} else if (!window.__sceneEnterHooks) {
-    window.__sceneEnterHooks = {};
-}
-
-if (!window.__sceneEnterHooks["forestScene"]) {
-    window.__sceneEnterHooks["forestScene"] = [];
-}
-window.__sceneEnterHooks["forestScene"].push(resetForestScene);
+registerForestSceneEnterHook("forestScene", resetForestScene);
+resetForestScene();
