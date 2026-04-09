@@ -337,14 +337,17 @@ if (!window.__sceneEnterHooksInstalled) {
     window.__sceneEnterHooksInstalled = true;
     window.__sceneEnterHooks = {};
 
-    const originalShowScene = window.showScene;
-    window.showScene = function (sceneID) {
+    const originalShowScene = typeof showScene === "function" ? showScene : window.showScene;
+    const wrappedShowScene = function (sceneID) {
         originalShowScene(sceneID);
 
         if (window.__sceneEnterHooks[sceneID]) {
             window.__sceneEnterHooks[sceneID].forEach(fn => fn());
         }
     };
+
+    window.showScene = wrappedShowScene;
+    showScene = wrappedShowScene;
 }
 
 if (!window.__sceneEnterHooks["chapelScene"]) {
