@@ -138,6 +138,16 @@ loginCancel?.addEventListener("click", (e) => {
 
 guestLoginBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
+
+    try {
+        await fetch("/api/auth/logout", {
+            method: "POST",
+            credentials: "same-origin",
+        });
+    } catch (error) {
+        console.error("Guest logout failed:", error);
+    }
+
     hideLogin();
     await startGame();
 });
@@ -179,7 +189,18 @@ loginForm?.addEventListener("submit", async (e) => {
         }
 
         hideLogin();
-        await startGame();
+
+        if (create) {
+            await startGame();
+            return;
+        }
+
+        try {
+            await loadGame();
+        } catch (loadError) {
+            console.warn("Load failed or no save exists, starting new game:", loadError);
+            await startGame();
+        }
     } catch (err) {
         console.error("Login failed:", err);
 

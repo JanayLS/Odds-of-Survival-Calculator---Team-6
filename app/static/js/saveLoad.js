@@ -158,7 +158,6 @@ async function saveGame() {
         throw new Error(data.error || "Failed to save game");
     }
 
-    alert("Game saved.");
     return data;
 }
 
@@ -187,7 +186,6 @@ async function loadGame() {
     Object.assign(gameState, data);
     applyGameStateToRuntime();
 
-    alert("Game loaded.");
     return gameState;
 }
 
