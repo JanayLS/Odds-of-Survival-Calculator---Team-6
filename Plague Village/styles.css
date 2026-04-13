@@ -1202,13 +1202,12 @@ button {
 
 #forestScene #forestDoctor {
     position: absolute;
-    left: -3vw;
-    bottom: -1vw;
+    left: -1vw;
+    bottom: -3vw;
     width: 30vw;
     max-width: 420px;
     z-index: 2;
     filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.6));
-    animation: doctorIdle 3s ease-in-out infinite;
 }
 
 @keyframes doctorIdle {
