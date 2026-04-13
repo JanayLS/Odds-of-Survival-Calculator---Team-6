@@ -5,10 +5,10 @@ shopScene.innerHTML = `
     <img id="shop-owner" src="images/characters/shop-owner.png">
 
     <!-- Dialogue System (Character Name, Dialogue Text, Player Choices, Next Arrow for Navigation) -->
-    <div id="dialogueBox">
-        <div id="characterName">Rosemary Thornsmith:</div>
-        <div id="dialogueText"></div>
-        <div id="nextArrow">➤</div>
+     <div id="shopDialogueBox">
+        <div id="shopCharacterName">Rosemary Thornsmith:</div>
+        <div id="shopDialogueText"></div>
+        <div id="shopNextArrow">➤</div>
     </div>
 
     <!-- Shop Panel -->
@@ -25,9 +25,52 @@ const shopPanel = document.getElementById('shopPanel')
 const boostItems = Object.values(itemDatabase).filter(item => item.category === "charm");
 const randomItem = boostItems[Math.floor(Math.random() * boostItems.length)];
 const shopItemSound = new Audio('sound-effects/misc-sounds/buy-item.wav');
+const shopDialogueBox = document.getElementById("shopDialogueBox");
+const shopDialogueText = document.getElementById("shopDialogueText");
+const shopNextArrow = document.getElementById("shopNextArrow");
 
-// Dynamically Stores Items
-let shopItems = [];
+// --------------------------------------
+// SHOP DIALOGUE
+// --------------------------------------
+const shopGreeting = "Welcome, Doctor. It's not much, but I hope you can find what you need.";
+const shopThanksLine = "Thank you! Is there anything else you need?";
+
+let shopIsTyping = false;
+let shopTypingSpeed = 35;
+let shopTypingInterval = null;
+
+function typeShopDialogue(line) {
+    if (shopTypingInterval) {
+        clearInterval(shopTypingInterval);
+    }
+
+    shopDialogueText.textContent = "";
+    shopNextArrow.style.opacity = 0;
+    shopIsTyping = true;
+
+    let i = 0;
+
+    shopTypingInterval = setInterval(() => {
+        const char = line.charAt(i);
+        shopDialogueText.textContent += char;
+
+        if (char != "" && typeof playRandomTypeSound === "function") {
+            playRandomTypeSound();
+        }
+
+        i++;
+
+        if (i >= line.length) {
+            clearInterval(shopTypingInterval);
+            shopTypingInterval = null;
+            shopIsTyping = false;
+        }
+    }, shopTypingSpeed);
+}
+
+function resetShopDialogue() {
+    typeShopDialogue(shopGreeting);
+}
 
 // Randomize Item
 function getRandomItems(array, count) {
@@ -35,15 +78,13 @@ function getRandomItems(array, count) {
     return shuffled.slice(0, count);
 }
 
-shopItems = getRandomItems(boostItems, 3);
-
 // Renders Shop Items in Shop Panel
 function renderShopItems() {
 
     const shopContainer = document.getElementById("shopItems");
     shopContainer.innerHTML = "";
 
-    shopItems.forEach(item => {
+    gameState.shopItems.forEach(item => {
 
         const itemCard = document.createElement("div");
         itemCard.className = "shop-item";
@@ -82,22 +123,40 @@ function renderShopItems() {
     })
 }
 
-renderShopItems();
-
+// Buy shop item
 function buyShopItem(item) {
     if (!spendMoney(item.price)) {
         alert("Not enough money.");
         return;
     }
 
+    shopItemSound.currentTime = 0;
     shopItemSound.play();
+
     hideItemDescription();
+    spendActionToken();
     addItemToInventory(item);
 
-    const itemIndex = shopItems.indexOf(item);
+    const itemIndex = gameState.shopItems.findIndex(shopItem => shopItem.name === item.name);
     if (itemIndex !== -1) {
-        shopItems.splice(itemIndex, 1);
+        gameState.shopItems.splice(itemIndex, 1);
     }
 
     renderShopItems();
+    typeShopDialogue(shopThanksLine);
+}
+
+// Shop items replenish when it's a new Day
+function refreshShopInventory() {
+    gameState.shopItems = getRandomItems(boostItems, 3);
+    renderShopItems();
+    resetShopDialogue();
+}
+
+// Startup Logic
+if (!gameState.shopItems || gameState.shopItems.length === 0) {
+    refreshShopInventory();
+} else {
+    renderShopItems();
+    resetShopDialogue();
 }

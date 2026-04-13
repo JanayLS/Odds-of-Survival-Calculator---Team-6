@@ -391,6 +391,10 @@ function showScene(sceneID) {
     hideItemDescription();
     document.getElementById(sceneID).style.display = "block";
 
+    if (sceneID === "shopScene" && typeof resetShopDialogue === "function") {
+        resetShopDialogue();
+    }
+
     // If Player has no Action Tokens, End of Day report will be shown when they return to Arrival (Main Village) Scene
     if (sceneID === "arrivalScene" && gameState.actionTokens <= 0) {
         showEndOfDayReport();
@@ -1030,6 +1034,10 @@ function advanceDay() {
     gameState.actionTokens = gameState.maxActionTokens;
     renderDay();
     renderActionTokens();
+
+    if (typeof refreshShopInventory === "function") {
+        refreshShopInventory();
+    }
 }
 
 renderDay();

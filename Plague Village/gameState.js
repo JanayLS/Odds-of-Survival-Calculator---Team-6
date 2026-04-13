@@ -13,6 +13,9 @@ const gameState = {
     inventory: [],
     money: 5,
 
+    // Shop Stock
+    shopItems: [],
+
     // Rats Objective
     ratsKilled: 0,
     ratsToKill: 0,
@@ -34,70 +37,70 @@ const gameState = {
         villager1: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager2: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager3: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager4: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager5: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager6: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager7: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager8: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager9: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         },
 
         villager10: {
             active: false,
             healed: false,
-            infectionLevel: 100,
+            infectionLevel: 85,
             dead: false,
         }
 
