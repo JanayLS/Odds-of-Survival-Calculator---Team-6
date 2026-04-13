@@ -391,7 +391,7 @@ function showScene(sceneID) {
     document.getElementById(sceneID).style.display = "block";
 
     // If Player has no Action Tokens, End of Day report will be shown when they return to Arrival (Main Village) Scene
-    if (sceneID === "arrivalScene" && actionTokens <= 0) {
+    if (sceneID === "arrivalScene" && gameState.actionTokens <= 0) {
         showEndOfDayReport();
     }
 
@@ -971,27 +971,27 @@ function setRandomStartMoney() {
 
 setRandomStartMoney();
 
-// ACTION TOKENS
-let actionTokens = 3;
-let maxActionTokens = 3;
+// --------------------------------------------------------------
+// ACTION TOKENS SYSTEM
+// --------------------------------------------------------------
 
 function renderActionTokens() {
     const actionTokensValue = document.getElementById("actionTokensValue");
-    actionTokensValue.textContent = `${actionTokens} / ${maxActionTokens}`;
+    actionTokensValue.textContent = `${gameState.actionTokens} / ${gameState.maxActionTokens}`;
 }
 
 renderActionTokens();
 
 // Spending Action Tokens
 function spendActionToken(amount = 1) {
-    if (actionTokens <= 0 || actionTokens < amount) {
+    if (gameState.actionTokens <= 0 || gameState.actionTokens < amount) {
         return false;
     }
 
-    actionTokens -= amount;
+    gameState.actionTokens -= amount;
 
-    if (actionTokens < 0) {
-        actionTokens = 0;
+    if (gameState.actionTokens < 0) {
+        gameState.actionTokens = 0;
     }
 
     renderActionTokens();
@@ -1000,7 +1000,7 @@ function spendActionToken(amount = 1) {
 
 // Checks to see if user has enough Action Tokens for an action
 function canSpendActionToken(amount = 1) {
-    if (actionTokens < amount) {
+    if (gameState.actionTokens < amount) {
         alert("No action tokens remaining. Return to the village to end the day.");
         return false;
     }
@@ -1008,6 +1008,26 @@ function canSpendActionToken(amount = 1) {
     return true;
 
 }
+
+// --------------------------------------------------------------
+// DAYS SYSTEM
+// --------------------------------------------------------------
+function renderDay() {
+    const dayValue = document.getElementById("dayValue");
+    dayValue.textContent = `${gameState.day} / ${gameState.maxDays}`;
+}
+
+function advanceDay() {
+    if (gameState.day < gameState.maxDays) {
+        gameState.day += 1;
+    }
+
+    gameState.actionTokens = gameState.maxActionTokens;
+    renderDay();
+    renderActionTokens();
+}
+
+renderDay();
 
 // --------------------------------------------------------------
 // END OF DAY
@@ -1021,8 +1041,17 @@ function hideEndOfDayReport() {
     endOfDayOverlay.classList.add("hidden");
 }
 
+// After closing End of Day report, the next 'Day' starts & Action Tokens are refreshed.
 closeEndOfDayBtn.addEventListener("click", () => {
     hideEndOfDayReport();
+
+    if (gameState.day >= gameState.maxDays) {
+        // TODO: CALL GAME ENDINGS LOGIC HERE LATER
+        alert("Final day reached.")
+        return;
+    }
+
+    advanceDay();
 })
 
 // If herb satchel in inventory, Doctor Infection does not increase
