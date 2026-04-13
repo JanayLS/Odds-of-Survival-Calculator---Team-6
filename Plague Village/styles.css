@@ -923,10 +923,10 @@ button {
 }
 
 #chapelScene .chapelDoctorCenter {
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 4vw;
-    width: 20vw;
+    position: absolute;
+    left: 40vw;  
+    bottom: 10vw;  
+    width: 16vw;  
 }
 
 #chapelScene .chapelCharacter {
