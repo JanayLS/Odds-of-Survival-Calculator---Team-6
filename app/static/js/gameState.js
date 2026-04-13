@@ -1,7 +1,8 @@
-// gameState.js holds a JSON structure of game data that will be saved/loaded with backend API integration.
+// ==============================
+// file: app/static/js/gameState.js
+// ==============================
 
 const gameState = {
-    // Example Data, Will contain real game state data that backend will use for saving/loading the game
     day: 1,
     actionTokens: 7,
     inventory: [],
@@ -10,12 +11,13 @@ const gameState = {
     ratsToKill: 0,
     villagersHealed: 0,
     villagersToHeal: 0,
-    currentScene: "arrivalScene",
-    doctorInfection: 0,
+    currentScene: "mainMenu",
+    doctorInfection: 50,
     doctorPoison: 0,
+    sceneState: "intro",
+    startItemsGiven: false,
 
     villagers: {
-
         villager1: {
             name: "Villager Name 1",
             infectionLevel: 70,
@@ -24,7 +26,6 @@ const gameState = {
             bg: "/static/img/backgrounds/villager-home-1.png",
             portrait: "/static/img/characters/villager1.png"
         },
-
         villager2: {
             name: "Villager Name 2",
             infectionLevel: 90,
@@ -33,7 +34,6 @@ const gameState = {
             bg: "/static/img/backgrounds/villager-home-2.png",
             portrait: "/static/img/characters/villager2.png"
         },
-
         villager3: {
             name: "Villager Name 3",
             infectionLevel: 60,
@@ -42,25 +42,22 @@ const gameState = {
             bg: "/static/img/backgrounds/villager-home-3.png",
             portrait: "/static/img/characters/villager3.png"
         },
-
         villager4: {
-            name: "Villager Name 3",
+            name: "Villager Name 4",
             infectionLevel: 60,
             dead: false,
             healed: false,
             bg: "/static/img/backgrounds/villager-home-3.png",
             portrait: "/static/img/characters/villager3.png"
         },
-
         villager5: {
-            name: "Villager Name 3",
+            name: "Villager Name 5",
             infectionLevel: 60,
             dead: false,
             healed: false,
             bg: "/static/img/backgrounds/villager-home-3.png",
             portrait: "/static/img/characters/villager3.png"
         }
-
     },
 
     rats: {
@@ -74,7 +71,6 @@ const gameState = {
         rat8: { hp: 0, dead: true },
         rat9: { hp: 50, dead: false }
     }
-
 };
 
-// export default gameState;
+window.gameState = gameState;

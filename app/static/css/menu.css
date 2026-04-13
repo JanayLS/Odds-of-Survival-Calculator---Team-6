@@ -1303,3 +1303,32 @@ button {
         justify-content: flex-end;
     }
 }
+
+#saveLoadUI {
+    position: fixed;
+    top: 18vh;
+    right: 1vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6vh;
+    z-index: 1000;
+}
+
+#saveGameBtn,
+#loadGameBtn {
+    padding: 0.5vw 0.5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#saveGameBtn:hover,
+#loadGameBtn:hover {
+    transform: scale(1.05);
+    background-color: #64c19f;
+}

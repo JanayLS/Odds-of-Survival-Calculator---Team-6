@@ -56,6 +56,12 @@
         <div id="itemDescriptionText"></div>
     </div>
 
+    <!-- Save and Load Button-->
+    <div id="saveLoadUI">
+        <button id="saveGameBtn">Save</button>
+        <button id="loadGameBtn">Load</button>
+    </div>
+
     <!-- TRAVEL -->
     <button id="travelBtn">Travel</button>
     <div id="travelPanel">
@@ -76,7 +82,7 @@
         <h2>Objectives</h2>
         <div id="objectiveContent">No objectives yet.</div>
     </div>
-    </div>
+
 
     <!-- MAIN MENU SCENE -->
     <div id="mainMenu" class="scene">
@@ -199,6 +205,7 @@
     <script src="{{ url_for('static', filename='js/potions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
     <script src="{{ url_for('static', filename='js/villager-home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/saveLoad.js') }}"></script>
 
 </body>
 
