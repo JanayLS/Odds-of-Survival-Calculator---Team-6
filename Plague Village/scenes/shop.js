@@ -91,6 +91,7 @@ function buyShopItem(item) {
     }
 
     shopItemSound.play();
+    hideItemDescription();
     addItemToInventory(item);
 
     const itemIndex = shopItems.indexOf(item);

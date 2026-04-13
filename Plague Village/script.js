@@ -388,6 +388,7 @@ function showScene(sceneID) {
         scene.style.display = "none";
     });
 
+    hideItemDescription();
     document.getElementById(sceneID).style.display = "block";
 
     // If Player has no Action Tokens, End of Day report will be shown when they return to Arrival (Main Village) Scene
@@ -555,6 +556,7 @@ inventoryTabs.forEach(tab => {
         tab.classList.add("active");
 
         activeInventoryTab = tab.dataset.tab;
+        hideItemDescription();
         renderInventory();
     })
 
@@ -699,6 +701,7 @@ musicBtn.addEventListener("click", () => {
 // Inventory Button 
 inventoryBtn.addEventListener("click", () => {
     inventoryPanel.classList.toggle("open");
+    hideItemDescription();
 }
 )
 
@@ -912,6 +915,8 @@ function applyReduceVillagerInfection(item) {
 
     renderVillagerInfection();
     renderVillagerScene();
+    updateVillageVisual();
+    updateObjectivePanel();
 
     return true;
 }
