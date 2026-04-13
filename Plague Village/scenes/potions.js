@@ -313,9 +313,18 @@ function brewPotion() {
         resultSlot.innerHTML = `<img class="potion-result ${brewedPotion.boostType === "emerald" ? "emerald-boosted" : ""}" src="${brewedPotion.img}" alt="${brewedPotion.name}">`;
         resultText.textContent = brewedPotion.name;
 
+        // Clear ingredient/charm slots after successful brew
+        brewingSlots.ingredient1 = null;
+        brewingSlots.ingredient2 = null;
+        brewingSlots.ingredient3 = null;
+        brewingSlots.charm = null;
+
+        renderBrewingSlots();
+        window.selectedItem = null;
+
     } else {
         brewedPotion = null;
-        console.log("Unknown Potion");
+        resultText.textContent = "Unknown Recipe.";
     }
 }
 
