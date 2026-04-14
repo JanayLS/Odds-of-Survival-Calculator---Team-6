@@ -216,6 +216,92 @@ button {
 }
 
 /* ============================= */
+/* SAVE/LOAD UI */
+/* ============================= */
+#saveLoadBtn {
+    position: fixed;
+    bottom: 20vh;
+    right: 2vw;
+    width: 3vw;
+    height: 3vw;
+    min-width: 3vw;
+    min-height: 3vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.5vw;
+    font-weight: bold;
+
+    background: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 50%;
+
+    cursor: pointer;
+    z-index: 1000;
+
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+#saveLoadBtn:hover {
+    transform: scale(1.08);
+    background-color: #64c19f;
+}
+
+#saveLoadOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+#saveLoadOverlay.hidden {
+    display: none;
+}
+
+#saveLoadPanel {
+    width: 22vw;
+    min-width: 22vw;
+    padding: 1.5vw;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    text-align: center;
+    color: white;
+}
+
+#saveLoadPanel h3 {
+    margin-top: 0;
+    margin-bottom: 1vw;
+    color: #f5e6c8;
+}
+
+#saveLoadPanel button {
+    display: block;
+    width: 100%;
+    margin: 0.7vw 0;
+    padding: 0.8vw;
+
+    font-size: 1rem;
+    font-weight: bold;
+
+    background: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#saveLoadPanel button:hover {
+    background: #64c19f;
+}
+
+/* ============================= */
 /* MONEY */
 /* ============================= */
 
