@@ -17,6 +17,13 @@ const mainMenu = document.getElementById('mainMenu');
 const arrivalScene = document.getElementById('arrivalScene')
 const startGameBtn = document.getElementById('startGameBtn')
 
+// Save / Load Button
+const saveLoadBtn = document.getElementById("saveLoadBtn");
+const saveLoadOverlay = document.getElementById("saveLoadOverlay");
+const saveGameBtn = document.getElementById("saveGameBtn");
+const loadGameBtn = document.getElementById("loadGameBtn");
+const closeSaveLoadBtn = document.getElementById("closeSaveLoadBtn");
+
 // Music Button
 const bgm = document.getElementById('bgm');
 const musicBtn = document.getElementById('musicBtn');
@@ -691,6 +698,32 @@ function updateObjectivePanel() {
 
 // BUTTONS
 // --------------------------------------
+// Save/Load Buttons
+saveLoadBtn.addEventListener("click", () => {
+    saveLoadOverlay.classList.remove("hidden");
+});
+
+closeSaveLoadBtn.addEventListener("click", () => {
+    saveLoadOverlay.classList.add("hidden");
+});
+
+saveLoadOverlay.addEventListener("click", (e) => {
+    if (e.target === saveLoadOverlay) {
+        saveLoadOverlay.classList.add("hidden");
+    }
+});
+
+saveGameBtn.addEventListener("click", () => {
+    console.log("Save button clicked");
+    // Backend will add Save logic here
+});
+
+loadGameBtn.addEventListener("click", () => {
+    console.log("Load button clicked");
+    // Backend will add Load logic here
+});
+
+
 // Music Button
 musicBtn.addEventListener("click", () => {
     if (bgm.paused) {
