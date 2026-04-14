@@ -83,16 +83,14 @@ const objectivePanel = document.getElementById("objectivePanel");
 // End of Day Elements
 const endOfDayOverlay = document.getElementById("endOfDayOverlay");
 const closeEndOfDayBtn = document.getElementById("closeEndOfDayBtn");
-
-// Doctor Infection Status (Start at 50 for now while testing, change later)
-let doctorInfection = 50;
+const endOfDayText = document.getElementById("endOfDayText");
 
 function renderDoctorInfection() {
     const bar = document.getElementById("doctorInfectionBar");
     const value = document.getElementById("doctorInfectionValue");
 
-    bar.style.width = `${doctorInfection}%`;
-    value.textContent = `${doctorInfection}%`;
+    bar.style.width = `${gameState.doctorInfection}%`;
+    value.textContent = `${gameState.doctorInfection}%`;
 }
 
 renderDoctorInfection();
@@ -423,14 +421,14 @@ function showScene(sceneID) {
     }
 }
 
-// Add items to inventory (keeps track of quantity and decreases quantity when item is used)
+// Add items to inventory (keeps track of quanitity and decreases quantity when item is used)
 function addItemToInventory(newItem) {
-    const existingItem = inventory.find(item => item.name === newItem.name);
+    const existingItem = gameState.inventory.find(item => item.name === newItem.name);
 
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        inventory.push({
+        gameState.inventory.push({
             ...newItem,
             quantity: 1
         });
@@ -441,15 +439,15 @@ function addItemToInventory(newItem) {
 
 // Remove items from inventory (decreases quantity of item or removes item if quantity was 1)
 function removeItemFromInventory(itemToRemove) {
-    const existingItem = inventory.find(item => item.name === itemToRemove.name);
+    const existingItem = gameState.inventory.find(item => item.name === itemToRemove.name);
 
     if (!existingItem) return;
 
     existingItem.quantity -= 1;
 
     if (existingItem.quantity <= 0) {
-        const itemIndex = inventory.findIndex(item => item.name === itemToRemove.name);
-        inventory.splice(itemIndex, 1);
+        const itemIndex = gameState.inventory.findIndex(item => item.name === itemToRemove.name);
+        gameState.inventory.splice(itemIndex, 1);
     }
 
     renderInventory();
@@ -457,7 +455,6 @@ function removeItemFromInventory(itemToRemove) {
 
 
 // WHEN PLAYER CHECKS MEDICAL SUPPLIES, 3 RANDOM ITEMS ARE GENERATED
-let inventory = [];
 let startItemsGiven = false;
 
 function getRandomStartItems(itemDatabase, count = 5) {
@@ -509,7 +506,7 @@ function renderInventory() {
     const inventoryItems = document.getElementById("inventoryItems");
     inventoryItems.innerHTML = "";
 
-    const filteredItems = inventory.filter(item => {
+    const filteredItems = gameState.inventory.filter(item => {
         if (activeInventoryTab === "ingredients") return item.category === "ingredient";
         if (activeInventoryTab === "charm") return item.category === "charm";
         if (activeInventoryTab === "potions") return item.category === "potion";
@@ -812,7 +809,7 @@ function useItem(item) {
 function validateItemUse(item) {
     switch (item.effectType) {
         case "reduceDoctorInfection":
-            if (doctorInfection <= 0) {
+            if (gameState.doctorInfection <= 0) {
                 return { valid: false, message: "The Doctor is not infected." };
             }
             return { valid: true };
@@ -886,10 +883,10 @@ function applyReduceDoctorInfection(item) {
         reductionAmt += 20;
     }
 
-    doctorInfection -= reductionAmt;
+    gameState.doctorInfection -= reductionAmt;
 
-    if (doctorInfection < 0) doctorInfection = 0;
-    if (doctorInfection > 100) doctorInfection = 100;
+    if (gameState.doctorInfection < 0) gameState.doctorInfection = 0;
+    if (gameState.doctorInfection > 100) gameState.doctorInfection = 100;
 
     renderDoctorInfection();
     return true;
@@ -922,6 +919,10 @@ function applyReduceVillagerInfection(item) {
         return false;
     }
 
+    if (!canSpendActionToken(1)) {
+        return false;
+    }
+
     let reductionAmt = 0;
 
     switch (item.tier) {
@@ -949,6 +950,8 @@ function applyReduceVillagerInfection(item) {
         villager.healed = true;
         gameState.villagersHealed += 1;
     }
+
+    spendActionToken(1);
 
     renderVillagerInfection();
     renderVillagerScene();
@@ -1078,8 +1081,109 @@ renderDay();
 // --------------------------------------------------------------
 // END OF DAY
 // --------------------------------------------------------------
+let endOfDayProcessed = false;
+
+// Check to see if Doctor has a specific item in inventory (used at end of day to check for herb satchel)
+function hasItemInInventory(itemName) {
+    return gameState.inventory.some(item => item.name === itemName);
+}
+
+// End of Day Updates (Infections increase, rats HP increase, donations/gifts applied, etc.)
+function applyEndOfDayUpdates() {
+    const report = {
+        healedVillagers: gameState.villagersHealed,
+        defeatedRats: gameState.ratsKilled,
+        villagersWorsened: 0,
+        ratsStrengthened: 0,
+        doctorInfectionIncreased: false,
+        moneyReceived: 0,
+        giftedItems: []
+    };
+
+    // Rats that are still alive gain HP
+    Object.values(gameState.rats).forEach(rat => {
+        if (!rat.dead) {
+            rat.hp += 10;
+            if (rat.hp > 100) rat.hp = 100;
+            report.ratsStrengthened += 1;
+        }
+    });
+
+    // Villagers with active infections worsen 
+    Object.values(gameState.villagers).forEach(villager => {
+        if (villager.active && !villager.healed && !villager.dead) {
+            // TODO: Skip infection increase if villager has Fever Suppressant or Ruby Amulet protection
+
+            villager.infectionLevel += 10;
+            // TODO: Villager dies if infection level reaches 100
+            if (villager.infectionLevel > 100) villager.infectionLevel = 100;
+            report.villagersWorsened += 1;
+        }
+    });
+
+    // Doctor infection increases unless Herb Satchel is in inventory
+    if (!hasItemInInventory("Herb Satchel")) {
+        gameState.doctorInfection += 10;
+        if (gameState.doctorInfection > 100) gameState.doctorInfection = 100;
+        report.doctorInfectionIncreased = true;
+        renderDoctorInfection();
+    }
+
+    // Village Donations
+    const rewardMoney = Math.floor(Math.random() * 451) + 50; // Change amount later if it needs to be more
+    addMoney(rewardMoney);
+    report.moneyReceived = rewardMoney;
+
+    // Village Gifts
+    const giftCount = Math.floor(Math.random() * 2) + 2 // 2-3 gift items
+    const giftItems = getRandomStartItems(itemDatabase, giftCount);
+
+    giftItems.forEach(item => {
+        addItemToInventory(item);
+        report.giftedItems.push(item.name);
+    });
+
+    // Refresh visuals after update
+    updateVillageVisual();
+    updateObjectivePanel();
+    renderInventory();
+
+    return report;
+}
+
+function buildEndOfDayReportText(report) {
+    let text = `
+        <p>You healed <strong>${report.healedVillagers}</strong> villagers.</p>
+        <p>You defeated <strong>${report.defeatedRats}</strong> rats.</p>
+        <p><strong>${report.ratsStrengthened}</strong> live rats grew stronger in the night.</p>
+        <p><strong>${report.villagersWorsened}</strong> villagers worsened overnight.</p>
+    `;
+
+    if (report.doctorInfectionIncreased) {
+        text += `<p>Your infection worsened during the night.</p>`;
+    } else {
+        text += `<p>Your herb satchel protected you through the night.</p>`;
+    }
+
+    text += `<p>The village gave you <strong>${report.moneyReceived}</strong> coins in thanks.</p>`;
+
+    if (report.giftedItems.length > 0) {
+        text += `<p>You also received some gifts: <strong>${report.giftedItems.join(", ")}</strong>.</p>`;
+    }
+
+    text += `<p>Rest tonight so you can be ready for tomorrow.</p>`;
+
+    return text;
+}
+
 // End of Day Report
 function showEndOfDayReport() {
+    if (!endOfDayProcessed) {
+        const report = applyEndOfDayUpdates();
+        endOfDayText.innerHTML = buildEndOfDayReportText(report);
+        endOfDayProcessed = true;
+    }
+
     endOfDayOverlay.classList.remove("hidden");
 }
 
@@ -1098,13 +1202,7 @@ closeEndOfDayBtn.addEventListener("click", () => {
     }
 
     advanceDay();
+    endOfDayProcessed = false;
 })
-
-// If herb satchel in inventory, Doctor Infection does not increase
-// if (inventory.charms.herbSatchel > 0) {
-//     // Doctor infection does not worsen
-// } else {
-//     // Doctor infection worsens
-// }
 
 updateVillageVisual();
