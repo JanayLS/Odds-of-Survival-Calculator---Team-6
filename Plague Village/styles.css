@@ -831,7 +831,7 @@ button {
 
 #objectiveBtn {
     position: fixed;
-    top: 35vh;
+    top: 18vh;
     right: 1vw;
     padding: .5vw .5vh;
     font-size: 2vh;
@@ -1641,7 +1641,7 @@ button {
 /* Recipe Book */
 #recipeBookBtn {
     position: fixed;
-    top: 18vh;
+    top: 24vh;
     right: 1vw;
     padding: .5vw .5vh;
     font-size: 2vh;
