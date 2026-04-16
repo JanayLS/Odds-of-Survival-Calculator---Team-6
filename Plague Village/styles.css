@@ -1817,6 +1817,379 @@ button {
 }
 
 /* ============================= */
+/* DOCTOR DIES ENDING */
+/* ============================= */
+#doctorDiesScene {
+    position: relative;
+    overflow: hidden;
+    background: #050403;
+}
+
+#doctorDiesScene #doctorDiesBackground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+#doctorDiesScene #doctorDiesSprite {
+    position: absolute;
+    left: 8vw;
+    bottom: 2vh;
+    width: 20vw;
+    max-width: 320px;
+    min-width: 180px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s ease, transform 0.4s ease, filter 0.9s ease;
+    filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.45));
+}
+
+#doctorDiesScene #doctorDiesSprite.normal {
+    transform: translateY(0);
+}
+
+#doctorDiesScene #doctorDiesSprite.loss {
+    transform: translateY(0);
+    filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.45)) brightness(0.92);
+}
+
+#doctorDiesScene #doctorDiesSprite.unbalanced {
+    transform: translateY(5px);
+    filter: drop-shadow(0 20px 24px rgba(0, 0, 0, 0.5)) brightness(0.86);
+}
+
+#doctorDiesScene #doctorDiesSprite.falling {
+    transform: translateY(20px);
+    filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.58)) brightness(0.80);
+}
+
+#doctorDiesScene #doctorDiesSprite.dead {
+    transform: translateY(0);
+    bottom: 0;
+    width: 22vw;
+    filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6)) brightness(0.72);
+}
+
+#doctorDiesScene #doctorDiesDialogueBox {
+    position: absolute;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50vw;
+    max-width: 50vw;
+    padding: 2vh 2vw;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    font-size: clamp(2vh, 2.2vw, 3vh);
+    line-height: 1.4;
+    z-index: 10;
+    box-sizing: border-box;
+    transition: opacity 0.8s ease;
+}
+
+#doctorDiesScene #doctorDiesCharacterName {
+    color: tan;
+    margin-bottom: 1vh;
+    font-weight: bold;
+}
+
+#doctorDiesScene #doctorDiesDialogueText {
+    min-height: 8vh;
+    padding-right: 3vw;
+}
+
+#doctorDiesScene #doctorDiesNextArrow {
+    position: absolute;
+    bottom: 1vh;
+    right: 1vw;
+    font-size: 2vw;
+    color: white;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    animation: doctorDiesArrowPulse 1s infinite ease-in-out;
+}
+
+#doctorDiesScene #doctorDiesOverlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 1.5s ease, background 1.5s ease;
+}
+
+#doctorDiesScene #doctorDiesOverlay.show {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.84);
+}
+
+#doctorDiesScene #doctorDiesCard {
+    width: min(72vw, 760px);
+    padding: 48px 42px;
+    text-align: center;
+    color: #f7f0e6;
+    background: linear-gradient(180deg, rgba(34, 19, 15, 0.88), rgba(8, 5, 4, 0.94));
+    border: 1px solid rgba(215, 177, 123, 0.5);
+    border-radius: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    transform: translateY(24px) scale(0.96);
+    transition: transform 1.2s ease;
+}
+
+#doctorDiesScene #doctorDiesOverlay.show #doctorDiesCard {
+    transform: translateY(0) scale(1);
+}
+
+#doctorDiesScene #doctorDiesLabel {
+    margin-bottom: 10px;
+    color: #d7b17b;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+}
+
+#doctorDiesScene #doctorDiesTitle {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    line-height: 1.08;
+}
+
+#doctorDiesScene #doctorDiesSummary {
+    margin: 18px auto 0;
+    max-width: 34ch;
+    color: rgba(247, 240, 230, 0.82);
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+}
+
+@keyframes doctorDiesArrowPulse {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 900px) {
+    #doctorDiesScene #doctorDiesSprite {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 42vw;
+        min-width: 170px;
+    }
+
+    #doctorDiesScene #doctorDiesSprite.normal,
+    #doctorDiesScene #doctorDiesSprite.loss,
+    #doctorDiesScene #doctorDiesSprite.unbalanced,
+    #doctorDiesScene #doctorDiesSprite.falling,
+    #doctorDiesScene #doctorDiesSprite.dead {
+        transform: translateX(-50%);
+    }
+
+    #doctorDiesScene #doctorDiesSprite.unbalanced {
+        transform: translateX(-50%) translateY(5px);
+    }
+
+    #doctorDiesScene #doctorDiesSprite.falling {
+        transform: translateX(-50%) translateY(20px);
+    }
+
+    #doctorDiesScene #doctorDiesDialogueBox {
+        width: 88vw;
+        max-width: 88vw;
+        padding: 20px 22px 28px;
+        bottom: 2vh;
+    }
+
+    #doctorDiesScene #doctorDiesNextArrow {
+        font-size: 28px;
+        right: 18px;
+    }
+
+    #doctorDiesScene #doctorDiesCard {
+        width: 88vw;
+        padding: 34px 24px;
+    }
+}
+
+/* ============================= */
+/* VILLAGE COLLAPSE ENDING */
+/* ============================= */
+#villageCollapseScene {
+    position: relative;
+    overflow: hidden;
+    background: black;
+}
+
+#villageCollapseScene #villageCollapseBackground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+#villageCollapseScene #villageCollapseDoctorSprite {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    height: 75%;
+    z-index: 2;
+    opacity: 0.95;
+    transition: opacity 0.4s ease, filter 0.9s ease;
+    filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.45));
+}
+
+#villageCollapseScene #villageCollapseDialogueBox {
+    position: absolute;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(50vw, 860px);
+    padding: 2vh 2vw;
+    background: rgba(17, 10, 8, 0.72);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(210, 179, 138, 0.72);
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+    color: #f4eee7;
+    font-size: clamp(18px, 2vw, 28px);
+    line-height: 1.5;
+    z-index: 10;
+    box-sizing: border-box;
+    transition: opacity 0.8s ease;
+}
+
+#villageCollapseScene #villageCollapseCharacterName {
+    color: #d7b17b;
+    margin-bottom: 1vh;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.7em;
+}
+
+#villageCollapseScene #villageCollapseDialogueText {
+    color: #f4eee7;
+    padding-right: 3vw;
+    min-height: 3.2em;
+}
+
+#villageCollapseScene #villageCollapseNextArrow {
+    position: absolute;
+    bottom: 1vh;
+    right: 1vw;
+    font-size: 2vw;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    opacity: 0;
+    animation: villageCollapseArrowPulse 1s infinite ease-in-out;
+}
+
+#villageCollapseScene #villageCollapseEndingOverlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 1.5s ease, background 1.5s ease;
+}
+
+#villageCollapseScene #villageCollapseEndingOverlay.show {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.84);
+}
+
+#villageCollapseScene #villageCollapseEndingCard {
+    width: min(72vw, 760px);
+    padding: 48px 42px;
+    text-align: center;
+    color: #f7f0e6;
+    background: linear-gradient(180deg, rgba(34, 19, 15, 0.88), rgba(8, 5, 4, 0.94));
+    border: 1px solid rgba(215, 177, 123, 0.5);
+    border-radius: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    transform: translateY(24px) scale(0.96);
+    transition: transform 1.2s ease;
+}
+
+#villageCollapseScene #villageCollapseEndingOverlay.show #villageCollapseEndingCard {
+    transform: translateY(0) scale(1);
+}
+
+#villageCollapseScene #villageCollapseEndingLabel {
+    margin-bottom: 10px;
+    color: #d7b17b;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+}
+
+#villageCollapseScene #villageCollapseEndingTitle {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    line-height: 1.08;
+}
+
+#villageCollapseScene #villageCollapseEndingSummary {
+    margin: 18px auto 0;
+    max-width: 34ch;
+    color: rgba(247, 240, 230, 0.82);
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+}
+
+@keyframes villageCollapseArrowPulse {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-0.4vh); }
+    100% { transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+    #villageCollapseScene #villageCollapseDoctorSprite {
+        width: 42vw;
+        height: auto;
+        min-width: 170px;
+    }
+
+    #villageCollapseScene #villageCollapseDialogueBox {
+        width: min(88vw, 640px);
+        padding: 20px 22px 28px;
+        bottom: 2vh;
+    }
+
+    #villageCollapseScene #villageCollapseNextArrow {
+        font-size: 28px;
+        right: 18px;
+    }
+
+    #villageCollapseScene #villageCollapseEndingCard {
+        width: min(88vw, 560px);
+        padding: 34px 24px;
+    }
+}
+
+/* ============================= */
 /* GLOBAL ANIMATIONS */
 /* ============================= */
 @keyframes plaguePulse {
