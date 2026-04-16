@@ -7,7 +7,7 @@ const itemDatabase = {
     bitterMushroom: {
         name: "Bitter Mushroom",
         img: "images/ingredients/bitter-mushroom.png",
-        description: "Fill in later",
+        description: "Used in plague concoctions to poison rats. A bright red, spotted mushroom with a bitter, toxic flesh.",
         category: "ingredient",
         weight: 5
     },
@@ -15,7 +15,7 @@ const itemDatabase = {
     boneAsh: {
         name: "Bone Ash",
         img: "images/ingredients/bone-ash.png",
-        description: "Fill in later",
+        description: "Used in ash remedies to cure poison. A pale powder made from burned bones with cleansing properties.",
         category: "ingredient",
         weight: 5
     },
@@ -23,7 +23,7 @@ const itemDatabase = {
     charcoalPowder: {
         name: "Charcoal Powder",
         img: "images/ingredients/charcoal-powder.png",
-        description: "Fill in later",
+        description: "Used in strong remedies and concoctions. A coarse black powder known for drawing out toxins.",
         category: "ingredient",
         weight: 3
     },
@@ -31,7 +31,7 @@ const itemDatabase = {
     garlicBulb: {
         name: "Garlic Bulb",
         img: "images/ingredients/garlic-bulb.png",
-        description: "Fill in later",
+        description: "Used in ash remedies and elixirs to protect the body. A sharp, pungent bulb believed to resist infection",
         category: "ingredient",
         weight: 8
     },
@@ -39,7 +39,7 @@ const itemDatabase = {
     hawthorne: {
         name: "Hawthorne",
         img: "images/ingredients/hawthorne.png",
-        description: "Fill in later",
+        description: "Used in fever suppressants. Bright red berries that help stabilize illness and reduce fever.",
         category: "ingredient",
         weight: 7
     },
@@ -47,7 +47,7 @@ const itemDatabase = {
     mint: {
         name: "Mint",
         img: "images/ingredients/mint.png",
-        description: "Fill in later",
+        description: "Used in healing tonics and fever suppressants. A cooling herb that strengthens powerful remedies.",
         category: "ingredient",
         weight: 6
     },
@@ -55,7 +55,7 @@ const itemDatabase = {
     moldedBark: {
         name: "Molded Bark",
         img: "images/ingredients/molded-bark.png",
-        description: "Fill in later",
+        description: "Used in plague concoctions. Rotting bark covered in growth, forming the base of potent rat poisons.",
         category: "ingredient",
         weight: 7
     },
@@ -63,7 +63,7 @@ const itemDatabase = {
     silverleaf: {
         name: "Silverleaf",
         img: "images/ingredients/silverleaf.png",
-        description: "Fill in later",
+        description: "Used in healing tonics and elixirs. A pale medicinal plant known for gently reducing infection.",
         category: "ingredient",
         weight: 6
     },
@@ -71,7 +71,7 @@ const itemDatabase = {
     thyme: {
         name: "Thyme",
         img: "images/ingredients/thyme.png",
-        description: "Fill in later",
+        description: "Used in fever suppressants. A fragrant herb that helps stabilize sickness and ease fever.",
         category: "ingredient",
         weight: 9
     },
@@ -79,7 +79,7 @@ const itemDatabase = {
     yarrow: {
         name: "Yarrow",
         img: "images/ingredients/yarrow.png",
-        description: "Fill in later",
+        description: "Used in healing tonics. A strong medicinal flower that restores the sick and reduces infection.",
         category: "ingredient",
         weight: 6
     },
