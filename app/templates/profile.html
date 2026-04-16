@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Profile</title>
+    <title>Profile - {{ user.name }}</title>
   </head>
   <body>
-    <h1>{{ user.name }}</h1>
+    <h1>{{ user.name }}'s Profile</h1>
     <p><strong>Location:</strong> {{ user.location }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
 
@@ -15,5 +15,11 @@
       <li>Survival rate: {{ user.stats.survival_rate }}%</li>
       <li>Potions: {{ user.stats.num_of_potions }}</li>
     </ul>
+
+    <!-- Navigation Buttons -->
+    <div style="margin-top: 20px;">
+      <button onclick="window.location.href='/menu'">Back to Main Menu</button>
+      <button onclick="window.location.href='/menu?autostart=true'">Start Game</button>
+    </div>
   </body>
 </html>
