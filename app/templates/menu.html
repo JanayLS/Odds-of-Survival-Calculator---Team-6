@@ -12,6 +12,15 @@
 <body>
     <!-- GLOBAL UI (APPEARS IN ALL SCENES)-->
 
+    <!-- VILLAGE INFECTION -->
+    <div id="villageInfectionUI">
+        <div id="villageInfectionLabel">Village Infection</div>
+        <div id="villageInfectionContainer">
+            <div id="villageInfectionBar"></div>
+        </div>
+        <div id="villageInfectionValue">100%</div>
+    </div>
+
     <!-- PLAGUE DOCTOR STATUS -->
     <!-- Doctor Infection -->
     <div id="doctorInfectionUI">
@@ -22,73 +31,39 @@
         <div id="doctorInfectionValue">50%</div>
     </div>
 
+    <!-- SAVE/LOAD BUTTON -->
+    <button id="saveLoadBtn" title="Save / Load">⚙</button>
+
+    <div id="saveLoadOverlay" class="hidden">
+        <div id="saveLoadPanel">
+            <h3>Save / Load</h3>
+            <button id="saveGameBtn">Save Game</button>
+            <button id="loadGameBtn">Load Game</button>
+            <button id="closeSaveLoadBtn">Close</button>
+        </div>
+    </div>
+
     <!-- MONEY -->
     <div id="moneyUI">
         <img id="coinIcon" src="{{ url_for('static', filename='img/misc-images/coin.png') }}" alt="Coin icon">
         <span id="moneyValue">0</span>
     </div>
 
+    <!-- ACTION TOKENS -->
+    <div id="actionTokensUI">
+        <div id="actionTokensLabel">Action Tokens</div>
+        <div id="actionTokensValue">3 / 3</div>
+    </div>
+
+    <!-- DAYS -->
+    <div id="dayUI">
+        <div id="dayLabel">Day</div>
+        <div id="dayValue">1 / 3</div>
+    </div>
+
     <!-- MUSIC -->
     <button id="musicBtn">Music On</button>
     <audio id="bgm" src="{{ url_for('static', filename='audio/arrivalMusic.mp3') }}" loop></audio>
-
-    <!-- INVENTORY -->
-    <!-- Inventory Button -->
-    <button id="inventoryBtn">Inventory</button>
-    <span id="inventoryHintArrow">➤</span>
-
-    <!-- Inventory Panel -->
-    <div id="inventoryPanel">
-        <h3>Inventory</h3>
-
-        <div id="inventoryTabs">
-            <button class="inventoryTab active" data-tab="ingredients">Ingredients</button>
-            <button class="inventoryTab" data-tab="charm">Charms</button>
-            <button class="inventoryTab" data-tab="potions">Potions</button>
-        </div>
-
-        <div id="inventoryItems"></div>
-    </div>
-
-    <!-- Item Description Panel -->
-    <div id="itemDescriptionPanel">
-        <div id="itemDescriptionName"></div>
-        <div id="itemDescriptionText"></div>
-    </div>
-
-    <!-- Save and Load Button-->
-    <div id="saveLoadUI">
-        <button id="saveGameBtn">Save</button>
-        <button id="loadGameBtn">Load</button>
-    </div>
-
-    <!-- TRAVEL -->
-    <button id="travelBtn">Travel</button>
-    <div id="travelPanel">
-        <div id="travelLocations">
-            <button class="travelLocationBtn" data-scene="villagerHealingScene">Heal Villager in Home</button>
-            <button class="travelLocationBtn" data-scene="chapelScene">Pray at Chapel</button>
-            <button class="travelLocationBtn" data-scene="ratScene">Rat Encounter</button>
-            <button class="travelLocationBtn" data-scene="shopScene">Village Shop</button>
-            <button class="travelLocationBtn" data-scene="forestScene">Search Forest for Ingredients</button>
-            <button class="travelLocationBtn" data-scene="potionsScene">Brew Potions</button>
-            <button class="travelLocationBtn" data-scene="arrivalScene">Main Village</button>
-        </div>
-    </div>
-
-    <!-- GAME OBJECTIVES -->
-    <button id="objectiveBtn">Objectives</button>
-    <div id="objectivePanel">
-        <h2>Objectives</h2>
-        <div id="objectiveContent">No objectives yet.</div>
-    </div>
-
-
-    <!-- MAIN MENU SCENE -->
-    <div id="mainMenu" class="scene">
-        <img src="{{ url_for('static', filename='img/backgrounds/plagueVillageMenu.png') }}" id="menuImage">
-        <button id="startGameBtn" class="glow-btn">Start</button>
-    </div>
 
     <!-- Login Overlay -->
     <div id="loginOverlay" class="overlay hidden" aria-hidden="true">
@@ -141,6 +116,67 @@
         </div>
     </div>
 
+
+    <!-- INVENTORY -->
+    <!-- Inventory Button -->
+    <button id="inventoryBtn">Inventory</button>
+    <span id="inventoryHintArrow">➤</span>
+
+    <!-- Inventory Panel -->
+    <div id="inventoryPanel">
+        <h3>Inventory</h3>
+
+        <div id="inventoryTabs">
+            <button class="inventoryTab active" data-tab="ingredients">Ingredients</button>
+            <button class="inventoryTab" data-tab="charm">Charms</button>
+            <button class="inventoryTab" data-tab="potions">Potions</button>
+        </div>
+
+        <div id="inventoryItems"></div>
+    </div>
+
+    <!-- Item Description Panel -->
+    <div id="itemDescriptionPanel">
+        <div id="itemDescriptionName"></div>
+        <div id="itemDescriptionText"></div>
+    </div>
+
+    <!-- TRAVEL -->
+    <button id="travelBtn">Travel</button>
+    <div id="travelPanel">
+        <div id="travelLocations">
+            <button class="travelLocationBtn" data-scene="villagerHealingScene">Heal Villager in Home</button>
+            <button class="travelLocationBtn" data-scene="chapelScene">Pray at Chapel</button>
+            <button class="travelLocationBtn" data-scene="ratScene">Rat Encounter</button>
+            <button class="travelLocationBtn" data-scene="shopScene">Village Shop</button>
+            <button class="travelLocationBtn" data-scene="forestScene">Search Forest for Ingredients</button>
+            <button class="travelLocationBtn" data-scene="potionsScene">Brew Potions</button>
+            <button class="travelLocationBtn" data-scene="arrivalScene">Main Village</button>
+        </div>
+    </div>
+
+    <!-- VILLAGER SELECT OVERLAY -->
+    <div id="villagerSelectOverlay" class="hidden">
+        <div id="villagersSelectPanel">
+            <h2>Select a Villager</h2>
+            <div id="villagerSelectList"></div>
+            <button id="closeVillagerSelectBtn">Close</button>
+        </div>
+    </div>
+
+    <!-- GAME OBJECTIVES -->
+    <button id="objectiveBtn">Objectives</button>
+    <div id="objectivePanel">
+        <h2>Objectives</h2>
+        <div id="objectiveContent">No objectives yet.</div>
+    </div>
+
+    <!-- MAIN MENU SCENE -->
+    <div id="mainMenu" class="scene">
+        <img src="{{ url_for('static', filename='img/backgrounds/plagueVillageMenu.png') }}" id="menuImage">
+        <button id="startGameBtn" class="glow-btn">Start</button>
+    </div>
+
     <!-- ARRIVAL/MAIN VILLAGE SCENE -->
     <div id="arrivalScene" class="scene">
         <img id="plagueDoctor" src="{{ url_for('static', filename='img/characters/plagueDoctor.png') }}">
@@ -182,6 +218,20 @@
     <div id="forestScene" class="scene"></div>
     <!-- Potions Scene -->
     <div id="potionsScene" class="scene"></div>
+    <!-- DOCTOR DIES SCENE -->
+    <div id="doctorDiesScene" class="scene"></div>
+    <!-- VILLAGE COLLAPSE SCENE -->
+    <div id="villageCollapseScene" class="scene"></div>
+
+    <!-- END OF DAY REPORT (TRIGGERED WHEN USER RETURNS TO MAIN VILLAGE WITH 0 ACTION TOKENS)-->
+    <div id="endOfDayOverlay" class="hidden">
+        <div id="endOfDayPanel">
+            <h2>End of Day Report</h2>
+            <div id="endOfDayText">The day is over.</div>
+            <button id="closeEndOfDayBtn">Close</button>
+        </div>
+    </div>
+
 
     <!-- Typing Sounds -->
     <audio class="typeSound" src="{{ url_for('static', filename='sound-effects/typing-sounds/type1.ogg') }}" preload="auto"></audio>
@@ -200,13 +250,17 @@
     <!-- game-data JS files, Script.js, and gameState.js should stay ABOVE all over JS files since they need to load first -->
     <script src="{{ url_for('static', filename='js/items.js') }}"></script>
     <script src="{{ url_for('static', filename='js/recipes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/villagers.js') }}"></script>
     <script src="{{ url_for('static', filename='js/gameState.js') }}"></script>
     <script src="{{ url_for('static', filename='js/menu.js') }}"></script>
     <script src="{{ url_for('static', filename='js/potions.js') }}"></script>
     <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
     <script src="{{ url_for('static', filename='js/villager-home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/forest.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chapel.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/doctor-dies.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/village-collapse.js') }}"></script>
     <script src="{{ url_for('static', filename='js/saveLoad.js') }}"></script>
-
 </body>
 
 </html>

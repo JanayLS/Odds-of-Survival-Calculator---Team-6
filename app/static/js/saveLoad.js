@@ -1,219 +1,156 @@
-// file: app/static/js/saveLoad.js
+// saveLoad.js
+// Replace the entire file with this.
 
 console.log("saveLoad.js loaded");
 
 function getCurrentVisibleSceneId() {
     const visibleScene = Array.from(document.querySelectorAll(".scene")).find(
-        (scene) => scene.style.display === "block"
+        scene => scene.style.display === "block"
     );
 
-    return visibleScene?.id || "mainMenu";
+    return visibleScene?.id || gameState.currentScene || "mainMenu";
 }
 
 function syncGameStateFromRuntime() {
-    console.log("syncGameStateFromRuntime called");
-
-    if (!window.gameState) {
-        console.error("window.gameState is missing");
-        return;
-    }
-
-    gameState.money = typeof window.money === "number" ? window.money : gameState.money;
-
-    gameState.inventory = Array.isArray(window.inventory)
-        ? JSON.parse(JSON.stringify(window.inventory))
-        : gameState.inventory;
-
-    gameState.doctorInfection =
-        typeof window.doctorInfection === "number"
-            ? window.doctorInfection
-            : gameState.doctorInfection;
-
-    gameState.ratsKilled =
-        typeof window.ratsDefeated === "number"
-            ? window.ratsDefeated
-            : gameState.ratsKilled;
-
-    gameState.ratsToKill =
-        typeof window.ratObjective === "number"
-            ? window.ratObjective
-            : gameState.ratsToKill;
-
-    gameState.villagersHealed =
-        typeof window.villagersHealed === "number"
-            ? window.villagersHealed
-            : gameState.villagersHealed;
-
-    gameState.villagersToHeal =
-        typeof window.villagersObjective === "number"
-            ? window.villagersObjective
-            : gameState.villagersToHeal;
-
-    gameState.sceneState =
-        typeof window.sceneState === "string"
-            ? window.sceneState
-            : gameState.sceneState;
-
-    gameState.startItemsGiven =
-        typeof window.startItemsGiven === "boolean"
-            ? window.startItemsGiven
-            : gameState.startItemsGiven;
+    if (!window.gameState) return;
 
     gameState.currentScene = getCurrentVisibleSceneId();
 
-    console.log("gameState ready to save:", gameState);
+    if (!Array.isArray(gameState.inventory)) {
+        gameState.inventory = [];
+    }
+
+    const moneyValue = document.getElementById("moneyValue");
+    if (moneyValue) {
+        const parsedMoney = Number.parseInt(moneyValue.textContent, 10);
+        if (!Number.isNaN(parsedMoney)) {
+            gameState.money = parsedMoney;
+        }
+    }
 }
 
 function applyGameStateToRuntime() {
-    console.log("applyGameStateToRuntime called");
+    if (!window.gameState) return;
 
-    if (!window.gameState) {
-        console.error("window.gameState is missing");
-        return;
+    if (typeof renderMoney === "function") {
+        renderMoney();
     }
 
-    if (typeof gameState.money === "number") {
-        window.money = gameState.money;
+    if (typeof renderInventory === "function") {
+        renderInventory();
     }
 
-    if (Array.isArray(gameState.inventory)) {
-        window.inventory = JSON.parse(JSON.stringify(gameState.inventory));
+    if (typeof renderDoctorInfection === "function") {
+        renderDoctorInfection();
     }
 
-    if (typeof gameState.doctorInfection === "number") {
-        window.doctorInfection = gameState.doctorInfection;
+    if (typeof renderVillageInfection === "function") {
+        renderVillageInfection();
     }
 
-    if (typeof gameState.ratsKilled === "number") {
-        window.ratsDefeated = gameState.ratsKilled;
+    if (typeof updateVillageBackground === "function") {
+        updateVillageBackground();
     }
 
-    if (typeof gameState.ratsToKill === "number") {
-        window.ratObjective = gameState.ratsToKill;
+    if (typeof updateObjectivePanel === "function") {
+        updateObjectivePanel();
     }
 
-    if (typeof gameState.villagersHealed === "number") {
-        window.villagersHealed = gameState.villagersHealed;
+    if (typeof renderActionTokens === "function") {
+        renderActionTokens();
     }
 
-    if (typeof gameState.villagersToHeal === "number") {
-        window.villagersObjective = gameState.villagersToHeal;
+    if (typeof renderDay === "function") {
+        renderDay();
     }
 
-    if (typeof gameState.sceneState === "string") {
-        window.sceneState = gameState.sceneState;
+    if (typeof showScene === "function") {
+        showScene(gameState.currentScene || "arrivalScene");
     }
-
-    if (typeof gameState.startItemsGiven === "boolean") {
-        window.startItemsGiven = gameState.startItemsGiven;
-    }
-
-    if (typeof window.renderMoney === "function") {
-        window.renderMoney();
-    }
-
-    if (typeof window.renderInventory === "function") {
-        window.renderInventory();
-    }
-
-    if (typeof window.renderDoctorInfection === "function") {
-        window.renderDoctorInfection();
-    }
-
-    if (typeof window.updateObjectivePanel === "function") {
-        window.updateObjectivePanel();
-    }
-
-    if (typeof window.showScene === "function" && gameState.currentScene) {
-        window.showScene(gameState.currentScene);
-    }
-
-    console.log("runtime updated from loaded gameState");
 }
 
 async function saveGame() {
-    console.log("saveGame called");
-
-    if (!window.gameState) {
-        throw new Error("gameState is not loaded");
-    }
-
     syncGameStateFromRuntime();
-
-    console.log("sending POST /api/save-game");
 
     const response = await fetch("/api/save-game", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
         credentials: "same-origin",
         body: JSON.stringify(gameState)
     });
 
-    console.log("save response status:", response.status);
-
     const data = await response.json().catch(() => ({}));
-    console.log("save response data:", data);
 
     if (!response.ok) {
         throw new Error(data.error || "Failed to save game");
     }
 
+    console.log("Game saved:", data);
     return data;
 }
 
 async function loadGame() {
-    console.log("loadGame called");
-    console.log("sending GET /api/load-game");
-
     const response = await fetch("/api/load-game", {
         method: "GET",
+        headers: {
+            "Accept": "application/json"
+        },
         credentials: "same-origin"
     });
 
-    console.log("load response status:", response.status);
-
     const data = await response.json().catch(() => ({}));
-    console.log("load response data:", data);
 
     if (!response.ok) {
         throw new Error(data.error || "Failed to load game");
     }
 
-    if (!window.gameState) {
-        throw new Error("gameState is not loaded");
+    if (!data || typeof data !== "object") {
+        throw new Error("Invalid save data");
     }
 
     Object.assign(gameState, data);
     applyGameStateToRuntime();
 
+    console.log("Game loaded:", gameState);
     return gameState;
 }
 
 window.saveGame = saveGame;
 window.loadGame = loadGame;
 
-const saveGameBtn = document.getElementById("saveGameBtn");
-const loadGameBtn = document.getElementById("loadGameBtn");
+const saveLoadBtnEl = document.getElementById("saveLoadBtn");
+const saveLoadOverlayEl = document.getElementById("saveLoadOverlay");
+const saveGameBtnEl = document.getElementById("saveGameBtn");
+const loadGameBtnEl = document.getElementById("loadGameBtn");
+const closeSaveLoadBtnEl = document.getElementById("closeSaveLoadBtn");
 
-console.log("buttons found:", { saveGameBtn, loadGameBtn });
-console.log("window.gameState:", window.gameState);
+saveLoadBtnEl?.addEventListener("click", () => {
+    saveLoadOverlayEl?.classList.remove("hidden");
+});
 
-saveGameBtn?.addEventListener("click", async () => {
-    console.log("SAVE CLICKED");
+closeSaveLoadBtnEl?.addEventListener("click", () => {
+    saveLoadOverlayEl?.classList.add("hidden");
+});
 
+saveGameBtnEl?.addEventListener("click", async () => {
     try {
         await saveGame();
+        saveLoadOverlayEl?.classList.add("hidden");
+        alert("Game saved.");
     } catch (error) {
         console.error("Save failed:", error);
         alert(error.message || "Failed to save game");
     }
 });
 
-loadGameBtn?.addEventListener("click", async () => {
-    console.log("LOAD CLICKED");
-
+loadGameBtnEl?.addEventListener("click", async () => {
     try {
         await loadGame();
+        saveLoadOverlayEl?.classList.add("hidden");
+        alert("Game loaded.");
     } catch (error) {
         console.error("Load failed:", error);
         alert(error.message || "Failed to load game");

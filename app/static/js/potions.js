@@ -1,9 +1,9 @@
+// potions.js
 const potionsScene = document.getElementById("potionsScene");
 
 potionsScene.innerHTML = `
     <img id="plagueDoctor" src="/static/img/characters/plagueDoctor.png">
 
-    <!-- Brewing Area -->
     <div id="brewingPanel">
         <h3>Brewing</h3>
 
@@ -26,26 +26,21 @@ potionsScene.innerHTML = `
         <button id="brewBtn" class="glow-btn">Brew</button>
     </div>
 
-    <!-- Potion Result Panel -->
     <div id="potionResultPanel" class="result-panel">
         <h3>Result</h3>
         <div id="potionResultSlot" class="result-slot"></div>
         <p id="potionResultText">Brew something...</p>
     </div>
         
-    <!-- Recipe Book Button -->
     <button id="recipeBookBtn">Recipe Book</button>
 
-    <!-- Recipe Book Screen -->
     <div id="recipeBookScreen" class="hidden">
         <button id="closeRecipeBookBtn">Close Book</button>
 
         <div class="book-wrapper">
             <img src="/static/img/misc-images/recipe-book.png" id="recipeBookImg">
 
-            <!-- Left Page -->
             <div class="book-page left-page">
-                <!-- Healing Tonic Recipe -->
                 <div class="recipe-entry">
                     <h3 class="recipe-title">Healing Tonic</h3>
 
@@ -70,7 +65,7 @@ potionsScene.innerHTML = `
                         </div>
                     </div>
                 </div>
-                <!-- Fever sant Recipe -->
+
                 <div class="recipe-entry">
                     <h3 class="recipe-title">Fever Suppressant</h3>
 
@@ -95,7 +90,7 @@ potionsScene.innerHTML = `
                         </div>
                     </div>
                 </div>
-                <!-- Plague Concoction Recipe -->
+
                 <div class="recipe-entry">
                     <h3 class="recipe-title">Plague Concoction</h3>
 
@@ -123,7 +118,6 @@ potionsScene.innerHTML = `
             </div>
 
             <div class="book-page right-page">
-                <!-- Ash Remedy -->
                 <div class="recipe-entry">
                     <h3 class="recipe-title">Ash Remedy</h3>
 
@@ -148,7 +142,7 @@ potionsScene.innerHTML = `
                         </div>
                     </div>
                 </div>
-                <!-- Elixir Recipe -->
+
                 <div class="recipe-entry">
                     <h3 class="recipe-title">Elixir</h3>
 
@@ -175,14 +169,10 @@ potionsScene.innerHTML = `
                 </div>
             </div>
         </div>
-`
-// *************************************
-// POTION BREWING **********************
-//**************************************
+`;
 
-// Potion Brewing System
 setupBrewingSlots();
-const potionBrewSound = new Audio('/static/sound-effects/potion-sounds/potion-brewed.wav')
+const potionBrewSound = new Audio('/static/sound-effects/potion-sounds/potion-brewed.wav');
 let brewedPotion = null;
 
 let brewingSlots = {
@@ -190,28 +180,21 @@ let brewingSlots = {
     ingredient2: null,
     ingredient3: null,
     charm: null
-}
+};
 
 function setupBrewingSlots() {
     document.querySelectorAll(".brewSlot").forEach(slot => {
         slot.addEventListener("click", () => {
-
             if (!window.selectedItem) return;
 
             const slotType = slot.dataset.slot;
             const item = window.selectedItem;
 
-            // Potions cannot go in Brew Panel
             if (item.category === "potion") return;
-
-            // Only items with "charm" type go in charm slot
             if (slotType === "charm" && item.category !== "charm") return;
-
-            // Ingredient slots do NOT accept charm items
             if (slotType !== "charm" && item.category !== "ingredient") return;
 
-            // If player fills already filled brewing slot with new item, old item returns to inventory and new item fills the slot
-            const oldItem = brewingSlots[slotType]
+            const oldItem = brewingSlots[slotType];
 
             if (oldItem) {
                 addItemToInventory(oldItem);
@@ -221,8 +204,8 @@ function setupBrewingSlots() {
             removeItemFromInventory(item);
             renderBrewingSlots();
             window.selectedItem = null;
-        })
-    })
+        });
+    });
 }
 
 function renderBrewingSlots() {
@@ -247,7 +230,7 @@ function renderBrewingSlots() {
 
             slot.appendChild(img);
         }
-    })
+    });
 }
 
 document.getElementById("brewBtn").addEventListener("click", brewPotion);
@@ -259,20 +242,21 @@ function brewPotion() {
     const resultSlot = document.getElementById("potionResultSlot");
     const resultText = document.getElementById("potionResultText");
 
-    // Make sure all 3 slots are filled
+    if (!canSpendActionToken(1)) {
+        return;
+    }
+
     if (!ing1 || !ing2 || !ing3) {
         resultText.textContent = "Not enough ingredients.";
         return;
     }
 
-    // Get ingredient names and sort so order doesn't matter
     const ingredients = [ing1.name, ing2.name, ing3.name].sort();
 
     let matchedRecipe = null;
 
     for (const key in recipeDatabase) {
         const recipe = recipeDatabase[key];
-
         const recipeIngredients = [...recipe.ingredients].sort();
 
         const isMatch =
@@ -286,7 +270,8 @@ function brewPotion() {
     }
 
     if (matchedRecipe) {
-        // Potion Brewing Sound Effect
+        spendActionToken(1);
+
         potionBrewSound.currentTime = 0;
         potionBrewSound.play();
 
@@ -305,14 +290,19 @@ function brewPotion() {
         resultSlot.innerHTML = `<img class="potion-result ${brewedPotion.boostType === "emerald" ? "emerald-boosted" : ""}" src="${brewedPotion.img}" alt="${brewedPotion.name}">`;
         resultText.textContent = brewedPotion.name;
 
+        brewingSlots.ingredient1 = null;
+        brewingSlots.ingredient2 = null;
+        brewingSlots.ingredient3 = null;
+        brewingSlots.charm = null;
+
+        renderBrewingSlots();
+        window.selectedItem = null;
     } else {
         brewedPotion = null;
-        console.log("Unknown Potion");
+        resultText.textContent = "Unknown Recipe.";
     }
 }
 
-
-// When player clicks brewed potion, potion is added to inventory, and result slot is cleared.
 document.getElementById("potionResultSlot").addEventListener("click", () => {
     if (!brewedPotion) return;
 
@@ -321,9 +311,8 @@ document.getElementById("potionResultSlot").addEventListener("click", () => {
     brewedPotion = null;
     document.getElementById("potionResultSlot").innerHTML = "";
     document.getElementById("potionResultText").textContent = "Brew something...";
-})
+});
 
-// Potion Tier Randomness
 function chooseWeightedPotionTier(familyName) {
     const matchingPotions = Object.values(itemDatabase).filter(item =>
         item.category === "potion" && item.family === familyName
@@ -335,25 +324,18 @@ function chooseWeightedPotionTier(familyName) {
 
     const roll = Math.random();
 
-    if (roll < 0.2) return weakPotion; // 20% chance of weak potion
-    if (roll < 0.7) return midPotion; // 50% chance of mid potion
-    return strongPotion; // 30% chance of strong potion
+    if (roll < 0.2) return weakPotion;
+    if (roll < 0.7) return midPotion;
+    return strongPotion;
 }
 
-// *************************************
-// RECIPE BOOK *************************
-//**************************************
+const recipeBookBtn = document.getElementById('recipeBookBtn');
+const closeRecipeBookBtn = document.getElementById('closeRecipeBookBtn');
+const recipeBookScreen = document.getElementById('recipeBookScreen');
+const bookSound = new Audio('/static/sound-effects/misc-sounds/page-turn.wav');
 
-// Recipe Book Button
-const recipeBookBtn = document.getElementById('recipeBookBtn')
-const closeRecipeBookBtn = document.getElementById('closeRecipeBookBtn')
-const recipeBookScreen = document.getElementById('recipeBookScreen')
-const bookSound = new Audio('/static/sound-effects/misc-sounds/page-turn.wav')
-
-// Recipe Book Button
 recipeBookBtn.addEventListener("click", () => {
     recipeBookScreen.classList.remove("hidden");
-
     bookSound.currentTime = 0;
     bookSound.play();
     bookSound.volume = 1;
@@ -361,8 +343,7 @@ recipeBookBtn.addEventListener("click", () => {
 
 closeRecipeBookBtn.addEventListener("click", () => {
     recipeBookScreen.classList.add("hidden");
-
     bookSound.currentTime = 0;
     bookSound.play();
     bookSound.volume = 1;
-})
+});
