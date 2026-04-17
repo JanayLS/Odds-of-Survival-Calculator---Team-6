@@ -1,28 +1,38 @@
 // MAIN JS FILE, SWITCHES TO OTHER JS FILES BASED ON SCENE CHANGE
+//
+//
 // INITIALIZE HTML ELEMENTS
 // -------------------------------------------------------------
 // Characters
-const villager1 = document.getElementById("villager1");
-const worriedVillagerWoman = document.getElementById("worriedVillagerWoman");
-const characterName = document.getElementById("characterName");
+const villager1 = document.getElementById('villager1');
+const worriedVillagerWoman = document.getElementById('worriedVillagerWoman')
+const characterName = document.getElementById('characterName');
 
 // Controls current dialogue branch/scene state
-window.sceneState = "intro";
+// Starts as intro, changes as scene progresses
+let sceneState = "intro";
 
 // Main Menu, Arrival Scene, Start Game Button
-const mainMenu = document.getElementById("mainMenu");
-const arrivalScene = document.getElementById("arrivalScene");
-const startGameBtn = document.getElementById("startGameBtn");
+const mainMenu = document.getElementById('mainMenu');
+const arrivalScene = document.getElementById('arrivalScene')
+const startGameBtn = document.getElementById('startGameBtn')
+
+// Save / Load Button
+const saveLoadBtn = document.getElementById("saveLoadBtn");
+const saveLoadOverlay = document.getElementById("saveLoadOverlay");
+const saveGameBtn = document.getElementById("saveGameBtn");
+const loadGameBtn = document.getElementById("loadGameBtn");
+const closeSaveLoadBtn = document.getElementById("closeSaveLoadBtn");
 
 // Music Button
-const bgm = document.getElementById("bgm");
-const musicBtn = document.getElementById("musicBtn");
+const bgm = document.getElementById('bgm');
+const musicBtn = document.getElementById('musicBtn');
 bgm.load();
 
 // Typing Sounds
-const typeSounds = document.querySelectorAll(".typeSound");
+const typeSounds = document.querySelectorAll('.typeSound');
 let lastSoundIndex = -1;
-
+// Randomizes typing sounds
 function playRandomTypeSound() {
     let randomIndex;
 
@@ -39,18 +49,18 @@ function playRandomTypeSound() {
 }
 
 // Choice Box Elements
-const choiceBox = document.getElementById("choiceBox");
-const choiceButtons = document.querySelectorAll(".choiceBtn");
+const choiceBox = document.getElementById('choiceBox');
+const choiceButtons = document.querySelectorAll('.choiceBtn')
 
 // Dialogue Box and Text
-const dialogueBox = document.getElementById("dialogueBox");
-const dialogueText = document.getElementById("dialogueText");
-const arrow = document.getElementById("nextArrow");
+const dialogueBox = document.getElementById('dialogueBox');
+const dialogueText = document.getElementById('dialogueText');
+const arrow = document.getElementById('nextArrow');
 
 // Inventory
-const inventoryBtn = document.getElementById("inventoryBtn");
-const inventoryPanel = document.getElementById("inventoryPanel");
-const inventoryHintArrow = document.getElementById("inventoryHintArrow");
+const inventoryBtn = document.getElementById('inventoryBtn');
+const inventoryPanel = document.getElementById('inventoryPanel');
+const inventoryHintArrow = document.getElementById('inventoryHintArrow');
 const inventoryTabs = document.querySelectorAll(".inventoryTab");
 let activeInventoryTab = "ingredients";
 const menuHoverSound = new Audio("/static/sound-effects/misc-sounds/menu-hover.wav");
@@ -60,25 +70,6 @@ const travelBtn = document.getElementById("travelBtn");
 const travelPanel = document.getElementById("travelPanel");
 const travelLocations = document.getElementById("travelLocations");
 
-// Objectives
-const objectiveBtn = document.getElementById("objectiveBtn");
-const objectivePanel = document.getElementById("objectivePanel");
-
-// Doctor Infection Status
-window.doctorInfection = 50;
-
-function renderDoctorInfection() {
-    const bar = document.getElementById("doctorInfectionBar");
-    const value = document.getElementById("doctorInfectionValue");
-
-    bar.style.width = `${window.doctorInfection}%`;
-    value.textContent = `${window.doctorInfection}%`;
-}
-
-renderDoctorInfection();
-
-// TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
-// ------------------------------------------------
 // Login overlay elements
 const loginOverlay = document.getElementById("loginOverlay");
 const loginForm = document.getElementById("loginForm");
@@ -88,12 +79,6 @@ const loginPassword = document.getElementById("loginPassword");
 const loginError = document.getElementById("loginError");
 const createAccount = document.getElementById("createAccount");
 const guestLoginBtn = document.getElementById("guestLoginBtn");
-
-if (!loginOverlay) console.error("Missing #loginOverlay");
-if (!loginForm) console.error("Missing #loginForm");
-if (!loginUsername) console.error("Missing #loginUsername");
-if (!loginPassword) console.error("Missing #loginPassword");
-if (!startGameBtn) console.error("Missing #startGameBtn");
 
 function showLogin() {
     if (!loginOverlay) return;
@@ -119,17 +104,19 @@ function hideLogin() {
     loginOverlay.setAttribute("aria-hidden", "true");
 }
 
+function initializeNewGameMoney() {
+    const randomBonus = Math.floor(Math.random() * 6);
+    gameState.money = 100 + randomBonus;
+    renderMoney();
+}
+
 async function startGame() {
+    initializeNewGameMoney()
     showScene("arrivalScene");
     currentLine = 0;
     dialogueText.innerHTML = "";
     typeLine(dialogueLines[currentLine]);
 }
-
-startGameBtn?.addEventListener("click", (e) => {
-    e.preventDefault();
-    showLogin();
-});
 
 loginCancel?.addEventListener("click", (e) => {
     e.preventDefault();
@@ -204,13 +191,100 @@ loginForm?.addEventListener("submit", async (e) => {
     }
 });
 
-showScene("mainMenu");
+// Villager Select Overlay
+const villagerSelectOverlay = document.getElementById("villagerSelectOverlay");
+const villagerSelectList = document.getElementById("villagerSelectList");
+const closeVillagerSelectBtn = document.getElementById("closeVillagerSelectBtn");
+let currentVillagerKey = null;
 
-startGameBtn?.addEventListener("mouseover", () => {
+// Objectives
+const objectiveBtn = document.getElementById("objectiveBtn");
+const objectivePanel = document.getElementById("objectivePanel");
+
+// End of Day Elements
+const endOfDayOverlay = document.getElementById("endOfDayOverlay");
+const closeEndOfDayBtn = document.getElementById("closeEndOfDayBtn");
+const endOfDayText = document.getElementById("endOfDayText");
+
+function renderDoctorInfection() {
+    const bar = document.getElementById("doctorInfectionBar");
+    const value = document.getElementById("doctorInfectionValue");
+
+    bar.style.width = `${gameState.doctorInfection}%`;
+    value.textContent = `${gameState.doctorInfection}%`;
+}
+
+renderDoctorInfection();
+
+// VILLAGE INFECTION STATUS IS CALCULATED FROM # OF ACTIVE VILLAGERS WHO ARE HEALED/UNHEALED
+function getVillageInfectionPercent() {
+
+    const villagerKeys = Object.keys(gameState.villagers);
+
+    const activeVillagers = villagerKeys.filter((key) => {
+        return gameState.villagers[key].active === true;
+    });
+
+    // If no infected villagers have been selected yet, keep village looking toxic for now
+    if (activeVillagers.length === 0) {
+        return 100;
+    }
+
+    const unresolvedVillagers = activeVillagers.filter((key) => {
+        const villager = gameState.villagers[key];
+        return villager.healed === false;
+    });
+
+    const infectionPercent = (unresolvedVillagers.length / activeVillagers.length) * 100;
+
+    return infectionPercent;
+}
+
+// RENDERS VILLAGE INFECTION IN THE VILLAGE INFECTION BAR
+function renderVillageInfection() {
+    const bar = document.getElementById("villageInfectionBar");
+    const value = document.getElementById("villageInfectionValue");
+
+    const villageInfection = getVillageInfectionPercent();
+
+    bar.style.width = `${villageInfection}%`;
+    value.textContent = `${Math.round(villageInfection)}%`
+}
+
+// CHANGES MAIN VILLAGE BACKGROUND DEPENDING ON VILLAGE INFECTION %
+function updateVillageBackground() {
+    const arrivalScene = document.getElementById("arrivalScene");
+    const villageInfection = getVillageInfectionPercent();
+
+    if (villageInfection < 30) {
+        arrivalScene.style.backgroundImage = "url('/static/img/backgrounds/healthyVillage.png')";
+    } else if (villageInfection <= 70) {
+        arrivalScene.style.backgroundImage = "url('/static/img/backgrounds/midHealthVillage.png')";
+    } else {
+        arrivalScene.style.backgroundImage = "url('/static/img/backgrounds/toxicVillage.png')";
+    }
+}
+
+// UPDATES VILLAGE INFECTION BAR AND MAIN VILLAGE BACKGROUND SCENE
+function updateVillageVisual() {
+    renderVillageInfection();
+    updateVillageBackground();
+}
+
+// TRANSITION FROM MENU SCENE TO ARRIVAL/INTRO SCENE
+// ------------------------------------------------
+showScene("mainMenu")
+
+startGameBtn.addEventListener("mouseover", () => {
     menuHoverSound.play();
+})
+
+startGameBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    showLogin();
 });
 
-// DIALOGUE SYSTEM AND CHOICES
+// DIALOGUE SYSTEM AND CHOICES 
 // -------------------------------------------------
 arrow.addEventListener("click", nextDialogue);
 
@@ -219,20 +293,23 @@ document.addEventListener("keydown", (e) => {
     if (e.code === "Space") {
         e.preventDefault();
 
+        // Only triggers if the main menu is NOT displayed
         if (mainMenu.style.display === "none") {
             nextDialogue();
         }
     }
-
+    // Event Listener for b key press to go backwards
     if (e.key.toLowerCase() === "b") {
         previousDialogue();
     }
 });
 
+// Return player to the previous line
 function previousDialogue() {
     if (isTyping) return;
 
-    if (window.sceneState === "intro") {
+    if (sceneState === "intro") {
+
         if (currentLine > 0) {
             currentLine--;
             typeLine(dialogueLines[currentLine]);
@@ -240,7 +317,7 @@ function previousDialogue() {
     }
 }
 
-// Intro Scene Dialogue Lines
+// Intro Scene Dialogue Lines (Villager 1 Opening Sequence)
 const dialogueLines = [
     "Doctor...thank the Heavens you've arrived.",
     "Our people are sick. Some are dying.",
@@ -253,6 +330,9 @@ let currentLine = 0;
 let isTyping = false;
 let typingSpeed = 40;
 
+// Typing Animation for Dialogue Text
+// Disables Navigation Arrow while Typing
+// Navigation arrow reappears when dialogue line is complete
 function typeLine(line) {
     dialogueText.textContent = "";
     arrow.style.opacity = 0;
@@ -277,80 +357,88 @@ function typeLine(line) {
     }, typingSpeed);
 }
 
+// Advances dialogue based on choice selection/current scene state
 function nextDialogue() {
     if (isTyping) return;
 
-    if (window.sceneState === "intro") {
+    // Intro (Original Dialogue Scene State)
+    if (sceneState == "intro") {
+
         currentLine++;
 
         if (currentLine < dialogueLines.length) {
             typeLine(dialogueLines[currentLine]);
         } else {
             arrow.style.opacity = 0;
-            choiceBox.style.display = "flex";
+            showIntroChoices();
         }
-    } else if (window.sceneState === "villagers") {
+
+
+    } else if (sceneState == "introResponse") {
         arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn" data-choice="heal-villager">Heal Villager in Home</button>
-        <button class="choiceBtn" data-choice="chapel">Pray at Chapel</button>`;
-
-        choiceBox.style.display = "flex";
-    } else if (window.sceneState === "rats") {
-        arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn" data-choice="fight-rats">Fight Rats</button>
-        <button class="choiceBtn" data-choice="shop">Shop for Defense</button>`;
-
-        choiceBox.style.display = "flex";
-    } else if (window.sceneState === "supplies") {
-        arrow.style.opacity = 0;
-
-        choiceBox.innerHTML = `
-        <button class="choiceBtn" data-choice="forest">Search Forest for Ingredients</button>
-        <button class="choiceBtn" data-choice="potions">Brew Potions</button>`;
-
-        choiceBox.style.display = "flex";
+        showIntroChoices();
+        sceneState = "intro";
     }
-}
+};
 
 // Choice Navigation
 choiceBox.addEventListener("click", (e) => {
+
     if (!e.target.classList.contains("choiceBtn")) return;
 
     const choice = e.target.dataset.choice;
+
     choiceBox.style.display = "none";
 
-    if (choice === "villagers") {
-        window.sceneState = "villagers";
-        currentLine = 0;
-
+    // Choice 1: Villager
+    if (choice == "villagers") {
+        sceneState = "introResponse";
         characterName.textContent = "Worried Wife:";
-
         villager1.style.opacity = 0;
         worriedVillagerWoman.style.opacity = 1;
 
+        // currentLine = 0;
+
         setTimeout(() => {
-            typeLine("Doctor...my husband hasn't woken in two days...");
+            typeLine("Doctor...my husband hasn't woken in two days...")
         }, 600);
 
+        // Generate Objective 1: # of villagers to be healed
+        // const villagersCount = 
         generateVillagersObjective();
+        activateVillagersForRun();
         updateObjectivePanel();
-    } else if (choice === "rats") {
-        window.sceneState = "rats";
-        currentLine = 0;
+        updateVillageVisual();
+    }
+
+    // Choice 2: Rats
+    else if (choice == "rats") {
+        sceneState = "introResponse";
+        characterName.textContent = "Desperate Villager:";
+        villager1.style.opacity = 1;
+        worriedVillagerWoman.style.opacity = 0;
+
+        // currentLine = 0;
 
         typeLine("The rats are the plague itself. They scurry through our village, infecting our people. One bite can mean death...");
+
+        // Generates Objective 2: # of rats to fight
+        // const ratCount = 
         generateRatObjective();
         updateObjectivePanel();
-    } else if (choice === "supplies") {
-        window.sceneState = "supplies";
-        currentLine = 0;
+    }
 
+    // Choice 3: Supplies
+    else if (choice == "supplies") {
+        sceneState = "introResponse";
         characterName.textContent = "";
+
+        villager1.style.opacity = 1;
+        worriedVillagerWoman.style.opacity = 0;
+
         inventoryHintArrow.style.opacity = "1";
+
+        // currentLine = 0;
 
         setTimeout(() => {
             inventoryHintArrow.style.opacity = "0";
@@ -359,54 +447,103 @@ choiceBox.addEventListener("click", (e) => {
         typeLine(`You check your satchel. Your supplies are limited. To create cures, you must gather ingredients from the forest.
                 Each potion requires careful preparation. Mistakes may cost lives -- including your own.`);
 
+        // Calls function to render random items in inventory
         giveRandomStartItems();
-    } else if (choice === "heal-villager") {
+    }
+
+    // Choice: Heal Villager
+    else if (choice == "heal-villager") {
         showScene("villagerHealingScene");
-    } else if (choice === "chapel") {
+    }
+
+    // Choice: Chapel
+    else if (choice == "chapel") {
         showScene("chapelScene");
-    } else if (choice === "fight-rats") {
+    }
+
+    // Choice: Rat Encounter
+    else if (choice == "fight-rats") {
         showScene("ratScene");
-    } else if (choice === "shop") {
+    }
+
+    // Choice: Shop for Defense
+    else if (choice == "shop") {
         showScene("shopScene");
-    } else if (choice === "forest") {
+    }
+
+    // Choice: Collect Ingredients in Forest
+    else if (choice == "forest") {
         showScene("forestScene");
-    } else if (choice === "potions") {
+    }
+
+    // Choice: Potions Scene
+    else if (choice == "potions") {
         showScene("potionsScene");
     }
 });
 
-// SCENE SWITCHING FUNCTION
+// Shows Intro Choices
+function showIntroChoices() {
+    choiceBox.innerHTML = `
+        <button class="choiceBtn" data-choice="villagers">
+            Ask about the sick villagers
+        </button>
+        <button class="choiceBtn" data-choice="rats">
+            Ask about the rats
+        </button>
+        <button class="choiceBtn" data-choice="supplies">
+            Inspect your medical supplies
+        </button>
+    `;
+    choiceBox.style.display = "flex";
+}
+
 // --------------------------------------------------------------
+// SCENE SWITCHING FUNCTION 
 function showScene(sceneID) {
+
     const scenes = document.querySelectorAll(".scene");
 
-    scenes.forEach((scene) => {
+    scenes.forEach(scene => {
         scene.style.display = "none";
     });
 
+    hideItemDescription();
     document.getElementById(sceneID).style.display = "block";
 
-    if (sceneID === "villagerHealingScene" && typeof renderVillagerInfection === "function") {
+    if (sceneID === "shopScene" && typeof resetShopDialogue === "function") {
+        resetShopDialogue();
+    }
+
+    // If Player has no Action Tokens, End of Day report will be shown when they return to Arrival (Main Village) Scene
+    if (sceneID === "arrivalScene" && gameState.actionTokens <= 0) {
+        showEndOfDayReport();
+    }
+
+    // Renders villager infection when player enters villager healing scene
+    if (sceneID === "villagerHealingScene") {
         renderVillagerInfection();
     }
 
+    // Music within Scenes
     if (sceneID === "potionsScene") {
         bgm.src = "/static/audio/potionsMusic.mp3";
         bgm.load();
+        // bgm.play();
     } else if (sceneID === "shopScene") {
         bgm.src = "/static/audio/shopMusic.mp3";
         bgm.load();
     }
 }
 
-// Add items to inventory
+// Add items to inventory (keeps track of quanitity and decreases quantity when item is used)
 function addItemToInventory(newItem) {
-    const existingItem = window.inventory.find((item) => item.name === newItem.name);
+    const existingItem = gameState.inventory.find(item => item.name === newItem.name);
 
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        window.inventory.push({
+        gameState.inventory.push({
             ...newItem,
             quantity: 1
         });
@@ -415,25 +552,25 @@ function addItemToInventory(newItem) {
     renderInventory();
 }
 
-// Remove items from inventory
+// Remove items from inventory (decreases quantity of item or removes item if quantity was 1)
 function removeItemFromInventory(itemToRemove) {
-    const existingItem = window.inventory.find((item) => item.name === itemToRemove.name);
+    const existingItem = gameState.inventory.find(item => item.name === itemToRemove.name);
 
     if (!existingItem) return;
 
     existingItem.quantity -= 1;
 
     if (existingItem.quantity <= 0) {
-        const itemIndex = window.inventory.findIndex((item) => item.name === itemToRemove.name);
-        window.inventory.splice(itemIndex, 1);
+        const itemIndex = gameState.inventory.findIndex(item => item.name === itemToRemove.name);
+        gameState.inventory.splice(itemIndex, 1);
     }
 
     renderInventory();
 }
 
-// WHEN PLAYER CHECKS MEDICAL SUPPLIES, RANDOM ITEMS ARE GENERATED
-window.inventory = [];
-window.startItemsGiven = false;
+
+// WHEN PLAYER CHECKS MEDICAL SUPPLIES, 3 RANDOM ITEMS ARE GENERATED
+let startItemsGiven = false;
 
 function getRandomStartItems(itemDatabase, count = 5) {
     const itemPool = Object.entries(itemDatabase).map(([key, item]) => ({
@@ -464,31 +601,34 @@ function getRandomStartItems(itemDatabase, count = 5) {
     return selectedItems;
 }
 
+// Gives 3 random start items when player first checks supplies
 function giveRandomStartItems() {
-    if (window.startItemsGiven) return;
+    if (startItemsGiven) return;
 
     const startItems = getRandomStartItems(itemDatabase, 5);
 
-    startItems.forEach((item) => {
+    startItems.forEach(item => {
         addItemToInventory(item);
     });
 
-    window.startItemsGiven = true;
+    startItemsGiven = true;
     renderInventory();
 }
 
+// Renders Inventory Items in Inventory Panel
 function renderInventory() {
+
     const inventoryItems = document.getElementById("inventoryItems");
     inventoryItems.innerHTML = "";
 
-    const filteredItems = window.inventory.filter((item) => {
+    const filteredItems = gameState.inventory.filter(item => {
         if (activeInventoryTab === "ingredients") return item.category === "ingredient";
         if (activeInventoryTab === "charm") return item.category === "charm";
         if (activeInventoryTab === "potions") return item.category === "potion";
         return false;
     });
 
-    filteredItems.forEach((item) => {
+    filteredItems.forEach(item => {
         const slot = document.createElement("div");
         slot.className = "inventorySlot";
 
@@ -497,10 +637,12 @@ function renderInventory() {
         img.className = "inventoryItem";
         img.title = item.name;
 
+        // Add glow if item is emerald-boosted
         if (item.boostType === "emerald") {
             img.classList.add("emerald-boosted");
         }
 
+        // Inventory item and quantity
         slot.appendChild(img);
 
         const quantityLabel = document.createElement("span");
@@ -531,27 +673,30 @@ function renderInventory() {
     });
 }
 
-inventoryTabs.forEach((tab) => {
+inventoryTabs.forEach(tab => {
     tab.addEventListener("click", () => {
-        inventoryTabs.forEach((t) => t.classList.remove("active"));
+        inventoryTabs.forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
 
         activeInventoryTab = tab.dataset.tab;
+        hideItemDescription();
         renderInventory();
-    });
+    })
 
     tab.addEventListener("mouseover", () => {
         menuHoverSound.play();
-    });
-});
+    })
+})
 
 function showItemDescription(item) {
+
     const panel = document.getElementById("itemDescriptionPanel");
     const name = document.getElementById("itemDescriptionName");
     const text = document.getElementById("itemDescriptionText");
 
     name.textContent = item.name;
     text.textContent = item.description;
+
     panel.style.display = "block";
 }
 
@@ -560,84 +705,196 @@ function hideItemDescription() {
     panel.style.display = "none";
 }
 
-// Randomly Generates # of Rats to Fight, # of Villagers to Heal
-window.ratObjective = null;
-window.ratsDefeated = 0;
-window.villagersObjective = null;
-window.villagersHealed = 0;
-
+// GENERATE RAT OBJECTIVE
 function generateRatObjective() {
-    if (window.ratObjective !== null) return window.ratObjective;
+    if (gameState.ratsToKill > 0) return gameState.ratsToKill;
 
-    window.ratObjective = Math.floor(Math.random() * 5) + 3;
-    return window.ratObjective;
+    gameState.ratsToKill = Math.floor(Math.random() * 5) + 3;
+    return gameState.ratsToKill;
 }
 
+// GENERATE VILLAGER OBJECTIVE
 function generateVillagersObjective() {
-    if (window.villagersObjective !== null) return window.villagersObjective;
+    if (gameState.villagersToHeal > 0) return gameState.villagersToHeal;
 
-    window.villagersObjective = Math.floor(Math.random() * 4) + 3;
-    return window.villagersObjective;
+    gameState.villagersToHeal = Math.floor(Math.random() * 4) + 3;
+    return gameState.villagersToHeal;
+}
+
+// WHEN VILLAGER OBJECTIVE IS GENERATED, RANDOM VILLAGERS ARE CHOSEN FROM THE VILLAGER DATABASE TO BE USED IN CURRENT PLAYTHROUGH
+function activateVillagersForRun() {
+    const villagerKeys = Object.keys(gameState.villagers);
+    const alreadyActive = villagerKeys.some((key) => gameState.villagers[key].active);
+
+    if (alreadyActive) return;
+
+    // Reset all villagers first
+    villagerKeys.forEach((key) => {
+        gameState.villagers[key].active = false;
+        gameState.villagers[key].healed = false;
+        gameState.villagers[key].dead = false;
+    });
+
+    // Shuffle villager keys for randomness
+    const shuffledKeys = [...villagerKeys].sort(() => Math.random() - 0.5);
+    // Select however many villagers this run needs
+    const selectedKeys = shuffledKeys.slice(0, gameState.villagersToHeal);
+
+    // Mark selected villagers as active
+    selectedKeys.forEach((key) => {
+        gameState.villagers[key].active = true;
+    });
+
+    console.log("Active villagers for this run:", selectedKeys);
+    console.log("Updated villager state:", gameState.villagers);
+}
+
+// GET ACTIVE VILLAGERS FOR TRAVELING/HEALING
+function getActiveVillagerKeys() {
+    return Object.keys(gameState.villagers).filter((key) => {
+        return gameState.villagers[key].active === true;
+    })
+}
+
+// ADD ACTIVE VILLAGERS TO VILLAGER TRAVEL LIST
+function renderVillagerSelectList() {
+    villagerSelectList.innerHTML = "";
+
+    const activeVillagers = getActiveVillagerKeys();
+
+    activeVillagers.forEach((villagerKey) => {
+        const villagerBtn = document.createElement("button");
+        villagerBtn.className = "villagerSelectBtn";
+        villagerBtn.dataset.villager = villagerKey;
+        villagerBtn.textContent = villagerDatabase[villagerKey].name;
+
+        villagerSelectList.appendChild(villagerBtn);
+    });
 }
 
 // Open Objectives Panel
 objectiveBtn.addEventListener("click", () => {
     objectivePanel.classList.toggle("open");
-});
+})
 
-// Updates game objectives
+// Updates game objectives (Rats, Villagers)
 function updateObjectivePanel() {
     const objectiveContent = document.getElementById("objectiveContent");
+    let html = "";
 
-    if (window.ratObjective !== null) {
-        objectiveContent.innerHTML = `
+    if (gameState.ratsToKill > 0) {
+        html += `
         <div class="objectiveItem">
             <img src="/static/img/misc-images/ratObjectiveIcon.png" class="objectiveIcon" alt="Rat objective icon">
-            <span>Defeat ${window.ratObjective} rats. Progress: ${window.ratsDefeated}/${window.ratObjective}</span>
+            <span>Defeat ${gameState.ratsToKill} rats. Progress: ${gameState.ratsKilled}/${gameState.ratsToKill}</span>
         </div>
         `;
     }
 
-    if (window.villagersObjective !== null) {
-        objectiveContent.innerHTML = `
+    if (gameState.villagersToHeal > 0) {
+        html += `
         <div class="objectiveItem">
             <img src="/static/img/misc-images/villagersObjectiveIcon.png" class="objectiveIcon" alt="Villagers objective icon">
-            <span>Heal ${window.villagersObjective} villagers. Progress: ${window.villagersHealed}/${window.villagersObjective}</span>
+            <span>Heal ${gameState.villagersToHeal} villagers. Progress: ${gameState.villagersHealed}/${gameState.villagersToHeal}</span>
         </div>
         `;
     }
+
+    if (html === "") {
+        objectiveContent.textContent = "No active objectives.";
+    } else {
+        objectiveContent.innerHTML = html;
+    }
+
 }
 
 // BUTTONS
 // --------------------------------------
-musicBtn.addEventListener("click", () => {
-    if (bgm.paused) {
-        bgm.play();
-        musicBtn.textContent = "Music Off";
-    } else {
-        bgm.pause();
-        musicBtn.textContent = "Music On";
+// Save/Load Buttons
+saveLoadBtn.addEventListener("click", () => {
+    saveLoadOverlay.classList.remove("hidden");
+});
+
+closeSaveLoadBtn.addEventListener("click", () => {
+    saveLoadOverlay.classList.add("hidden");
+});
+
+saveLoadOverlay.addEventListener("click", (e) => {
+    if (e.target === saveLoadOverlay) {
+        saveLoadOverlay.classList.add("hidden");
     }
 });
 
-inventoryBtn.addEventListener("click", () => {
-    inventoryPanel.classList.toggle("open");
+saveGameBtn.addEventListener("click", () => {
+    console.log("Save button clicked");
 });
 
+loadGameBtn.addEventListener("click", () => {
+    console.log("Load button clicked");
+});
+
+
+
+// Music Button
+musicBtn.addEventListener("click", () => {
+    if (bgm.paused) {
+        bgm.play();
+        musicBtn.textContent = "Music On";
+    } else {
+        bgm.pause();
+        musicBtn.textContent = "Music Off";
+    }
+})
+
+// Inventory Button 
+inventoryBtn.addEventListener("click", () => {
+    inventoryPanel.classList.toggle("open");
+    hideItemDescription();
+}
+)
+
+// Travel
 travelBtn.addEventListener("click", () => {
     travelPanel.classList.toggle("open");
-});
+}
+)
 
 travelLocations.addEventListener("click", (e) => {
     if (!e.target.classList.contains("travelLocationBtn")) return;
 
     const targetScene = e.target.dataset.scene;
+
+    if (targetScene === "villagerHealingScene") {
+        renderVillagerSelectList();
+        villagerSelectOverlay.classList.remove("hidden");
+        travelPanel.classList.remove("open");
+        return;
+    }
+
     showScene(targetScene);
     travelPanel.classList.remove("open");
-});
+})
 
+villagerSelectList.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("villagerSelectBtn")) return;
+
+    currentVillagerKey = e.target.dataset.villager;
+    villagerSelectOverlay.classList.add("hidden");
+
+    setActiveVillager(currentVillagerKey);
+    showScene("villagerHealingScene");
+
+    console.log("Selected villager:", currentVillagerKey);
+})
+
+closeVillagerSelectBtn.addEventListener("click", () => {
+    villagerSelectOverlay.classList.add("hidden");
+})
+
+// --------------------------------------------------------------
 // ITEM USE FUNCTIONS
 // --------------------------------------------------------------
+// useItem() is the entry point which calls other item use functions.
 function useItem(item) {
     if (!item.effectType) return;
 
@@ -652,6 +909,7 @@ function useItem(item) {
     if (!confirmed) return;
 
     const usedSuccessfully = applyItemEffect(item);
+
     if (!usedSuccessfully) return;
 
     if (item.category === "potion") {
@@ -661,24 +919,29 @@ function useItem(item) {
     renderInventory();
 }
 
+// validateItemUse() determines whether item can currently be used.
 function validateItemUse(item) {
     switch (item.effectType) {
         case "reduceDoctorInfection":
-            if (window.doctorInfection <= 0) {
+            if (gameState.doctorInfection <= 0) {
                 return { valid: false, message: "The Doctor is not infected." };
             }
             return { valid: true };
 
         case "reduceVillagerInfection":
+            // Only works in context of Heal Villager Scene
             if (document.getElementById("villagerHealingScene").style.display !== "block") {
                 return { valid: false, message: "Healing Tonic can only be used in the villager healing scene." };
             }
+
             return { valid: true };
 
         case "suppressVillagerInfection":
+            // Change this later so it only works in context of Heal Villager Scene
             return { valid: true };
 
         case "poisonRat":
+            // Change this later so it only works in context of Rat Encounter Scene
             return { valid: true };
 
         case "cureDoctorPoison":
@@ -689,6 +952,7 @@ function validateItemUse(item) {
     }
 }
 
+// applyItemEffect() applies the effect of the item.
 function applyItemEffect(item) {
     switch (item.effectType) {
         case "reduceDoctorInfection":
@@ -711,6 +975,7 @@ function applyItemEffect(item) {
     }
 }
 
+// applyReduceDoctorInfection - used by Elixir, reduces doctor's plague infection status
 function applyReduceDoctorInfection(item) {
     let reductionAmt = 0;
 
@@ -732,16 +997,18 @@ function applyReduceDoctorInfection(item) {
         reductionAmt += 20;
     }
 
-    window.doctorInfection -= reductionAmt;
+    gameState.doctorInfection -= reductionAmt;
 
-    if (window.doctorInfection < 0) window.doctorInfection = 0;
-    if (window.doctorInfection > 100) window.doctorInfection = 100;
+    if (gameState.doctorInfection < 0) gameState.doctorInfection = 0;
+    if (gameState.doctorInfection > 100) gameState.doctorInfection = 100;
 
     renderDoctorInfection();
     return true;
 }
 
+// applyReduceVillagerInfection - used by Healing Tonic, reduces villager's plague infection status
 function applyReduceVillagerInfection(item) {
+
     const villagerSceneVisible = document.getElementById("villagerHealingScene").style.display === "block";
 
     if (!villagerSceneVisible) {
@@ -762,7 +1029,11 @@ function applyReduceVillagerInfection(item) {
     }
 
     if (villager.healed) {
-        alert("This villager has already been healed.");
+        alert("This villager has already been healed.")
+        return false;
+    }
+
+    if (!canSpendActionToken(1)) {
         return false;
     }
 
@@ -788,75 +1059,263 @@ function applyReduceVillagerInfection(item) {
 
     villager.infectionLevel -= reductionAmt;
 
-    if (villager.infectionLevel < 0) {
+    if (villager.infectionLevel <= 0) {
         villager.infectionLevel = 0;
+        villager.healed = true;
+        gameState.villagersHealed += 1;
     }
 
-    if (villager.infectionLevel === 0) {
-        villager.healed = true;
-        if (typeof window.villagersHealed === "number") {
-            window.villagersHealed += 1;
-        }
-    }
+    spendActionToken(1);
 
     renderVillagerInfection();
+    renderVillagerScene();
+    updateVillageVisual();
     updateObjectivePanel();
+
     return true;
 }
 
+// applySuppressVillagerInfection - used by Fever Suppressant, keeps active villager infection from worsening at end of day. If it is
+// brewed strong, it also reduces the villager's plague infection status slightly.
 function applySuppressVillagerInfection(item) {
     alert("Fever Suppressant logic will connect to villager healing scene.");
     return false;
 }
 
+// applyPoisonRat - used by Plague Concoction, weakens rat attacks in battle
 function applyPoisonRat(item) {
     alert("Plague Concoction logic will connect to rat encounter scene.");
     return false;
 }
 
+// applyCureDoctorPoison - used by Ash Remedy, reduces Doctor poison status
 function applyCureDoctorPoison(item) {
     alert("Ash Remedy can be used by doctor in any scene.");
-    return false;
 }
 
+// --------------------------------------------------------------
 // MONEY
 // --------------------------------------------------------------
-window.money = 0;
 
 function renderMoney() {
-    document.getElementById("moneyValue").textContent = window.money;
+    const moneyValue = document.getElementById("moneyValue");
+    if (!moneyValue) return;
+    moneyValue.textContent = String(gameState.money ?? 0);
 }
 
 function addMoney(amount) {
-    window.money += amount;
+    gameState.money = Math.max(0, (gameState.money ?? 0) + amount);
     renderMoney();
 }
 
 function spendMoney(amount) {
-    if (window.money < amount) return false;
-    window.money -= amount;
+    if ((gameState.money ?? 0) < amount) {
+        return false;
+    }
+
+    gameState.money -= amount;
     renderMoney();
     return true;
 }
 
 function loseMoney(amount) {
-    window.money -= amount;
+    gameState.money = Math.max(0, (gameState.money ?? 0) - amount);
+    renderMoney();
+}
 
-    if (window.money < 0) {
-        window.money = 0;
+renderMoney();
+
+// --------------------------------------------------------------
+// ACTION TOKENS SYSTEM
+// --------------------------------------------------------------
+
+function renderActionTokens() {
+    const actionTokensValue = document.getElementById("actionTokensValue");
+    actionTokensValue.textContent = `${gameState.actionTokens} / ${gameState.maxActionTokens}`;
+}
+
+renderActionTokens();
+
+// Spending Action Tokens
+function spendActionToken(amount = 1) {
+    if (gameState.actionTokens <= 0 || gameState.actionTokens < amount) {
+        return false;
     }
 
-    renderMoney();
+    gameState.actionTokens -= amount;
+
+    if (gameState.actionTokens < 0) {
+        gameState.actionTokens = 0;
+    }
+
+    renderActionTokens();
+    return true;
 }
 
-function setRandomStartMoney() {
-    window.money = Math.floor(Math.random() * 6) + 100;
-    renderMoney();
+// Checks to see if user has enough Action Tokens for an action
+function canSpendActionToken(amount = 1) {
+    if (gameState.actionTokens < amount) {
+        alert("No action tokens remaining. Return to the village to end the day.");
+        return false;
+    }
+
+    return true;
+
 }
 
-setRandomStartMoney();
+// --------------------------------------------------------------
+// DAYS SYSTEM
+// --------------------------------------------------------------
+function renderDay() {
+    const dayValue = document.getElementById("dayValue");
+    dayValue.textContent = `${gameState.day} / ${gameState.maxDays}`;
+}
 
-// Expose functions for save/load integration
+function advanceDay() {
+    if (gameState.day < gameState.maxDays) {
+        gameState.day += 1;
+    }
+
+    gameState.actionTokens = gameState.maxActionTokens;
+    renderDay();
+    renderActionTokens();
+
+    if (typeof refreshShopInventory === "function") {
+        refreshShopInventory();
+    }
+}
+
+renderDay();
+
+// --------------------------------------------------------------
+// END OF DAY
+// --------------------------------------------------------------
+let endOfDayProcessed = false;
+
+// Check to see if Doctor has a specific item in inventory (used at end of day to check for herb satchel)
+function hasItemInInventory(itemName) {
+    return gameState.inventory.some(item => item.name === itemName);
+}
+
+// End of Day Updates (Infections increase, rats HP increase, donations/gifts applied, etc.)
+function applyEndOfDayUpdates() {
+    const report = {
+        healedVillagers: gameState.villagersHealed,
+        defeatedRats: gameState.ratsKilled,
+        villagersWorsened: 0,
+        ratsStrengthened: 0,
+        doctorInfectionIncreased: false,
+        moneyReceived: 0,
+        giftedItems: []
+    };
+
+    // Rats that are still alive gain HP
+    Object.values(gameState.rats).forEach(rat => {
+        if (!rat.dead) {
+            rat.hp += 10;
+            if (rat.hp > 100) rat.hp = 100;
+            report.ratsStrengthened += 1;
+        }
+    });
+
+    // Villagers with active infections worsen 
+    Object.values(gameState.villagers).forEach(villager => {
+        if (villager.active && !villager.healed && !villager.dead) {
+            // TODO: Skip infection increase if villager has Fever Suppressant or Ruby Amulet protection
+
+            villager.infectionLevel += 10;
+            // TODO: Villager dies if infection level reaches 100
+            if (villager.infectionLevel > 100) villager.infectionLevel = 100;
+            report.villagersWorsened += 1;
+        }
+    });
+
+    // Doctor infection increases unless Herb Satchel is in inventory
+    if (!hasItemInInventory("Herb Satchel")) {
+        gameState.doctorInfection += 10;
+        if (gameState.doctorInfection > 100) gameState.doctorInfection = 100;
+        report.doctorInfectionIncreased = true;
+        renderDoctorInfection();
+    }
+
+    // Village Donations
+    const rewardMoney = Math.floor(Math.random() * 451) + 50; // Change amount later if it needs to be more
+    addMoney(rewardMoney);
+    report.moneyReceived = rewardMoney;
+
+    // Village Gifts
+    const giftCount = Math.floor(Math.random() * 2) + 2 // 2-3 gift items
+    const giftItems = getRandomStartItems(itemDatabase, giftCount);
+
+    giftItems.forEach(item => {
+        addItemToInventory(item);
+        report.giftedItems.push(item.name);
+    });
+
+    // Refresh visuals after update
+    updateVillageVisual();
+    updateObjectivePanel();
+    renderInventory();
+
+    return report;
+}
+
+function buildEndOfDayReportText(report) {
+    let text = `
+        <p>You healed <strong>${report.healedVillagers}</strong> villagers.</p>
+        <p>You defeated <strong>${report.defeatedRats}</strong> rats.</p>
+        <p><strong>${report.ratsStrengthened}</strong> live rats grew stronger in the night.</p>
+        <p><strong>${report.villagersWorsened}</strong> villagers worsened overnight.</p>
+    `;
+
+    if (report.doctorInfectionIncreased) {
+        text += `<p>Your infection worsened during the night.</p>`;
+    } else {
+        text += `<p>Your herb satchel protected you through the night.</p>`;
+    }
+
+    text += `<p>The village gave you <strong>${report.moneyReceived}</strong> coins in thanks.</p>`;
+
+    if (report.giftedItems.length > 0) {
+        text += `<p>You also received some gifts: <strong>${report.giftedItems.join(", ")}</strong>.</p>`;
+    }
+
+    text += `<p>Rest tonight so you can be ready for tomorrow.</p>`;
+
+    return text;
+}
+
+// End of Day Report
+function showEndOfDayReport() {
+    if (!endOfDayProcessed) {
+        const report = applyEndOfDayUpdates();
+        endOfDayText.innerHTML = buildEndOfDayReportText(report);
+        endOfDayProcessed = true;
+    }
+
+    endOfDayOverlay.classList.remove("hidden");
+}
+
+function hideEndOfDayReport() {
+    endOfDayOverlay.classList.add("hidden");
+}
+
+// After closing End of Day report, the next 'Day' starts & Action Tokens are refreshed.
+closeEndOfDayBtn.addEventListener("click", () => {
+    hideEndOfDayReport();
+
+    if (gameState.day >= gameState.maxDays) {
+        // TODO: CALL GAME ENDINGS LOGIC HERE LATER
+        alert("Final day reached.")
+        return;
+    }
+
+    advanceDay();
+    endOfDayProcessed = false;
+})
+
+updateVillageVisual();
+
 window.showScene = showScene;
 window.renderMoney = renderMoney;
 window.renderInventory = renderInventory;
@@ -865,6 +1324,12 @@ window.updateObjectivePanel = updateObjectivePanel;
 window.startGame = startGame;
 window.showLogin = showLogin;
 window.hideLogin = hideLogin;
+window.renderActionTokens = renderActionTokens;
+window.renderDay = renderDay;
+window.updateVillageVisual = updateVillageVisual;
+window.addMoney = addMoney;
+window.spendMoney = spendMoney;
+window.loseMoney = loseMoney;
 
 // Auto-start game if coming from profile page with autostart parameter
 if (window.location.search.includes('autostart=true')) {

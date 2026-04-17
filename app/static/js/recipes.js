@@ -1,3 +1,4 @@
+// recipes.js
 const recipeDatabase = {
     healingTonic: {
         name: "Healing Tonic",
@@ -33,4 +34,4 @@ const recipeDatabase = {
         result: "elixir",
         img: "/static/img/potions/elixir.png"
     }
-}
+};
