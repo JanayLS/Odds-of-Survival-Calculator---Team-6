@@ -177,17 +177,8 @@ loginForm?.addEventListener("submit", async (e) => {
 
         hideLogin();
 
-        if (create) {
-            await startGame();
-            return;
-        }
-
-        try {
-            await loadGame();
-        } catch (loadError) {
-            console.warn("Load failed or no save exists, starting new game:", loadError);
-            await startGame();
-        }
+        // Redirect to profile page after successful login
+        window.location.href = '/profile/profile';
     } catch (err) {
         console.error("Login failed:", err);
 
@@ -1339,3 +1330,14 @@ window.updateVillageVisual = updateVillageVisual;
 window.addMoney = addMoney;
 window.spendMoney = spendMoney;
 window.loseMoney = loseMoney;
+
+// Auto-start game if coming from profile page with autostart parameter
+if (window.location.search.includes('autostart=true')) {
+    // Wait a moment for the page to fully load, then start the game
+    setTimeout(() => {
+        showScene('arrivalScene');
+        currentLine = 0;
+        dialogueText.innerHTML = "";
+        typeLine(dialogueLines[currentLine]);
+    }, 100);
+}
