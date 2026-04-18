@@ -76,6 +76,12 @@ const villagerSelectList = document.getElementById("villagerSelectList");
 const closeVillagerSelectBtn = document.getElementById("closeVillagerSelectBtn");
 let currentVillagerKey = null;
 
+// Rat Select Overlay
+const ratSelectOverlay = document.getElementById("ratSelectOverlay");
+const ratSelectList = document.getElementById("ratSelectList");
+const closeRatSelectBtn = document.getElementById("closeRatSelectBtn");
+let currentRatKey = null;
+
 // Objectives
 const objectiveBtn = document.getElementById("objectiveBtn");
 const objectivePanel = document.getElementById("objectivePanel");
@@ -594,7 +600,7 @@ function hideItemDescription() {
 function generateRatObjective() {
     if (gameState.ratsToKill > 0) return gameState.ratsToKill;
 
-    gameState.ratsToKill = Math.floor(Math.random() * 5) + 3;
+    gameState.ratsToKill = 5;
     return gameState.ratsToKill;
 }
 
@@ -655,6 +661,24 @@ function renderVillagerSelectList() {
 
         villagerSelectList.appendChild(villagerBtn);
     });
+}
+
+// ADD RATS TO TRAVEL LIST
+function renderRatSelectList() {
+    ratSelectList.innerHTML = "";
+
+    Object.keys(gameState.rats).forEach((ratKey) => {
+        const rat = gameState.rats[ratKey];
+
+        if (rat.dead) return;
+
+        const ratBtn = document.createElement("button");
+        ratBtn.className = "ratSelectBtn";
+        ratBtn.dataset.rat = ratKey;
+        ratBtn.textContent = ratsDatabase[ratKey].name;
+
+        ratSelectList.appendChild(ratBtn);
+    })
 }
 
 // Open Objectives Panel
@@ -759,10 +783,18 @@ travelLocations.addEventListener("click", (e) => {
         return;
     }
 
+    if (targetScene === "ratScene") {
+        renderRatSelectList();
+        ratSelectOverlay.classList.remove("hidden");
+        travelPanel.classList.remove("open");
+        return;
+    }
+
     showScene(targetScene);
     travelPanel.classList.remove("open");
 })
 
+// Travel to villager homes
 villagerSelectList.addEventListener("click", (e) => {
     if (!e.target.classList.contains("villagerSelectBtn")) return;
 
@@ -778,6 +810,21 @@ villagerSelectList.addEventListener("click", (e) => {
 closeVillagerSelectBtn.addEventListener("click", () => {
     villagerSelectOverlay.classList.add("hidden");
 })
+
+// Travel to rats
+ratSelectList.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("ratSelectBtn")) return;
+
+    currentRatKey = e.target.dataset.rat;
+    ratSelectOverlay.classList.add("hidden");
+
+    setActiveRat(currentRatKey);
+    showScene("ratScene");
+});
+
+closeRatSelectBtn.addEventListener("click", () => {
+    ratSelectOverlay.classList.add("hidden");
+});
 
 // --------------------------------------------------------------
 // ITEM USE FUNCTIONS
