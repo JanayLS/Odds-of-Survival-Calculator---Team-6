@@ -2160,9 +2160,17 @@ button {
 }
 
 @keyframes villageCollapseArrowPulse {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-0.4vh); }
-    100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-0.4vh);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 900px) {
@@ -2188,6 +2196,11 @@ button {
         padding: 34px 24px;
     }
 }
+
+/* ============================= */
+/* VILLAGE SAVED ENDING */
+/* ============================= */
+
 
 /* ============================= */
 /* GLOBAL ANIMATIONS */

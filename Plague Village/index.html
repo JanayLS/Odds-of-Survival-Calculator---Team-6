@@ -167,10 +167,14 @@
     <div id="forestScene" class="scene"></div>
     <!-- Potions Scene -->
     <div id="potionsScene" class="scene"></div>
+
+    <!-- 3 GAME ENDINGS -->
     <!-- DOCTOR DIES SCENE -->
     <div id="doctorDiesScene" class="scene"></div>
     <!-- VILLAGE COLLAPSE SCENE -->
     <div id="villageCollapseScene" class="scene"></div>
+    <!-- VILLAGE SAVED SCENE -->
+    <div id="villageSavedScene" class="scene"></div>
 
     <!-- END OF DAY REPORT (TRIGGERED WHEN USER RETURNS TO MAIN VILLAGE WITH 0 ACTION TOKENS)-->
     <div id="endOfDayOverlay" class="hidden">
@@ -196,19 +200,25 @@
 
     <!-- Javascript -->
     <!-- WHEN ADDING SCENES MAKE SURE TO INCLUDE THEIR JS FILE HERE. -->
-    <!-- game-data JS files, Script.js, and gameState.js should stay ABOVE all over JS files since they need to load first -->
+    <!-- Data JS files and Script.js should stay ABOVE all over JS files since they need to load first -->
+    <!-- Game Data JS Files-->
     <script src="game-data/items.js"></script>
     <script src="game-data/recipes.js"></script>
     <script src="game-data/villagers.js"></script>
     <script src="gameState.js"></script>
+    <!-- Main JS File (script.js) -->
     <script src="script.js"></script>
+    <!-- 6 Core Scenes JS Files-->
     <script src="scenes/potions.js"></script>
     <script src="scenes/shop.js"></script>
     <script src="scenes/villager-home.js"></script>
     <script src="scenes/forest.js"></script>
     <script src="scenes/chapel.js"></script>
+    <!-- Game Endings JS Files -->
     <script src="scenes/game-endings/doctor-dies.js"></script>
     <script src="scenes/game-endings/village-collapse.js"></script>
+    <script src="scenes/game-endings/village-saved.js"></script>
+
 </body>
 
 </html>

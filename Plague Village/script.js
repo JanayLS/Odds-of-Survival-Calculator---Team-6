@@ -1079,7 +1079,28 @@ function advanceDay() {
 renderDay();
 
 // --------------------------------------------------------------
-// END OF DAY
+// GAME ENDINGS
+// --------------------------------------------------------------
+// ENDING 1: Doctor Dies (Doctor infection reaches 100)
+function triggerDoctorDiesEnding() {
+    showScene("doctorDiesScene");
+    startDoctorDiesScene();
+}
+
+// ENDING 2: Village Collapses (Final day is reached without meeting villagers & rats objectives)
+function triggerVillageCollapseEnding() {
+    showScene("villageCollapseScene");
+    startVillageCollapseScene();
+}
+
+// ENDING 3: Village Saved (Rats & Villagers Objectives are met)
+function triggerVillageSavedEnding() {
+    showScene("villageSavedScene")
+    startVillageSavedScene();
+}
+
+// --------------------------------------------------------------
+// END OF DAY REPORT
 // --------------------------------------------------------------
 let endOfDayProcessed = false;
 
@@ -1184,6 +1205,12 @@ function showEndOfDayReport() {
         endOfDayProcessed = true;
     }
 
+    // If doctor infection is over 100, trigger doctor dies ending
+    if (gameState.doctorInfection >= 100) {
+        triggerDoctorDiesEnding();
+        return;
+    }
+
     endOfDayOverlay.classList.remove("hidden");
 }
 
@@ -1196,8 +1223,18 @@ closeEndOfDayBtn.addEventListener("click", () => {
     hideEndOfDayReport();
 
     if (gameState.day >= gameState.maxDays) {
-        // TODO: CALL GAME ENDINGS LOGIC HERE LATER
-        alert("Final day reached.")
+        if (
+            gameState.villagersHealed < gameState.villagersToHeal &&
+            gameState.ratsKilled < gameState.ratsToKill
+        ) {
+            triggerVillageCollapseEnding();
+        } else if (
+            gameState.villagersHealed >= gameState.villagersToHeal &&
+            gameState.ratsKilled >= gameState.ratsToKill
+        ) {
+            triggerVillageSavedEnding();
+        }
+
         return;
     }
 
