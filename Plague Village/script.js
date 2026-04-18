@@ -691,6 +691,8 @@ function updateObjectivePanel() {
         objectiveContent.innerHTML = html;
     }
 
+    checkVillageSavedEnding();
+
 }
 
 // BUTTONS
@@ -1095,8 +1097,20 @@ function triggerVillageCollapseEnding() {
 
 // ENDING 3: Village Saved (Rats & Villagers Objectives are met)
 function triggerVillageSavedEnding() {
-    showScene("villageSavedScene")
-    startVillageSavedScene();
+    alert("Village Saved! (Village Saved Ending Scene to be added soon.)")
+    // showScene("villageSavedScene")
+    // startVillageSavedScene();
+}
+
+function checkVillageSavedEnding() {
+    if (
+        gameState.villagersHealed >= gameState.villagersToHeal &&
+        gameState.ratsKilled >= gameState.ratsToKill &&
+        gameState.villagersToHeal > 0 &&
+        gameState.ratsToKill > 0
+    ) {
+        triggerVillageSavedEnding();
+    }
 }
 
 // --------------------------------------------------------------
