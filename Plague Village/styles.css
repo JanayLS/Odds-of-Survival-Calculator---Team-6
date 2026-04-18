@@ -826,6 +826,70 @@ button {
 }
 
 /* ============================= */
+/* TRAVEL - SELECT RAT */
+/* ============================= */
+#ratSelectOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+#ratSelectPanel {
+    width: 35vw;
+    min-height: 30vh;
+    padding: 2vw;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+}
+
+#ratSelectPanel h2 {
+    margin-top: 0;
+    color: #c6a988;
+}
+
+#ratSelectList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.ratSelectBtn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.ratSelectBtn:hover {
+    background-color: #64c19f;
+}
+
+#closeRatSelectBtn {
+    padding: 10px 16px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ============================= */
 /* OBJECTIVES */
 /* ============================= */
 
@@ -1175,6 +1239,58 @@ button {
 /* RAT ENCOUNTER SCENE */
 /* ============================= */
 /* Add rat encounter scene-specific CSS here -- don't add anything that is already included in the CSS file */
+#ratHpUI {
+    position: fixed;
+    top: 19vh;
+    left: 1vw;
+    width: 18vw;
+    padding: 1vw;
+    background: rgba(0, 0, 0, 0.75);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    z-index: 50;
+}
+
+#ratHpLabel {
+    font-size: 1vw;
+    font-weight: bold;
+    margin-bottom: 0.5vw;
+}
+
+#ratHpContainer {
+    width: 100%;
+    height: 1.2vw;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid #c6a988;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+#ratHpBar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #b22222, #d8c45c, #77dd77);
+}
+
+#ratHpValue {
+    margin-top: 0.35vw;
+    font-size: 0.9vw;
+}
+
+#ratImage {
+    position: absolute;
+    left: 2vw;
+    bottom: 0;
+    width: 20vw;
+    z-index: 40;
+}
+
+#temporaryAttackBtn {
+    position: absolute;
+    left: 50vw;
+    top: 20vh;
+}
 
 /* ============================= */
 /* SHOP SCENE */
