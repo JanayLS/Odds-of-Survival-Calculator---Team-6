@@ -108,15 +108,51 @@ const gameState = {
 
     // Status of Each Rat
     rats: {
-        rat1: { hp: 100, dead: false },
-        rat2: { hp: 100, dead: false },
-        rat3: { hp: 0, dead: true },
-        rat4: { hp: 10, dead: false },
-        rat5: { hp: 80, dead: false },
-        rat6: { hp: 75, dead: false },
-        rat7: { hp: 60, dead: false },
-        rat8: { hp: 0, dead: true },
-        rat9: { hp: 50, dead: false }
+        rat1: {
+            active: false,
+            hp: 100,
+            dead: false
+        },
+        rat2: {
+            active: false,
+            hp: 100,
+            dead: false
+        },
+        rat3: {
+            active: false,
+            hp: 0,
+            dead: true
+        },
+        rat4: {
+            active: false,
+            hp: 10,
+            dead: false
+        },
+        rat5: {
+            active: false,
+            hp: 80,
+            dead: false
+        },
+        rat6: {
+            active: false,
+            hp: 75,
+            dead: false
+        },
+        rat7: {
+            active: false,
+            hp: 60,
+            dead: false
+        },
+        rat8: {
+            active: false,
+            hp: 0,
+            dead: true
+        },
+        rat9: {
+            active: false,
+            hp: 50,
+            dead: false
+        }
     }
 
 };

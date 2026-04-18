@@ -31,7 +31,7 @@ const itemDatabase = {
     garlicBulb: {
         name: "Garlic Bulb",
         img: "images/ingredients/garlic-bulb.png",
-        description: "Used in ash remedies and elixirs to protect the body. A sharp, pungent bulb believed to resist infection",
+        description: "Used in ash remedies and elixirs to protect the body. A sharp, pungent bulb believed to resist infection.",
         category: "ingredient",
         weight: 8
     },
