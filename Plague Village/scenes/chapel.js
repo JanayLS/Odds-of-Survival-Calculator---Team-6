@@ -28,8 +28,8 @@ chapelScene.innerHTML = `
         <div id="chapelDialogueText"></div>
 
         <div id="chapelChoiceBox">
-            <button class="chapelChoiceBtn" data-choice="reflect">Reflect with the villagers</button>
-            <button class="chapelChoiceBtn" data-choice="comfort">Comfort the villagers</button>
+            <button class="chapelChoiceBtn" data-choice="pray-dead">Pray for the Dead</button>
+            <button class="chapelChoiceBtn" data-choice="pray-living">Pray for the Living</button>
             <button class="chapelChoiceBtn" data-choice="leave">Leave chapel</button>
         </div>
 
@@ -78,17 +78,6 @@ let chapelIsTyping = false;
 let chapelTypingInterval = null;
 let chapelActionCompleted = false;
 let chapelChosenVillager = null;
-
-let plagueLevel = parseInt(localStorage.getItem("plagueLevel")) || 50;
-
-function savePlagueLevel() {
-    localStorage.setItem("plagueLevel", plagueLevel);
-}
-
-function decreasePlagueLevel(amount) {
-    plagueLevel = Math.max(0, plagueLevel - amount);
-    savePlagueLevel();
-}
 
 function setChapelDoctor(stage) {
     if (stage === "entrance") {
@@ -215,49 +204,242 @@ function showChapelEffectPopup(text) {
     chapelLeaveChapelBtn.style.display = "none";
 }
 
-function startChapelReflectionTimer(seconds) {
+// Get which villagers are sick or dead, & check if player has prayer charm items in inventory
+function hasFinalVigilCandle() {
+    return gameState.inventory.some(item => item.name === "Final Vigil Candle");
+}
+
+function hasBlessedRosemaryBundle() {
+    return gameState.inventory.some(item => item.name === "Blessed Rosemary Bundle");
+}
+
+function getDeadVillagerKeys() {
+    return Object.keys(gameState.villagers).filter((key) => {
+        const villager = gameState.villagers[key];
+        return villager.active && villager.dead;
+    });
+}
+
+function getLivingInfectedVillagerKeys() {
+    return Object.keys(gameState.villagers).filter((key) => {
+        const villager = gameState.villagers[key];
+        return villager.active && !villager.dead && !villager.healed && villager.infectionLevel > 0;
+    })
+}
+
+// Prayer Effects
+// Prayer 1: Resurrection Prayer
+function applyResurrectionPrayer() {
+
+    const deadVillagers = getDeadVillagerKeys();
+
+    if (deadVillagers.length === 0) {
+        alert("No villagers are dead.");
+        chapelActionCompleted = false;
+        chapelChoiceBox.style.display = "flex";
+        return;
+    }
+
+    if (!canSpendActionToken(2)) {
+        chapelActionCompleted = false;
+        chapelChoiceBox.style.display = "flex";
+        return;
+    }
+
+    spendActionToken(2);
+
+    const hasCandle = hasFinalVigilCandle();
+    const reviveChance = hasCandle ? 0.35 : 0.15;
+
+    let revivedNames = [];
+
+    deadVillagers.forEach((villagerKey) => {
+        if (Math.random() < reviveChance) {
+            const villager = gameState.villagers[villagerKey];
+            villager.dead = false;
+            villager.healed = false;
+            villager.feverSuppressed = false;
+            villager.infectionLevel = 85;
+
+            revivedNames.push(villagerDatabase[villagerKey].name);
+        }
+    });
+
+    if (hasCandle) {
+        consumePrayerItem("Final Vigil Candle");
+    }
+
+    updateVillageVisual();
+    updateObjectivePanel();
+    renderInventory();
+
+    if (typeof renderVillagerScene === "function") {
+        renderVillagerScene();
+    }
+
+    if (typeof renderVillagerInfection === "function") {
+        renderVillagerInfection();
+    }
+
+    let popupText = "You offer a desperate prayer for the dead.\n\n";
+
+    if (revivedNames.length > 0) {
+        popupText += `Returned to life: ${revivedNames.join(", ")}\n\n`;
+    } else {
+        popupText += "No villagers returned to life.\n\n";
+    }
+
+    if (hasCandle) {
+        popupText += "Your Final Vigil Candle strengthened the prayer.";
+    } else {
+        popupText += "You prayed without a funeral candle to guide the rite.";
+    }
+
+    showChapelEffectPopup(popupText);
+}
+
+// Prayer 2: Healing Prayer
+function applyHealingPrayer() {
+
+    const livingVillagers = getLivingInfectedVillagerKeys();
+
+    if (livingVillagers.length === 0) {
+        alert("No living villagers need healing.");
+        chapelActionCompleted = false;
+        chapelChoiceBox.style.display = "flex";
+        return;
+    }
+
+    if (!canSpendActionToken(2)) {
+        chapelActionCompleted = false;
+        chapelChoiceBox.style.display = "flex";
+        return;
+    }
+
+    spendActionToken(2);
+
+    const livingVillagers = getLivingInfectedVillagerKeys();
+    const hasRosemary = hasBlessedRosemaryBundle();
+    const healChance = hasRosemary ? 0.50 : 0.15;
+
+    let soothedNames = [];
+    let healedNames = [];
+
+    livingVillagers.forEach((villagerKey) => {
+        if (Math.random() < healChance) {
+            const villager = gameState.villagers[villagerKey];
+            villager.infectionLevel -= 10;
+
+            if (villager.infectionLevel < 0) {
+                villager.infectionLevel = 0;
+            }
+
+            if (villager.infectionLevel === 0 && !villager.healed) {
+                villager.healed = true;
+                gameState.villagersHealed += 1;
+                healedNames.push(villagerDatabase[villagerKey].name);
+            } else {
+                soothedNames.push(villagerDatabase[villagerKey].name);
+            }
+        }
+    });
+
+    if (hasRosemary) {
+        consumePrayerItem("Blessed Rosemary Bundle");
+    }
+
+    updateVillageVisual();
+    updateObjectivePanel();
+    renderInventory();
+
+    if (typeof renderVillagerScene === "function") {
+        renderVillagerScene();
+    }
+
+    if (typeof renderVillagerInfection === "function") {
+        renderVillagerInfection();
+    }
+
+    let popupText = "You offer a prayer for the living.\n\n";
+
+    if (soothedNames.length > 0) {
+        popupText += `Infection eased for: ${soothedNames.join(", ")}\n\n`;
+    }
+
+    if (healedNames.length > 0) {
+        popupText += `Fully healed: ${healedNames.join(", ")}\n\n`;
+    }
+
+    if (soothedNames.length === 0 && healedNames.length === 0) {
+        popupText += "No relief came this time.\n\n";
+    }
+
+    if (hasRosemary) {
+        popupText += "Your Blessed Rosemary Bundle strengthened the prayer.";
+    } else {
+        popupText += "You prayed without a healing bundle to aid the rite.";
+    }
+
+    showChapelEffectPopup(popupText);
+}
+
+// Consume prayer charm items
+function consumePrayerItem(itemName) {
+    const item = gameState.inventory.find((invItem) => invItem.name === itemName);
+
+    if (item) {
+        removeItemFromInventory(item);
+    }
+}
+
+// Chapel Timer
+function startChapelReflectionTimer(seconds, onComplete) {
+
     chapelReflectionTimerBox.style.display = "block";
     let timeLeft = seconds;
-    chapelReflectionTimerText.textContent = `Reflecting... ${timeLeft}s`;
+    chapelReflectionTimerText.textContent = `Praying... ${timeLeft}s`;
 
     const timer = setInterval(() => {
         timeLeft--;
-        chapelReflectionTimerText.textContent = `Reflecting... ${timeLeft}s`;
+        chapelReflectionTimerText.textContent = `Praying... ${timeLeft}s`;
 
         if (timeLeft <= 0) {
             clearInterval(timer);
             chapelReflectionTimerBox.style.display = "none";
-            applyChapelReflectionBenefits();
+
+            if (typeof onComplete === "function") {
+                onComplete();
+            }
         }
     }, 1000);
+
 }
 
-function applyChapelReflectionBenefits() {
-    let plagueReducedBy = 0;
+// function applyChapelReflectionBenefits() {
+//     let plagueReducedBy = 0;
 
-    if (Math.random() < 0.7) {
-        plagueReducedBy = Math.floor(Math.random() * 3) + 2;
-        decreasePlagueLevel(plagueReducedBy);
-    }
+//     if (Math.random() < 0.7) {
+//         plagueReducedBy = Math.floor(Math.random() * 3) + 2;
+//         decreasePlagueLevel(plagueReducedBy);
+//     }
 
-    let popupText = "You reflect quietly with the villagers.\n\nEffect:\n";
+//     let popupText = "You reflect quietly with the villagers.\n\nEffect:\n";
 
-    if (plagueReducedBy > 0) {
-        popupText += `• Plague Level decreases by ${plagueReducedBy}\n\n`;
-    } else {
-        popupText += "• Plague Level does not change this time\n\n";
-    }
+//     if (plagueReducedBy > 0) {
+//         popupText += `• Plague Level decreases by ${plagueReducedBy}\n\n`;
+//     } else {
+//         popupText += "• Plague Level does not change this time\n\n";
+//     }
 
-    popupText += `Current Plague Level: ${plagueLevel}\n\nThe calmer atmosphere in the chapel gives the village a small chance to recover.`;
+//     popupText += `Current Plague Level: ${plagueLevel}\n\nThe calmer atmosphere in the chapel gives the village a small chance to recover.`;
 
-    chapelCharacterName.textContent = "Narrator";
-    chapelDialogueText.textContent = "The chapel grows quiet as the villagers sit in silence.";
-    showChapelEffectPopup(popupText);
-}
+//     chapelCharacterName.textContent = "Narrator";
+//     chapelDialogueText.textContent = "The chapel grows quiet as the villagers sit in silence.";
+//     showChapelEffectPopup(popupText);
+// }
 
 function resetChapelScene() {
     clearInterval(chapelTypingInterval);
-    plagueLevel = parseInt(localStorage.getItem("plagueLevel")) || 50;
 
     chapelDialogueIndex = 0;
     chapelActionCompleted = false;
@@ -325,28 +507,16 @@ chapelButtons.forEach((btn) => {
         hideChapelVillagers();
         chapelCharacterName.textContent = "Narrator";
 
-        if (choice === "reflect") {
+        if (choice === "pray-dead") {
             setChapelDoctor("center");
-            chapelDialogueText.textContent = "You sit among the villagers in quiet reflection.";
-            startChapelReflectionTimer(5);
+            chapelDialogueText.textContent = "You bow your head and pray over the dead.";
+            startChapelReflectionTimer(5, applyResurrectionPrayer);
         }
 
-        if (choice === "comfort") {
+        if (choice === "pray-living") {
             setChapelDoctor("center");
-            chapelDialogueText.textContent = "You speak calmly to the frightened villagers.";
-
-            let popupText = "You comfort the frightened villagers.\n\nEffect:\n";
-
-            if (Math.random() < 0.5) {
-                const plagueReducedBy = 1;
-                decreasePlagueLevel(plagueReducedBy);
-                popupText += `• Plague Level decreases by ${plagueReducedBy}\n\nThe villagers cooperate more, and the sickness eases slightly.`;
-            } else {
-                popupText += "• Plague Level does not change this time\n\nThe chapel feels steadier, even if the sickness has not yet eased.";
-            }
-
-            popupText += `\n\nCurrent Plague Level: ${plagueLevel}`;
-            showChapelEffectPopup(popupText);
+            chapelDialogueText.textContent = "You bow your head to pray with the sick.";
+            startChapelReflectionTimer(5, applyHealingPrayer);
         }
 
         if (choice === "leave") {
