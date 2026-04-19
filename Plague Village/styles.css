@@ -1236,6 +1236,223 @@ button {
 }
 
 /* ============================= */
+/* VILLAGE SAVED ENDING (MATCHED UI STYLE) */
+/* ============================= */
+
+#villageSavedScene {
+    position: relative;
+    overflow: hidden;
+    background: black;
+}
+
+#villageSavedScene #villageSavedBackground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* Doctor sprite (consistent with other scenes like collapse/doctor dies) */
+#villageSavedScene #villageSavedDoctorSprite {
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+
+    width: 45vw; /* BIG — scales with screen */
+    max-width: none; /* 🔥 remove cap */
+    min-width: 0;    /* 🔥 remove floor */
+
+    z-index: 2;
+
+    opacity: 0.95;
+    transition: opacity 0.4s ease, transform 0.4s ease, filter 0.9s ease;
+
+    filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.45));
+}
+
+/* Dialogue box — MATCHES forest / chapel / collapse style */
+#villageSavedScene #villageSavedDialogueBox {
+    position: absolute;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: min(50vw, 860px);
+    padding: 2vh 2vw;
+
+    background: rgba(17, 10, 8, 0.72);
+    backdrop-filter: blur(8px);
+
+    border: 1px solid rgba(210, 179, 138, 0.72);
+    border-radius: 18px;
+
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+
+    color: #f4eee7;
+    font-size: clamp(18px, 2vw, 28px);
+    line-height: 1.5;
+
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+/* Name label (same style as other scenes) */
+#villageSavedScene #villageSavedCharacterName {
+    color: #d7b17b;
+    margin-bottom: 1vh;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.7em;
+}
+
+/* Dialogue text spacing consistency */
+#villageSavedScene #villageSavedDialogueText {
+    color: #f4eee7;
+    padding-right: 3vw;
+    min-height: 3.2em;
+}
+
+/* Next arrow matches collapse/forest pulse style */
+#villageSavedScene #villageSavedNextArrow {
+    position: absolute;
+    bottom: 1vh;
+    right: 1vw;
+
+    font-size: 2vw;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+
+    opacity: 0;
+
+    animation: villageSavedArrowPulse 1s infinite ease-in-out;
+}
+
+/* Ending overlay (matches collapse/doctor dies style) */
+#villageSavedScene #villageSavedEndingOverlay {
+    position: absolute;
+    inset: 0;
+
+    display: grid;
+    place-items: center;
+
+    background: rgba(0, 0, 0, 0);
+    opacity: 0;
+    pointer-events: none;
+
+    z-index: 20;
+
+    transition: opacity 1.5s ease, background 1.5s ease;
+}
+
+#villageSavedScene #villageSavedEndingOverlay.show {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.84);
+}
+
+/* Ending card (same style as collapse/doctor dies) */
+#villageSavedScene #villageSavedEndingCard {
+    width: min(72vw, 760px);
+    padding: 48px 42px;
+
+    text-align: center;
+
+    color: #f7f0e6;
+
+    background: linear-gradient(
+        180deg,
+        rgba(34, 19, 15, 0.88),
+        rgba(8, 5, 4, 0.94)
+    );
+
+    border: 1px solid rgba(215, 177, 123, 0.5);
+    border-radius: 24px;
+
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+
+    transform: translateY(24px) scale(0.96);
+    transition: transform 1.2s ease;
+}
+
+#villageSavedScene #villageSavedEndingOverlay.show #villageSavedEndingCard {
+    transform: translateY(0) scale(1);
+}
+
+/* Ending text styling (consistent with collapse) */
+#villageSavedScene #villageSavedEndingLabel {
+    margin-bottom: 10px;
+    color: #d7b17b;
+
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+}
+
+#villageSavedScene #villageSavedEndingTitle {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    line-height: 1.08;
+}
+
+#villageSavedScene #villageSavedEndingSummary {
+    margin: 18px auto 0;
+    max-width: 34ch;
+
+    color: rgba(247, 240, 230, 0.82);
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+}
+
+/* Arrow animation (matching collapse style) */
+@keyframes villageSavedArrowPulse {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-0.4vh); }
+    100% { transform: translateY(0); }
+}
+
+/* Mobile responsiveness (same pattern as collapse scene) */
+@media (max-width: 900px) {
+    #villageSavedScene #villageSavedDoctorSprite {
+        position: absolute;
+
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+
+        width: 40vw; /* ~2x bigger than 20vw */
+        max-width: 640px;
+        min-width: 300px;
+
+        z-index: 2;
+
+        opacity: 0.95;
+        transition: opacity 0.4s ease, transform 0.4s ease, filter 0.9s ease;
+
+        filter: drop-shadow(0 20px 28px rgba(0, 0, 0, 0.5));
+}
+
+    #villageSavedScene #villageSavedDialogueBox {
+        width: min(88vw, 640px);
+        padding: 20px 22px 28px;
+        bottom: 2vh;
+    }
+
+    #villageSavedScene #villageSavedNextArrow {
+        font-size: 28px;
+        right: 18px;
+    }
+
+    #villageSavedScene #villageSavedEndingCard {
+        width: min(88vw, 560px);
+        padding: 34px 24px;
+    }
+}
+
+/* ============================= */
 /* RAT ENCOUNTER SCENE */
 /* ============================= */
 /* Add rat encounter scene-specific CSS here -- don't add anything that is already included in the CSS file */
