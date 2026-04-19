@@ -282,23 +282,37 @@ forestButtons.forEach(button => {
         const choice = button.dataset.choice;
 
         if (choice === "search") {
+
+
             if (forestLevel === 1) {
                 if (forestGatherCount >= forestGatherLimit) {
                     forestDialogueText.textContent = "You have already gathered everything useful in this part of the forest.";
                     return;
                 }
-                forestGatherCount++;
             } else if (forestLevel === 2) {
                 if (deepForestGatherCount >= deepForestGatherLimit) {
                     forestDialogueText.textContent = "There is nothing more to gather deeper in the forest.";
                     return;
                 }
-                deepForestGatherCount++;
             } else if (forestLevel === 3) {
                 if (deeperForestGatherCount >= deeperForestGatherLimit) {
                     forestDialogueText.textContent = "The deepest part of the forest has been picked clean.";
                     return;
                 }
+            }
+
+            // Make sure player has enough Action Tokens before searching for ingredients
+            if (!canSpendActionToken(1)) {
+                return;
+            }
+
+            spendActionToken(1);
+
+            if (forestLevel === 1) {
+                forestGatherCount++;
+            } else if (forestLevel === 2) {
+                deepForestGatherCount++;
+            } else if (forestLevel === 3) {
                 deeperForestGatherCount++;
             }
 
