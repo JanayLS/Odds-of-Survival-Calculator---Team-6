@@ -318,7 +318,6 @@ function applyHealingPrayer() {
 
     spendActionToken(2);
 
-    const livingVillagers = getLivingInfectedVillagerKeys();
     const hasRosemary = hasBlessedRosemaryBundle();
     const healChance = hasRosemary ? 0.50 : 0.15;
 
