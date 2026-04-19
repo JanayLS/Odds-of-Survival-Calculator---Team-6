@@ -1236,7 +1236,7 @@ button {
 }
 
 /* ============================= */
-/* VILLAGE SAVED ENDING (MATCHED UI STYLE) */
+/* VILLAGE SAVED ENDING*/
 /* ============================= */
 
 #villageSavedScene {
@@ -1254,7 +1254,7 @@ button {
     z-index: 0;
 }
 
-/* Doctor sprite (consistent with other scenes like collapse/doctor dies) */
+/* Doctor sprite*/
 #villageSavedScene #villageSavedDoctorSprite {
     position: absolute;
 
@@ -1262,9 +1262,9 @@ button {
     bottom: 0;
     transform: translateX(-50%);
 
-    width: 45vw; /* BIG — scales with screen */
-    max-width: none; /* 🔥 remove cap */
-    min-width: 0;    /* 🔥 remove floor */
+    width: 45vw;
+    max-width: none;
+    min-width: 0;
 
     z-index: 2;
 
@@ -1274,7 +1274,7 @@ button {
     filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.45));
 }
 
-/* Dialogue box — MATCHES forest / chapel / collapse style */
+/* Dialogue box*/
 #villageSavedScene #villageSavedDialogueBox {
     position: absolute;
     bottom: 3vh;
@@ -1300,7 +1300,7 @@ button {
     box-sizing: border-box;
 }
 
-/* Name label (same style as other scenes) */
+/* Name label*/
 #villageSavedScene #villageSavedCharacterName {
     color: #d7b17b;
     margin-bottom: 1vh;
@@ -1317,7 +1317,7 @@ button {
     min-height: 3.2em;
 }
 
-/* Next arrow matches collapse/forest pulse style */
+
 #villageSavedScene #villageSavedNextArrow {
     position: absolute;
     bottom: 1vh;
@@ -1333,7 +1333,7 @@ button {
     animation: villageSavedArrowPulse 1s infinite ease-in-out;
 }
 
-/* Ending overlay (matches collapse/doctor dies style) */
+/* Ending overlay */
 #villageSavedScene #villageSavedEndingOverlay {
     position: absolute;
     inset: 0;
@@ -1355,7 +1355,7 @@ button {
     background: rgba(0, 0, 0, 0.84);
 }
 
-/* Ending card (same style as collapse/doctor dies) */
+/* Ending card*/
 #villageSavedScene #villageSavedEndingCard {
     width: min(72vw, 760px);
     padding: 48px 42px;
@@ -1383,7 +1383,7 @@ button {
     transform: translateY(0) scale(1);
 }
 
-/* Ending text styling (consistent with collapse) */
+/* Ending text styling*/
 #villageSavedScene #villageSavedEndingLabel {
     margin-bottom: 10px;
     color: #d7b17b;
@@ -1407,14 +1407,14 @@ button {
     font-size: clamp(1rem, 1.5vw, 1.3rem);
 }
 
-/* Arrow animation (matching collapse style) */
+/* Arrow animation*/
 @keyframes villageSavedArrowPulse {
     0% { transform: translateY(0); }
     50% { transform: translateY(-0.4vh); }
     100% { transform: translateY(0); }
 }
 
-/* Mobile responsiveness (same pattern as collapse scene) */
+/* Mobile responsiveness */
 @media (max-width: 900px) {
     #villageSavedScene #villageSavedDoctorSprite {
         position: absolute;
