@@ -1198,9 +1198,8 @@ function triggerVillageCollapseEnding() {
 
 // ENDING 3: Village Saved (Rats & Villagers Objectives are met)
 function triggerVillageSavedEnding() {
-    alert("Village Saved! (Village Saved Ending Scene to be added soon.)")
-    // showScene("villageSavedScene")
-    // startVillageSavedScene();
+    showScene("villageSavedScene")
+    startVillageSavedScene();
 }
 
 function checkVillageSavedEnding() {
