@@ -624,6 +624,7 @@ function activateVillagersForRun() {
         gameState.villagers[key].active = false;
         gameState.villagers[key].healed = false;
         gameState.villagers[key].dead = false;
+        gameState.villagers[key].feverSuppressed = false;
     });
 
     // Shuffle villager keys for randomness
@@ -1013,8 +1014,61 @@ function applyReduceVillagerInfection(item) {
 // applySuppressVillagerInfection - used by Fever Suppressant, keeps active villager infection from worsening at end of day. If it is
 // brewed strong, it also reduces the villager's plague infection status slightly.
 function applySuppressVillagerInfection(item) {
-    alert("Fever Suppressant logic will connect to villager healing scene.");
-    return false;
+    const villagerSceneVisible = document.getElementById("villagerHealingScene").style.display === "block";
+
+    if (!villagerSceneVisible) {
+        alert("Fever Suppressant can only be used to heal villagers.")
+        return false;
+    }
+
+    const villager = getActiveVillager();
+
+    if (!villager) {
+        alert("No active villager found.");
+        return false;
+    }
+
+    if (villager.dead) {
+        alert("This villager is dead.");
+        return false;
+    }
+
+    if (villager.healed) {
+        alert("This villager has already been healed.");
+        return false;
+    }
+
+    if (villager.feverSuppressed) {
+        alert("This villager is already protected for the night.");
+        return false;
+    }
+
+    if (!canSpendActionToken(1)) {
+        return false;
+    }
+
+    villager.feverSuppressed = true;
+
+    if (item.tier === "mid") {
+        villager.infectionLevel -= 5;
+    } else if (item.tier === "strong") {
+        villager.infectionLevel -= 10;
+    }
+
+    if (villager.infectionLevel <= 0) {
+        villager.infectionLevel = 0;
+        villager.healed = true;
+        gameState.villagersHealed += 1;
+    }
+
+    spendActionToken(1);
+
+    renderVillagerInfection();
+    renderVillagerScene();
+    updateVillageVisual();
+    updateObjectivePanel();
+
+    return true;
 }
 
 // applyPoisonRat - used by Plague Concoction, weakens rat attacks in battle
@@ -1194,7 +1248,10 @@ function applyEndOfDayUpdates() {
     // Villagers with active infections worsen 
     Object.values(gameState.villagers).forEach(villager => {
         if (villager.active && !villager.healed && !villager.dead) {
-            // TODO: Skip infection increase if villager has Fever Suppressant or Ruby Amulet protection
+            // Skip infection increase if villager has Fever Suppressant or Ruby Amulet protection
+            if (villager.feverSuppressed) {
+                return;
+            }
 
             villager.infectionLevel += 10;
             // TODO: Villager dies if infection level reaches 100
@@ -1202,6 +1259,11 @@ function applyEndOfDayUpdates() {
             report.villagersWorsened += 1;
         }
     });
+
+    // Any applied fever suppressants wear off after End of Day
+    Object.values(gameState.villagers).forEach(villager => {
+        villager.feverSuppressed = false;
+    })
 
     // Doctor infection increases unless Herb Satchel is in inventory
     if (!hasItemInInventory("Herb Satchel")) {
