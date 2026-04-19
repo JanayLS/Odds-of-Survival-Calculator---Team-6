@@ -43,7 +43,14 @@ function renderVillagerInfection() {
     if (!villager || !bar || !value) return;
 
     bar.style.width = `${villager.infectionLevel}%`;
-    value.textContent = `${villager.infectionLevel}%`;
+
+    if (villager.dead) {
+        value.textContent = "Deceased";
+    } else if (villager.healed) {
+        value.textContent = "Healed";
+    } else {
+        value.textContent = `${villager.infectionLevel}%`;
+    }
 }
 
 function renderVillagerScene() {
@@ -58,10 +65,18 @@ function renderVillagerScene() {
 
     villagerHealingScene.style.backgroundImage = `url('${villagerData.bg}')`;
 
-    if (villagerState.healed) {
+    if (villagerState.dead) {
+        portrait.src = villagerData.portrait_sick;
+        portrait.style.opacity = "0.45";
+        portrait.style.filter = "grayscale(100%)";
+    } else if (villagerState.healed) {
         portrait.src = villagerData.portrait_healthy;
+        portrait.style.opacity = "1";
+        portrait.style.filter = "none";
     } else {
         portrait.src = villagerData.portrait_sick;
+        portrait.style.opacity = "1";
+        portrait.style.filter = "none";
     }
 }
 

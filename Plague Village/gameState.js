@@ -11,7 +11,7 @@ const gameState = {
 
     // Inventory & Money
     inventory: [],
-    money: 5,
+    money: 0,
 
     // Shop Stock
     shopItems: [],
