@@ -23,6 +23,7 @@ shopScene.innerHTML = `
 // Grab HTML Elements
 const shopPanel = document.getElementById('shopPanel')
 const boostItems = Object.values(itemDatabase).filter(item => item.category === "charm");
+const ingredientItems = Object.values(itemDatabase).filter(item => item.category === "ingredient");
 const randomItem = boostItems[Math.floor(Math.random() * boostItems.length)];
 const shopItemSound = new Audio('sound-effects/misc-sounds/buy-item.wav');
 const shopDialogueBox = document.getElementById("shopDialogueBox");
@@ -148,7 +149,10 @@ function buyShopItem(item) {
 
 // Shop items replenish when it's a new Day
 function refreshShopInventory() {
-    gameState.shopItems = getRandomItems(boostItems, 3);
+    const randomCharms = getRandomItems(boostItems, 3);
+    const randomIngredients = getRandomItems(ingredientItems, 7);
+
+    gameState.shopItems = [...randomCharms, ...randomIngredients];
     renderShopItems();
     resetShopDialogue();
 }
