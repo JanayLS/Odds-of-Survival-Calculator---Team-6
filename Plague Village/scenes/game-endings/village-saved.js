@@ -110,7 +110,7 @@ villageSavedScene.innerHTML = `
         arrowEl.style.opacity = 1;
 
         // ensures DOM fully updates before input continues
-        requestAnimationFrame(() => {});
+        requestAnimationFrame(() => { });
     }
 
     // -----------------------------
@@ -175,8 +175,6 @@ villageSavedScene.innerHTML = `
     // PUBLIC START (SAFE GUARD)
     // -----------------------------
     window.startVillageSavedScene = function () {
-        if (started) return;
-        started = true;
 
         index = 0;
         charIndex = 0;
