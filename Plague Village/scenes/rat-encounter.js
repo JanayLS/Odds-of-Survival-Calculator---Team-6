@@ -72,13 +72,28 @@ function attackActiveRat() {
         rat.hp = 0;
         rat.dead = true;
         gameState.ratsKilled += 1;
-        renderRatSelectList();
         updateObjectivePanel();
+        renderRatSelectList();
         alert("Rat defeated!");
     }
 
     spendActionToken(1);
     renderRatHp();
+
+    // Temporary placeholder for rat bite -- when rat bites Doctor, infection increases
+    const gotInfected = Math.random() < 0.55 // 55% chance
+
+    if (gotInfected) {
+        const infectionAmount = Math.floor(Math.random() * 11) + 15;
+        gameState.doctorInfection += infectionAmount;
+
+        if (gameState.doctorInfection > 100) {
+            gameState.doctorInfection = 100;
+        }
+
+        renderDoctorInfection();
+        alert(`The rat bit you. Doctor Infection +${infectionAmount}`);
+    }
 }
 
 tempAttackBtn.addEventListener("click", () => {
