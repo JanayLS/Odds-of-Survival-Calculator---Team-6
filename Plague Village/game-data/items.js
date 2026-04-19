@@ -303,6 +303,24 @@ const itemDatabase = {
         description: "Small cloth satchel of dried herbs, suppresses Doctor's infection status from worsening at end of day.",
         category: "charm",
         price: 30
+    },
+
+    finalVigilCandle: {
+        name: "Final Vigil Candle",
+        img: "images/charm-items/finalVigilCandle.png",
+        description: "A solemn black candle used in prayer for the deceased. Strengthens ressurection prayers in the chapel.",
+        category: "charm",
+        weight: 2,
+        price: 350
+    },
+
+    rosemaryBundle: {
+        name: "Blessed Rosemary Bundle",
+        img: "images/charm-items/rosemaryBundle.png",
+        description: "A fragrant bundle of rosemary tied with consecrated thread. Strengthens healing prayers in the chapel.",
+        category: "charm",
+        weight: 5,
+        price: 200
     }
 
 }

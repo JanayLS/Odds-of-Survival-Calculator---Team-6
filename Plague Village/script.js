@@ -658,7 +658,20 @@ function renderVillagerSelectList() {
         const villagerBtn = document.createElement("button");
         villagerBtn.className = "villagerSelectBtn";
         villagerBtn.dataset.villager = villagerKey;
-        villagerBtn.textContent = villagerDatabase[villagerKey].name;
+
+        const villagerState = gameState.villagers[villagerKey];
+        const villagerName = villagerDatabase[villagerKey].name;
+
+        if (villagerState.dead) {
+            villagerBtn.textContent = `☠ ${villagerName}`;
+            villagerBtn.classList.add("deadVillager");
+        } else if (villagerState.healed) {
+            villagerBtn.textContent = `✓ ${villagerName}`;
+            villagerBtn.classList.add('healedVillager');
+        } else {
+            villagerBtn.textContent = villagerName;
+        }
+
 
         villagerSelectList.appendChild(villagerBtn);
     });
@@ -1085,35 +1098,34 @@ function applyCureDoctorPoison(item) {
 // --------------------------------------------------------------
 // MONEY
 // --------------------------------------------------------------
-let money = 0;
 
 function renderMoney() {
-    document.getElementById("moneyValue").textContent = money;
+    document.getElementById("moneyValue").textContent = gameState.money;
 }
 
 function addMoney(amount) {
-    money += amount;
+    gameState.money += amount;
     renderMoney();
 }
 
 function spendMoney(amount) {
-    if (money < amount) return false;
-    money -= amount;
+    if (gameState.money < amount) return false;
+    gameState.money -= amount;
     renderMoney();
     return true;
 }
 
 function loseMoney(amount) {
-    money -= amount;
-    if (money < 0) {
-        money = 0;
+    gameState.money -= amount;
+    if (gameState.money < 0) {
+        gameState.money = 0;
     }
 
     renderMoney();
 }
 
 function setRandomStartMoney() {
-    money = Math.floor(Math.random() * 6) + 100;
+    gameState.money = Math.floor(Math.random() * 6) + 100;
     renderMoney();
 }
 
@@ -1229,6 +1241,7 @@ function applyEndOfDayUpdates() {
         healedVillagers: gameState.villagersHealed,
         defeatedRats: gameState.ratsKilled,
         villagersWorsened: 0,
+        villagersDied: 0,
         ratsStrengthened: 0,
         doctorInfectionIncreased: false,
         moneyReceived: 0,
@@ -1247,22 +1260,27 @@ function applyEndOfDayUpdates() {
     // Villagers with active infections worsen 
     Object.values(gameState.villagers).forEach(villager => {
         if (villager.active && !villager.healed && !villager.dead) {
+
             // Skip infection increase if villager has Fever Suppressant or Ruby Amulet protection
             if (villager.feverSuppressed) {
                 return;
             }
 
             villager.infectionLevel += 10;
-            // TODO: Villager dies if infection level reaches 100
-            if (villager.infectionLevel > 100) villager.infectionLevel = 100;
+
+            // Villager dies if infection level reaches 100
+            if (villager.infectionLevel >= 100) {
+                villager.infectionLevel = 100;
+                villager.dead = true;
+                villager.healed = false;
+
+                report.villagersDied += 1;
+            }
+
+            // Add number of villagers who got worse & villagers who died to End of Day report
             report.villagersWorsened += 1;
         }
     });
-
-    // Any applied fever suppressants wear off after End of Day
-    Object.values(gameState.villagers).forEach(villager => {
-        villager.feverSuppressed = false;
-    })
 
     // Doctor infection increases unless Herb Satchel is in inventory
     if (!hasItemInInventory("Herb Satchel")) {
@@ -1301,6 +1319,10 @@ function buildEndOfDayReportText(report) {
         <p><strong>${report.ratsStrengthened}</strong> live rats grew stronger in the night.</p>
         <p><strong>${report.villagersWorsened}</strong> villagers worsened overnight.</p>
     `;
+
+    if (report.villagersDied > 0) {
+        text += `<p><strong>${report.villagersDied}</strong> villagers died in the night.</p>`;
+    }
 
     if (report.doctorInfectionIncreased) {
         text += `<p>Your infection worsened during the night.</p>`;

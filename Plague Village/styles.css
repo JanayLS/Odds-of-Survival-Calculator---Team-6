@@ -825,6 +825,15 @@ button {
     cursor: pointer;
 }
 
+.villagerSelectBtn.deadVillager {
+    opacity: 0.5;
+    background-color: #83bda8;
+}
+
+.villagerSelectBtn.healedVillager {
+    background-color: #7fff7f;
+}
+
 /* ============================= */
 /* TRAVEL - SELECT RAT */
 /* ============================= */
@@ -1364,11 +1373,9 @@ button {
 
     color: #f7f0e6;
 
-    background: linear-gradient(
-        180deg,
-        rgba(34, 19, 15, 0.88),
-        rgba(8, 5, 4, 0.94)
-    );
+    background: linear-gradient(180deg,
+            rgba(34, 19, 15, 0.88),
+            rgba(8, 5, 4, 0.94));
 
     border: 1px solid rgba(215, 177, 123, 0.5);
     border-radius: 24px;
@@ -1409,9 +1416,17 @@ button {
 
 /* Arrow animation*/
 @keyframes villageSavedArrowPulse {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-0.4vh); }
-    100% { transform: translateY(0); }
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-0.4vh);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }
 
 /* Mobile responsiveness */
@@ -1423,7 +1438,8 @@ button {
         bottom: 0;
         transform: translateX(-50%);
 
-        width: 40vw; /* ~2x bigger than 20vw */
+        width: 40vw;
+        /* ~2x bigger than 20vw */
         max-width: 640px;
         min-width: 300px;
 
@@ -1433,7 +1449,7 @@ button {
         transition: opacity 0.4s ease, transform 0.4s ease, filter 0.9s ease;
 
         filter: drop-shadow(0 20px 28px rgba(0, 0, 0, 0.5));
-}
+    }
 
     #villageSavedScene #villageSavedDialogueBox {
         width: min(88vw, 640px);
