@@ -3,11 +3,11 @@
 const gameState = {
     // Day
     day: 1,
-    maxDays: 10,
+    maxDays: 5,
 
     // Action Tokens
-    actionTokens: 7,
-    maxActionTokens: 7,
+    actionTokens: 10,
+    maxActionTokens: 10,
 
     // Inventory & Money
     inventory: [],
