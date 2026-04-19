@@ -38,6 +38,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -45,6 +46,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -52,6 +54,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -59,6 +62,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -66,6 +70,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -73,6 +78,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -80,6 +86,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -87,6 +94,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -94,6 +102,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         },
 
@@ -101,6 +110,7 @@ const gameState = {
             active: false,
             healed: false,
             infectionLevel: 85,
+            feverSuppressed: false,
             dead: false,
         }
 
