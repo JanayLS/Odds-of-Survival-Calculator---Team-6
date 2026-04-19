@@ -1285,15 +1285,12 @@ closeEndOfDayBtn.addEventListener("click", () => {
 
     if (gameState.day >= gameState.maxDays) {
         if (
-            gameState.villagersHealed < gameState.villagersToHeal &&
-            gameState.ratsKilled < gameState.ratsToKill
-        ) {
-            triggerVillageCollapseEnding();
-        } else if (
             gameState.villagersHealed >= gameState.villagersToHeal &&
             gameState.ratsKilled >= gameState.ratsToKill
         ) {
             triggerVillageSavedEnding();
+        } else {
+            triggerVillageCollapseEnding();
         }
 
         return;
