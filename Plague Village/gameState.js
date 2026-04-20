@@ -3,7 +3,7 @@
 const gameState = {
     // Day
     day: 1,
-    maxDays: 10,
+    maxDays: 20,
 
     // Action Tokens
     actionTokens: 10,
