@@ -71,22 +71,28 @@ const forestLootPool = [
 
 const forestIntroDialogue = [
     "You step into the forest at the edge of the village.",
-    "The air is damp, and the woods seem watchful.",
-    "Medicinal plants may still grow here, if the plague has not spoiled them.",
-    "You steady your breath and search the shadows ahead.",
-    "But be careful. The forest can be dangerous. Rats and worse may lurk within."
+    "The air is thick and damp, clinging to your mask.",
+    "Medicinal plants still grow here... but something feels wrong.",
+    "Some leaves appear darker than they should, as if touched by rot.",
+    "You steady your breath and begin your search.",
+    "Not everything you gather here will be safe."
 ];
 
 const deepForestDialogue = [
     "You move deeper into the forest.",
-    "The trees grow thicker, and the path becomes harder to follow.",
-    "It is darker here, and the rats are harder to spot."
+    "The light fades, and the air grows heavier with each step.",
+    "You notice some herbs coated in a strange, oily residue.",
+    "The difference between safe and dangerous is becoming harder to see.",
+    "You must choose carefully."
 ];
 
 const deeperForestDialogue = [
     "You reach the deepest part of the forest.",
-    "Little light reaches the ground here.",
-    "Stay watchful. You may not be alone..."
+    "The silence is oppressive. The forest feels corrupted.",
+    "Some plants mimic the appearance of useful herbs with unsettling precision.",
+    "A faint discoloration, a brittle texture — subtle signs, easy to miss.",
+    "You hesitate, realizing even familiar remedies may betray you here.",
+    "Carelessness could come at a cost."
 ];
 
 function getRandomForestLimit() {
@@ -172,12 +178,25 @@ function gatherForestIngredients() {
             addItemToInventory(itemDatabase[itemKey]);
 
             if (itemKey === "blightedThyme") {
-                // =========================================
-                // DOCTOR PLAGUE / INFECTION LOGIC GOES HERE
-                // Example:
-                // doctorInfection += 5;
-                // updateDoctorInfectionUI();
-                // =========================================
+                const infectionBar = document.getElementById("doctorInfectionBar");
+                const infectionValue = document.getElementById("doctorInfectionValue");
+
+                let currentInfection = parseInt(infectionValue.textContent) || 0;
+                const infectionIncrease = 5;
+
+                currentInfection += infectionIncrease;
+
+                if (currentInfection > 100) {
+                    currentInfection = 100;
+                }
+
+                infectionValue.textContent = currentInfection + "%";
+                infectionBar.style.width = currentInfection + "%";
+
+                infectionBar.style.filter = "brightness(1.3)";
+                setTimeout(() => {
+                    infectionBar.style.filter = "none";
+                }, 200);
             }
         }
     }
@@ -189,9 +208,6 @@ function gatherForestIngredients() {
 
         // =========================================
         // POISON METER LOGIC GOES HERE
-        // Example:
-        // doctorPoisonMeter += 10;
-        // updateDoctorPoisonMeterUI();
         // =========================================
     }
 
