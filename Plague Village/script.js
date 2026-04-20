@@ -1282,6 +1282,11 @@ function applyEndOfDayUpdates() {
         }
     });
 
+    // Any applied fever suppressants wear off after End of Day
+    Object.values(gameState.villagers).forEach(villager => {
+        villager.feverSuppressed = false;
+    })
+
     // Doctor infection increases unless Herb Satchel is in inventory
     if (!hasItemInInventory("Herb Satchel")) {
         gameState.doctorInfection += 10;
