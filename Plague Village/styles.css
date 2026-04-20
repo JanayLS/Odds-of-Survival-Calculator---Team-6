@@ -1668,6 +1668,7 @@ button {
     max-width: 420px;
     z-index: 2;
     filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.6));
+    animation: doctorIdle 2.5s ease-in-out infinite;
 }
 
 @keyframes doctorIdle {
@@ -1803,6 +1804,25 @@ button {
 #forestScene .forestLootCard p {
     margin: 0;
     font-size: 0.95rem;
+}
+
+#forestScene .poisonedLoot {
+    border-color: #5c6b4f;
+    background: rgba(20, 20, 20, 0.45);
+}
+
+#forestScene .poisonedLootImage {
+    filter: brightness(0.35) saturate(0.6);
+    opacity: 0.9;
+}
+
+#forestScene .poisonedLootLabel {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: #b7d48a;
+    font-weight: bold;
+    text-transform: uppercase;
+    line-height: 1.2;
 }
 
 #forestScene #forestClosePopupBtn {

@@ -4,6 +4,13 @@ const itemDatabase = {
     // INGREDIENTS *************************
     //**************************************
 
+    blightedThyme: {
+    name: "Blighted Thyme",
+    img: "images/ingredients/blighted-thyme.png",
+    description: "A pale, sickly herb that resembles ordinary thyme. It carries traces of plague rot.",
+    category: "ingredient",
+    weight: 3
+},
     bitterMushroom: {
         name: "Bitter Mushroom",
         img: "images/ingredients/bitter-mushroom.png",

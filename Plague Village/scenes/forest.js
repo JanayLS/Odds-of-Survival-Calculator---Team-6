@@ -1,16 +1,4 @@
 // Grabs the scene element from our main HTML document
-
-// ADD YOUR SCENE'S HTML CODE INSIDE THE INNERHTML TEMPLATE LITERAL BELOW
-// ADD SCENE SPECIFIC JS HERE -- Do not redeclare global variables/functions that are already in script.js
-// If needed, rename your local variables to avoid conflicts with script.js
-
-// Remember to go to index.html, scroll to the bottom and add a <script> element linking to this scene's js file
-// (Keep the JS script element underneath the data/items.js and script.js elements so they load first)
-
-
-
-
-// Grabs the scene element from our main HTML document
 const forestScene = document.getElementById("forestScene");
 
 // ADD YOUR SCENE'S HTML CODE INSIDE THE INNERHTML TEMPLATE LITERAL BELOW
@@ -38,9 +26,7 @@ forestScene.innerHTML = `
     </div>
 `;
 
-// ADD SCENE SPECIFIC JS HERE -- Do not redeclare global variables/functions that are already in script.js
-// If needed, rename your local variables to avoid conflicts with script.js
-
+// Scene-specific element references
 const forestBackground = forestScene.querySelector("#forestBackground");
 const forestDoctor = forestScene.querySelector("#forestDoctor");
 const forestCharacterName = forestScene.querySelector("#forestCharacterName");
@@ -79,6 +65,7 @@ const forestLootPool = [
     "charcoalPowder",
     "boneAsh",
     "garlicBulb",
+    "blightedThyme",
     null
 ];
 
@@ -175,9 +162,37 @@ function gatherForestIngredients() {
         const itemKey = getRandomForestItemKey();
 
         if (itemKey && itemDatabase[itemKey]) {
-            foundItems.push(itemDatabase[itemKey]);
+            const itemData = {
+                ...itemDatabase[itemKey],
+                isPoisoned: false,
+                isBlighted: itemKey === "blightedThyme"
+            };
+
+            foundItems.push(itemData);
             addItemToInventory(itemDatabase[itemKey]);
+
+            if (itemKey === "blightedThyme") {
+                // =========================================
+                // DOCTOR PLAGUE / INFECTION LOGIC GOES HERE
+                // Example:
+                // doctorInfection += 5;
+                // updateDoctorInfectionUI();
+                // =========================================
+            }
         }
+    }
+
+    // 15% chance that ONE gathered ingredient is covered in poison
+    if (foundItems.length > 0 && Math.random() < 0.15) {
+        const randomPoisonIndex = Math.floor(Math.random() * foundItems.length);
+        foundItems[randomPoisonIndex].isPoisoned = true;
+
+        // =========================================
+        // POISON METER LOGIC GOES HERE
+        // Example:
+        // doctorPoisonMeter += 10;
+        // updateDoctorPoisonMeterUI();
+        // =========================================
     }
 
     return foundItems;
@@ -193,15 +208,31 @@ function showForestLootPopup(foundItems) {
             const card = document.createElement("div");
             card.className = "forestLootCard";
 
+            if (item.isPoisoned) {
+                card.classList.add("poisonedLoot");
+            }
+
             const img = document.createElement("img");
             img.src = item.img;
             img.alt = item.name;
+
+            if (item.isPoisoned) {
+                img.classList.add("poisonedLootImage");
+            }
 
             const label = document.createElement("p");
             label.textContent = item.name;
 
             card.appendChild(img);
             card.appendChild(label);
+
+            if (item.isPoisoned) {
+                const poisonLabel = document.createElement("p");
+                poisonLabel.className = "poisonedLootLabel";
+                poisonLabel.textContent = "Covered in Poison";
+                card.appendChild(poisonLabel);
+            }
+
             forestLootItems.appendChild(card);
         });
     }
@@ -282,8 +313,6 @@ forestButtons.forEach(button => {
         const choice = button.dataset.choice;
 
         if (choice === "search") {
-
-
             if (forestLevel === 1) {
                 if (forestGatherCount >= forestGatherLimit) {
                     forestDialogueText.textContent = "You have already gathered everything useful in this part of the forest.";
