@@ -1667,8 +1667,6 @@ button {
     width: 30vw;
     max-width: 420px;
     z-index: 2;
-    filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.6));
-    animation: doctorIdle 2.5s ease-in-out infinite;
 }
 
 @keyframes doctorIdle {
