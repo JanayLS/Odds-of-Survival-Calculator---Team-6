@@ -26,10 +26,11 @@ const gameState = {
 
     // Current Scene
     currentScene: "arrivalScene",
+    currentVillagerKey: null,
+    currentRatKey: null,
 
     // Doctor Status
     doctorInfection: 0,
-    doctorPoison: 0,
 
     // Status of Each Villager
     villagers: {
@@ -130,23 +131,28 @@ const gameState = {
     rats: {
         rat1: {
             hp: 100,
-            dead: false
+            dead: false,
+            weakened: false
         },
         rat2: {
             hp: 100,
-            dead: false
+            dead: false,
+            weakened: false
         },
         rat3: {
             hp: 100,
-            dead: false
+            dead: false,
+            weakened: false
         },
         rat4: {
             hp: 100,
-            dead: false
+            dead: false,
+            weakened: false
         },
         rat5: {
             hp: 100,
-            dead: false
+            dead: false,
+            weakened: false
         }
     }
 

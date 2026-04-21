@@ -126,6 +126,11 @@ function renderShopItems() {
 
 // Buy shop item
 function buyShopItem(item) {
+
+    if (!canSpendActionToken(1)) {
+        return;
+    }
+
     if (!spendMoney(item.price)) {
         alert("Not enough money.");
         return;
@@ -135,7 +140,7 @@ function buyShopItem(item) {
     shopItemSound.play();
 
     hideItemDescription();
-    spendActionToken();
+    spendActionToken(1);
     addItemToInventory(item);
 
     const itemIndex = gameState.shopItems.findIndex(shopItem => shopItem.name === item.name);

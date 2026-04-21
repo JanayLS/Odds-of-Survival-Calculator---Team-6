@@ -897,6 +897,13 @@ button {
     background-color: #64c19f;
 }
 
+.ratSelectBtn.weakenedRat {
+    opacity: 0.6;
+    background-color: #a7b7a7;
+    border: 3px solid #7a8f7a;
+    color: #1f1f1f;
+}
+
 #closeRatSelectBtn {
     padding: 10px 16px;
     font-size: 1rem;

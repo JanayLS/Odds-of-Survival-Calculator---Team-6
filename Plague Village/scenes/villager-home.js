@@ -28,11 +28,16 @@ let activeVillagerKey = null;
 
 function setActiveVillager(villagerKey) {
     activeVillagerKey = villagerKey;
+    gameState.currentVillagerKey = villagerKey;
     renderVillagerScene();
     renderVillagerInfection();
 }
 
 function getActiveVillager() {
+    if (!activeVillagerKey && gameState.currentVillagerKey) {
+        activeVillagerKey = gameState.currentVillagerKey;
+    }
+
     return gameState.villagers[activeVillagerKey];
 }
 
@@ -56,6 +61,11 @@ function renderVillagerInfection() {
 }
 
 function renderVillagerScene() {
+
+    if (!activeVillagerKey && gameState.currentVillagerKey) {
+        activeVillagerKey = gameState.currentVillagerKey;
+    }
+
     if (!activeVillagerKey) return;
 
     const villagerData = villagerDatabase[activeVillagerKey];
