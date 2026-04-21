@@ -129,6 +129,176 @@ button {
 }
 
 /* ============================= */
+/* VILLAGER-HOME */
+/* ============================= */
+
+#villagerHealingScene {
+    position: relative;
+    overflow: hidden;
+}
+
+#villagerPortrait {
+    position: absolute;
+    right: 3vw;
+    left: auto;
+    bottom: -4vw;
+    transform: scale(1.15);
+    transform-origin: bottom right;
+    width: 58vw;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 2;
+}
+
+#villagerPortrait.villager2Lower {
+    bottom: -8vw;
+}
+
+#villagerPortrait.villager3Lower {
+    bottom: -6vw;
+}
+
+#villagerPortrait.villager4Lower,
+#villagerPortrait.villager5Lower {
+    bottom: -7vw;
+}
+
+#villagerPortrait.villager7Lower {
+    bottom: -6vw;
+}
+
+#villagerPortrait.villager9Lower,
+#villagerPortrait.villager10Lower {
+    bottom: -7vw;
+}
+
+#villagerTreatmentUI {
+    position: fixed;
+    top: 2vh;
+    right: 3vw;
+    left: auto;
+    transform: none;
+    width: 28vw;
+    padding: 0.7vw 1vw;
+    background: rgba(0, 0, 0, 0.75);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    z-index: 1000;
+}
+
+#villagerTreatmentLabel {
+    font-size: 1vw;
+    font-weight: bold;
+    margin-bottom: 0.35vw;
+    color: #c6a988;
+}
+
+#villagerInfectionContainer {
+    width: 100%;
+    height: 1.2vw;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid #c6a988;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+#villagerInfectionBar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #77dd77, #d8c45c, #b22222);
+}
+
+#villagerInfectionValue {
+    margin-top: 0.35vw;
+    font-size: 0.95vw;
+    color: #f5e6c8;
+}
+
+#villagerHomeCharacterName {
+    color: tan;
+}
+
+#villagerHomeDialogueBox {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50vw;
+    max-width: 50vw;
+    padding: 2vh 2vw;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    font-size: clamp(2vh, 2.2vw, 3vh);
+    line-height: 1.4;
+    z-index: 10;
+}
+
+#villagerHomeActionBox {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vh;
+    margin-top: 2vh;
+}
+
+.villagerActionBtn {
+    background: #000;
+    border: 2px solid #c6a988;
+    border-radius: 10px;
+    font-size: 1.1vw;
+    font-weight: bold;
+    color: #fff;
+}
+
+.villagerActionBtn.poisonBtn {
+    border-color: #9be564;
+    box-shadow: 0 0 0 1px #9be564;
+}
+
+.villagerActionBtn.poisonBtn:hover {
+    background: #355224;
+    color: #fff;
+}
+
+.villagerActionBtn.healBtn {
+    border-color: #fff6a8;
+    box-shadow: 0 0 0 1px #fff6a8;
+}
+
+.villagerActionBtn.healBtn:hover {
+    background: #5f5a33;
+    color: #fff;
+}
+
+#villagerHomeNextArrow {
+    position: absolute;
+    bottom: 1vh;
+    right: 1.5vw;
+    font-size: 2.2vw;
+    color: white;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: arrowPulse 1s infinite ease-in-out;
+}
+
+#worriedVillagerWoman {
+    position: absolute;
+    left: 1vw;
+    bottom: 0;
+    width: 18vw;
+    transition: opacity 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ============================= */
 /* VILLAGE INFECTION */
 /* ============================= */
 #villageInfectionUI {
@@ -456,6 +626,9 @@ button {
 /* ============================= */
 /* CHOICE SYSTEM */
 /* ============================= */
+/* ============================= */
+/* CHOICE SYSTEM */
+/* ============================= */
 #choiceBox {
     display: none;
     flex-direction: column;
@@ -477,6 +650,41 @@ button {
     background: #64c19f;
     transform: scale(1.02);
 }
+
+.fightChoiceBox {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vh;
+    margin-top: 2vh;
+}
+
+.fightChoiceBox .choiceBtn[data-choice="run"] {
+    border-color: #7fffd1;
+}
+
+.fightChoiceBox .choiceBtn[data-choice="run"]:hover {
+    background: #64c19f;
+}
+
+.fightChoiceBox .choiceBtn[data-choice="scare"] {
+    border-color: rgb(255, 255, 134);
+}
+
+.fightChoiceBox .choiceBtn[data-choice="scare"]:hover {
+    background: rgb(206, 206, 95);
+}
+
+.fightChoiceBox .choiceBtn[data-choice="fight"] {
+    border-color: red;
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 60%;
+}
+
+.fightChoiceBox .choiceBtn[data-choice="fight"]:hover {
+    background: rgb(151, 0, 0);
+}
+
 
 /* ============================= */
 /* INVENTORY SYSTEM */
@@ -834,16 +1042,6 @@ button {
     background-color: #7fff7f;
 }
 
-.villagerSelectBtn.feverProtected {
-    border: 3px solid #39ff14;
-    box-shadow: 0 0 8px #39ff14, 0 0 16px #39ff14;
-}
-
-.villagerSelectBtn.amuletProtected {
-    border: 3px solid #ff2b2b;
-    box-shadow: 0 0 8px #ff2b2b, 0 0 16px #ff2b2b;
-}
-
 /* ============================= */
 /* TRAVEL - SELECT RAT */
 /* ============================= */
@@ -1045,18 +1243,6 @@ button {
 #villagerInfectionValue {
     margin-top: 0.35vw;
     font-size: 0.9vw;
-}
-
-#feverShieldIcon {
-    position: absolute;
-    top: 18vh;
-    left: 17.5vw;
-
-    width: 10%;
-    height: 10%;
-
-    display: none;
-    z-index: 5;
 }
 
 #villagerPortrait {
@@ -1510,15 +1696,60 @@ button {
 /* Add rat encounter scene-specific CSS here -- don't add anything that is already included in the CSS file */
 #ratHpUI {
     position: fixed;
-    top: 19vh;
-    left: 1vw;
-    width: 18vw;
+    top: 16vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16vw;
     padding: 1vw;
     background: rgba(0, 0, 0, 0.75);
     border: 2px solid #c6a988;
     border-radius: 12px;
     color: white;
+    text-align: center;
     z-index: 50;
+}
+
+#ratDialogueBox {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50vw;
+    max-width: 50vw;
+    padding: 2vh 2vw;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    font-size: clamp(2vh, 2.2vw, 3vh);
+    line-height: 1.4;
+    z-index: 80;
+}
+
+#ratSpeakerName {
+    color: tan;
+}
+
+#ratDialogueText {
+    color: white;
+    min-height: 2.2em;
+}
+
+#ratDialogueBox #ratActionBox {
+    display: none;
+}
+
+#ratNextArrow {
+    position: absolute;
+    bottom: 1vh;
+    right: 1.5vw;
+    font-size: 2.2vw;
+    color: white;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: arrowPulse 1s infinite ease-in-out;
 }
 
 #ratHpLabel {
@@ -1545,20 +1776,106 @@ button {
 #ratHpValue {
     margin-top: 0.35vw;
     font-size: 0.9vw;
+    text-align: center;
 }
 
 #ratImage {
     position: absolute;
-    left: 2vw;
-    bottom: 0;
-    width: 20vw;
+    left: -10vw;
+    bottom: -6vw;
+    width: 41vw;
     z-index: 40;
 }
 
-#temporaryAttackBtn {
+#ratScene[data-active-rat="rat4"] #ratImage {
+    left: -6vw;
+    width: 32.8vw;
+}
+
+#ratScene[data-active-rat="rat5"] #ratImage {
+    left: -2.8vw;
+    width: 30vw;
+    bottom: -11vw;
+}
+
+#ratScene #ratLootPopup {
+    display: none;
     position: absolute;
-    left: 50vw;
-    top: 20vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42vw;
+    max-width: 700px;
+    min-height: 24vh;
+    padding: 2vh 2vw;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    border: 2px solid #c6a988;
+    border-radius: 12px;
+    color: white;
+    z-index: 90;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#ratScene #ratLootPopup h2 {
+    color: tan;
+    margin-top: 0;
+}
+
+#ratScene #ratLootItems {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5vw;
+    margin: 2vh 0;
+}
+
+#ratScene .ratLootCard {
+    width: 110px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid #c6a988;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#ratScene .ratLootCard img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 8px;
+}
+
+#ratScene .ratLootCard p {
+    margin: 0;
+    font-size: 14px;
+    color: #f5e6c8;
+}
+
+#ratScene #ratClosePopupBtn {
+    margin-top: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    background: #7fffd1;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #000;
+}
+
+#ratScene #ratClosePopupBtn:hover {
+    background: #64c19f;
+}
+
+#ratDoctor {
+    position: absolute;
+    right: 1vw;
+    bottom: -3vw;
+    width: 22vw;
+    z-index: 35;
 }
 
 /* ============================= */
