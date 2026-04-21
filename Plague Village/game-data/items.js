@@ -13,15 +13,6 @@ const itemDatabase = {
         price: 30
     },
 
-    boneAsh: {
-        name: "Bone Ash",
-        img: "images/ingredients/bone-ash.png",
-        description: "Used in ash remedies to cure poison. A pale powder made from burned bones with cleansing properties.",
-        category: "ingredient",
-        weight: 5,
-        price: 40
-    },
-
     charcoalPowder: {
         name: "Charcoal Powder",
         img: "images/ingredients/charcoal-powder.png",
@@ -199,40 +190,6 @@ const itemDatabase = {
         tier: "strong"
     },
 
-    // Ash Remedy (Bone Ash Remedy - Weak, Garlic Ash Remedy - Mid, Charcoal Ash Remedy - Strong)
-    boneAshRemedy: {
-        name: "Bone Ash Remedy",
-        img: "images/potions/bone-ash-remedy.png",
-        description: "A milky white ash remedy. Cures Doctor's poison status. Effect: Weak.",
-        category: "potion",
-        weight: 3,
-        effectType: "cureDoctorPoison",
-        family: "ashRemedy",
-        tier: "weak"
-    },
-
-    garlicAshRemedy: {
-        name: "Garlic Ash Remedy",
-        img: "images/potions/garlic-ash-remedy.png",
-        description: "A bright yellow ash remedy. Cure's Doctor's poison status. Effect: Mid.",
-        category: "potion",
-        weight: 3,
-        effectType: "cureDoctorPoison",
-        family: "ashRemedy",
-        tier: "mid"
-    },
-
-    charcoalAshRemedy: {
-        name: "Charcoal Ash Remedy",
-        img: "images/potions/charcoal-ash-remedy.png",
-        description: "A powdery black ash remedy. Cure's Doctor's poison status. Effect: Strong.",
-        category: "potion",
-        weight: 3,
-        effectType: "cureDoctorPoison",
-        family: "ashRemedy",
-        tier: "strong"
-    },
-
     // Elixir (Silverleaf Elixir - Weak, Garlic Elixir - Mid, Charcoal Elixir - Strong)
     silverleafElixir: {
         name: "Silverleaf Elixir",
@@ -270,15 +227,6 @@ const itemDatabase = {
     // *************************************
     // CHARM ITEMS *************************
     //**************************************
-    driedToad: {
-        name: "Dried Toad",
-        img: "images/charm-items/dried-toad.png",
-        description: "A symbol of prosperity, dried toad increases chance of finding rare items",
-        category: "charm",
-        weight: 3,
-        price: 50
-    },
-
     brilliantEmerald: {
         name: "Brilliant Emerald",
         img: "images/charm-items/brilliant-emerald.png",

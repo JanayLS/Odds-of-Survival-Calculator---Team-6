@@ -124,7 +124,7 @@ potionsScene.innerHTML = `
 
             <div class="book-page right-page">
                 <!-- Ash Remedy -->
-                <div class="recipe-entry">
+                <div class="recipe-entry unavailableRecipe">
                     <h3 class="recipe-title">Ash Remedy</h3>
 
                     <div class="potion-display">
@@ -147,6 +147,8 @@ potionsScene.innerHTML = `
                             <span>Charcoal Powder</span>
                         </div>
                     </div>
+
+                    <div class="unavailableRecipeLabel">Unavailable in Current Build.</div>
                 </div>
                 <!-- Elixir Recipe -->
                 <div class="recipe-entry">

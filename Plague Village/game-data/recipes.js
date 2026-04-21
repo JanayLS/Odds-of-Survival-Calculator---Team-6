@@ -20,13 +20,6 @@ const recipeDatabase = {
         img: "images/potions/plague-concoction.png"
     },
 
-    ashRemedy: {
-        name: "Ash Remedy",
-        ingredients: ["Bone Ash", "Garlic Bulb", "Charcoal Powder"],
-        result: "ashRemedy",
-        img: "images/potions/ash-remedy.png"
-    },
-
     elixir: {
         name: "Elixir",
         ingredients: ["Silverleaf", "Garlic Bulb", "Charcoal Powder"],

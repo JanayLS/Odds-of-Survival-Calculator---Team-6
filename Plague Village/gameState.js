@@ -29,6 +29,11 @@ const gameState = {
     currentVillagerKey: null,
     currentRatKey: null,
 
+    // Arrival Scene Dialogue Tracker
+    askedVillagers: false,
+    askedRats: false,
+    askedSupplies: false,
+
     // Doctor Status
     doctorInfection: 0,
 

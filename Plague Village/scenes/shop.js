@@ -5,7 +5,7 @@ shopScene.innerHTML = `
     <img id="shop-owner" src="images/characters/shop-owner.png">
 
     <!-- Dialogue System (Character Name, Dialogue Text, Player Choices, Next Arrow for Navigation) -->
-     <div id="shopDialogueBox">
+    <div id="shopDialogueBox">
         <div id="shopCharacterName">Rosemary Thornsmith:</div>
         <div id="shopDialogueText"></div>
         <div id="shopNextArrow">➤</div>

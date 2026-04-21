@@ -77,7 +77,6 @@ const forestLootPool = [
     "moldedBark",
     "hawthorne",
     "charcoalPowder",
-    "boneAsh",
     "garlicBulb",
     null
 ];
