@@ -91,6 +91,8 @@ function renderVillagerScene() {
         portrait.style.filter = "none";
     }
 
+    const shield = document.getElementById("feverShieldIcon");
+
     // If villager is fever suppressed for the day, or has ruby amulet protection, show shield icon
     if (villagerState.amuletProtected) {
         shield.style.display = "block";
