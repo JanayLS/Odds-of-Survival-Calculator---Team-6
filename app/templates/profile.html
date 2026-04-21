@@ -1,25 +1,195 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile - {{ user.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: url('{{ url_for("static", filename="img/backgrounds/plagueVillageMenu.png") }}') no-repeat center center;
+        background-size: cover;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #c9d1c8;
+      }
+
+      .profile-container {
+        background-color: rgba(20, 30, 25, 0.95);
+        border: 3px solid #7fc89d;
+        border-radius: 15px;
+        padding: 40px;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 0 40px rgba(127, 200, 157, 0.6);
+      }
+
+      h1 {
+        color: #7fc89d;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(127, 200, 157, 0.5);
+        font-weight: bold;
+      }
+
+      .info-section {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: rgba(61, 90, 66, 0.3);
+        border-left: 3px solid #7fc89d;
+        border-radius: 5px;
+      }
+
+      .info-section p {
+        margin: 8px 0;
+        font-size: 1.1em;
+        color: #c9d1c8;
+      }
+
+      .info-section strong {
+        color: #7fc89d;
+      }
+
+      h2 {
+        color: #7fc89d;
+        font-size: 1.8em;
+        margin: 30px 0 20px 0;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .stat-card {
+        background-color: rgba(61, 90, 66, 0.3);
+        border: 2px solid #7fc89d;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        background-color: rgba(127, 200, 157, 0.2);
+        box-shadow: 0 0 15px rgba(127, 200, 157, 0.5);
+        transform: scale(1.05);
+      }
+
+      .stat-value {
+        font-size: 2.5em;
+        color: #7fc89d;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 0.9em;
+        color: #c9d1c8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .button-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        font-family: 'Poppins', sans-serif;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        border: 2px solid #7fc89d;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-menu {
+        background-color: rgba(61, 90, 66, 0.9);
+        color: #7fc89d;
+      }
+
+      .btn-menu:hover {
+        background-color: #7fc89d;
+        color: #0a0e0d;
+        box-shadow: 0 0 20px rgba(127, 200, 157, 0.6);
+        transform: scale(1.05);
+      }
+
+      .btn-game {
+        background: linear-gradient(135deg, #7fc89d, #5fa881);
+        color: #0a0e0d;
+        border: none;
+        box-shadow: 0 0 30px rgba(127, 200, 157, 0.6);
+      }
+
+      .btn-game:hover {
+        background: linear-gradient(135deg, #96dbb3, #7fc89d);
+        box-shadow: 0 0 50px rgba(127, 200, 157, 1);
+        transform: scale(1.1);
+      }
+    </style>
   </head>
   <body>
-    <h1>{{ user.name }}'s Profile</h1>
-    <p><strong>Location:</strong> {{ user.location }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
+    <div class="profile-container">
+      <h1>{{ user.name }}'s Profile</h1>
+      
+      <div class="info-section">
+        <p><strong>Location:</strong> {{ user.location or 'Unknown' }}</p>
+        <p><strong>Email:</strong> {{ user.email or 'Not provided' }}</p>
+      </div>
 
-    <h2>Stats</h2>
-    <ul>
-      <li>Total encounters: {{ user.stats.total_encounters }}</li>
-      <li>Survival rate: {{ user.stats.survival_rate }}%</li>
-      <li>Potions: {{ user.stats.num_of_potions }}</li>
-    </ul>
+      <h2>Character Stats</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">{{ user.stats.total_encounters }}</div>
+          <div class="stat-label">Encounters</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">{{ user.stats.survival_rate }}%</div>
+          <div class="stat-label">Survival Rate</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">{{ user.stats.num_of_potions }}</div>
+          <div class="stat-label">Potions</div>
+        </div>
+      </div>
 
-    <!-- Navigation Buttons -->
-    <div style="margin-top: 20px;">
-      <button onclick="window.location.href='/menu'">Back to Main Menu</button>
-      <button onclick="window.location.href='/menu?autostart=true'">Start Game</button>
+      <div class="button-container">
+        <button class="btn-menu" onclick="window.location.href='/menu'">Main Menu</button>
+        <button class="btn-game glow-btn" onclick="window.location.href='/menu?autostart=true'">Start Game</button>
+      </div>
     </div>
   </body>
 </html>
