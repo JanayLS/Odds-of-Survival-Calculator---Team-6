@@ -136,17 +136,21 @@ function renderVillageInfection() {
     value.textContent = `${Math.round(villageInfection)}%`
 }
 
-// CHANGES MAIN VILLAGE BACKGROUND DEPENDING ON VILLAGE INFECTION %
+// CHANGES MAIN VILLAGE BACKGROUND AND NPC HEALTH VISUALS DEPENDING ON VILLAGE INFECTION %
 function updateVillageBackground() {
     const arrivalScene = document.getElementById("arrivalScene");
+    const villageNpc = document.getElementById("villager1");
     const villageInfection = getVillageInfectionPercent();
 
     if (villageInfection < 30) {
         arrivalScene.style.backgroundImage = "url('images/backgrounds/healthyVillage.png')";
+        villageNpc.src = "images/characters/villager1Healthy.png";
     } else if (villageInfection <= 70) {
         arrivalScene.style.backgroundImage = "url('images/backgrounds/midHealthVillage.png')";
+        villageNpc.src = "images/characters/villager1MidHealth.png";
     } else {
         arrivalScene.style.backgroundImage = "url('images/backgrounds/toxicVillage.png')";
+        villageNpc.src = "images/characters/villager1.png";
     }
 }
 
@@ -288,6 +292,8 @@ choiceBox.addEventListener("click", (e) => {
         villager1.style.opacity = 0;
         worriedVillagerWoman.style.opacity = 1;
 
+        gameState.askedVillagers = true;
+
         // currentLine = 0;
 
         setTimeout(() => {
@@ -309,6 +315,8 @@ choiceBox.addEventListener("click", (e) => {
         villager1.style.opacity = 1;
         worriedVillagerWoman.style.opacity = 0;
 
+        gameState.askedRats = true;
+
         // currentLine = 0;
 
         typeLine("The rats are the plague itself. They scurry through our village, infecting our people. One bite can mean death...");
@@ -328,6 +336,8 @@ choiceBox.addEventListener("click", (e) => {
         worriedVillagerWoman.style.opacity = 0;
 
         inventoryHintArrow.style.opacity = "1";
+
+        gameState.askedSupplies = true;
 
         // currentLine = 0;
 
@@ -375,6 +385,15 @@ choiceBox.addEventListener("click", (e) => {
 
 // Shows Intro Choices
 function showIntroChoices() {
+
+    if (allIntroChoicesAsked()) {
+        choiceBox.style.display = "none";
+        arrow.style.opacity = 0;
+        sceneState = "villageComplete";
+        dialogueText.textContent = "The village waits. What you do will decide its fate.";
+        return;
+    }
+
     choiceBox.innerHTML = `
         <button class="choiceBtn" data-choice="villagers">
             Ask about the sick villagers
@@ -387,6 +406,30 @@ function showIntroChoices() {
         </button>
     `;
     choiceBox.style.display = "flex";
+}
+
+// BEHAVIOR AFTER ALL CHOICES ASKED
+// Checks if all choices were asked
+function allIntroChoicesAsked() {
+    return gameState.askedVillagers && gameState.askedRats && gameState.askedSupplies;
+}
+
+// Resets arrival scene visuals after all choices asked
+function resetArrivalSceneVisuals() {
+    characterName.textContent = "Desperate Villager:";
+    villager1.style.opacity = 1;
+    worriedVillagerWoman.style.opacity = 0;
+}
+
+function handleArrivalSceneReturn() {
+    resetArrivalSceneVisuals();
+
+    if (allIntroChoicesAsked()) {
+        choiceBox.style.display = "none";
+        arrow.style.opacity = 0;
+        sceneState = "villageComplete";
+        dialogueText.textContent = "The village waits. What you do next will decide its fate.";
+    }
 }
 
 // --------------------------------------------------------------
@@ -410,9 +453,14 @@ function showScene(sceneID) {
     }
 
     // If Player has no Action Tokens, End of Day report will be shown when they return to Arrival (Main Village) Scene
-    if (sceneID === "arrivalScene" && gameState.actionTokens <= 0) {
-        showEndOfDayReport();
+    if (sceneID === "arrivalScene") {
+        handleArrivalSceneReturn();
+
+        if (gameState.actionTokens <= 0) {
+            showEndOfDayReport();
+        }
     }
+
 
     // Renders villager infection when player enters villager healing scene
     if (sceneID === "villagerHealingScene") {
@@ -909,9 +957,6 @@ function validateItemUse(item) {
                 return { valid: false, message: "Plague concoction can only be used in rat encounters." };
             }
 
-            return { valid: true };
-
-        case "cureDoctorPoison":
             return { valid: true };
 
         case "permanentProtection":
