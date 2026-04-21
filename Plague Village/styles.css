@@ -834,6 +834,16 @@ button {
     background-color: #7fff7f;
 }
 
+.villagerSelectBtn.feverProtected {
+    border: 3px solid #39ff14;
+    box-shadow: 0 0 8px #39ff14, 0 0 16px #39ff14;
+}
+
+.villagerSelectBtn.amuletProtected {
+    border: 3px solid #ff2b2b;
+    box-shadow: 0 0 8px #ff2b2b, 0 0 16px #ff2b2b;
+}
+
 /* ============================= */
 /* TRAVEL - SELECT RAT */
 /* ============================= */
@@ -1035,6 +1045,18 @@ button {
 #villagerInfectionValue {
     margin-top: 0.35vw;
     font-size: 0.9vw;
+}
+
+#feverShieldIcon {
+    position: absolute;
+    top: 18vh;
+    left: 17.5vw;
+
+    width: 10%;
+    height: 10%;
+
+    display: none;
+    z-index: 5;
 }
 
 #villagerPortrait {

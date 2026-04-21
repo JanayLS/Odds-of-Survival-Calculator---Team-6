@@ -294,6 +294,7 @@ const itemDatabase = {
         description: "Shiny red ruby pendant on a thin gold chain, ruby amulet prevents infection",
         category: "charm",
         weight: 1,
+        effectType: "permanentProtection",
         price: 500
     },
 
