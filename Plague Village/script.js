@@ -546,7 +546,7 @@ function renderInventory() {
         window.selectedItem = null;
 
         img.addEventListener("click", () => {
-            if (activeInventoryTab === "potions") {
+            if (item.effectType) {
                 useItem(item);
             } else {
                 window.selectedItem = item;
@@ -672,6 +672,12 @@ function renderVillagerSelectList() {
             villagerBtn.textContent = villagerName;
         }
 
+        // Add visual cue for fever suppressed villagers & amulet protected villagers
+        if (villagerState.amuletProtected) {
+            villagerBtn.classList.add("amuletProtected");
+        } else if (villagerState.feverSuppressed) {
+            villagerBtn.classList.add("feverProtected");
+        }
 
         villagerSelectList.appendChild(villagerBtn);
     });
@@ -861,7 +867,7 @@ function useItem(item) {
 
     if (!usedSuccessfully) return;
 
-    if (item.category === "potion") {
+    if (item.effectType) {
         removeItemFromInventory(item);
     }
 
@@ -896,6 +902,9 @@ function validateItemUse(item) {
         case "cureDoctorPoison":
             return { valid: true };
 
+        case "permanentProtection":
+            return { valid: true };
+
         default:
             return { valid: false, message: "This item cannot be used right now." };
     }
@@ -918,6 +927,9 @@ function applyItemEffect(item) {
 
         case "cureDoctorPoison":
             return applyCureDoctorPoison(item);
+
+        case "permanentProtection":
+            return applyPermanentProtection(item);
 
         default:
             return false;
@@ -1095,6 +1107,53 @@ function applyCureDoctorPoison(item) {
     alert("Ash Remedy can be used by doctor in any scene.");
 }
 
+// applyPermanentProtection - used by Ruby Amulet. Permanently protects villager from End of Day infection increase.
+function applyPermanentProtection(item) {
+    const villagerSceneVisible = document.getElementById("villagerHealingScene").style.display === "block";
+
+    if (!villagerSceneVisible) {
+        alert("Ruby Amulet can only be used on a villager.");
+        return false;
+    }
+
+    const villager = getActiveVillager();
+
+    if (!villager) {
+        alert("No active villager found.");
+        return false;
+    }
+
+    if (villager.dead) {
+        alert("This villager is dead.");
+        return false;
+    }
+
+    if (villager.healed) {
+        alert("This villager has already been healed.");
+        return false;
+    }
+
+    if (villager.amuletProtected) {
+        alert("This villager is already permanently protected.");
+        return false;
+    }
+
+    if (!canSpendActionToken(2)) {
+        return false;
+    }
+
+    villager.amuletProtected = true;
+
+    spendActionToken(2);
+
+    renderVillagerInfection();
+    renderVillagerScene();
+    updateVillageVisual();
+    updateObjectivePanel();
+
+    return true;
+}
+
 // --------------------------------------------------------------
 // MONEY
 // --------------------------------------------------------------
@@ -1262,7 +1321,7 @@ function applyEndOfDayUpdates() {
         if (villager.active && !villager.healed && !villager.dead) {
 
             // Skip infection increase if villager has Fever Suppressant or Ruby Amulet protection
-            if (villager.feverSuppressed) {
+            if (villager.feverSuppressed || villager.amuletProtected) {
                 return;
             }
 

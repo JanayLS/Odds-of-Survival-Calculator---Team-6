@@ -16,6 +16,8 @@ villagerHealingScene.innerHTML = `
 
         <div id="villagerInfectionValue">100%</div>
     </div>
+
+    <img id="feverShieldIcon" src="images/misc-images/shield.png" alt="Protected"> 
 `
 
 // 2. ADD SCENE SPECIFIC JS HERE -- Do not redeclare global variables/functions that are already in script.js
@@ -78,6 +80,18 @@ function renderVillagerScene() {
         portrait.style.opacity = "1";
         portrait.style.filter = "none";
     }
+
+    // If villager is fever suppressed for the day, or has ruby amulet protection, show shield icon
+    if (villagerState.amuletProtected) {
+        shield.style.display = "block";
+        shield.src = "images/misc-images/ruby-shield.png";
+    } else if (villagerState.feverSuppressed) {
+        shield.style.display = "block";
+        shield.src = "images/misc-images/shield.png";
+    } else {
+        shield.style.display = "none";
+    }
+
 }
 
 renderVillagerInfection();

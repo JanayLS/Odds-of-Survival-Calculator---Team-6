@@ -39,6 +39,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -47,6 +48,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -55,6 +57,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -63,6 +66,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -71,6 +75,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -79,6 +84,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -87,6 +93,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -95,6 +102,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -103,6 +111,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         },
 
@@ -111,6 +120,7 @@ const gameState = {
             healed: false,
             infectionLevel: 85,
             feverSuppressed: false,
+            amuletProtected: false,
             dead: false,
         }
 
