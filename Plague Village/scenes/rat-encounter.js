@@ -21,15 +21,20 @@ ratScene.innerHTML = `
 // ADD SCENE SPECIFIC JS HERE -- Do not redeclare global variables/functions that are already in script.js
 // If needed, rename your local variables to avoid conflicts with script.js
 let activeRatKey = null;
-tempAttackBtn = document.getElementById("temporaryAttackBtn");
+const tempAttackBtn = document.getElementById("temporaryAttackBtn");
 
 function setActiveRat(ratKey) {
     activeRatKey = ratKey;
+    gameState.currentRatKey = ratKey;
     renderRatScene();
     renderRatHp();
 }
 
 function getActiveRat() {
+    if (!activeRatKey && gameState.currentRatKey) {
+        activeRatKey = gameState.currentRatKey;
+    }
+
     return gameState.rats[activeRatKey];
 }
 
@@ -46,6 +51,11 @@ function renderRatHp() {
 }
 
 function renderRatScene() {
+
+    if (!activeRatKey && gameState.currentRatKey) {
+        activeRatKey = gameState.currentRatKey;
+    }
+
     if (!activeRatKey) return;
 
     const ratData = ratsDatabase[activeRatKey];

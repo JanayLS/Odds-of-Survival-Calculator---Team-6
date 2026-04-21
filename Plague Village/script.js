@@ -402,6 +402,9 @@ function showScene(sceneID) {
     hideItemDescription();
     document.getElementById(sceneID).style.display = "block";
 
+    // Set currentScene in gameState to current scene for save/load functionality
+    gameState.currentScene = sceneID;
+
     if (sceneID === "shopScene" && typeof resetShopDialogue === "function") {
         resetShopDialogue();
     }
@@ -697,6 +700,12 @@ function renderRatSelectList() {
         ratBtn.dataset.rat = ratKey;
         ratBtn.textContent = ratsDatabase[ratKey].name;
 
+        // If rat is weakened by Plague Concoction, its button is duller.
+        if (rat.weakened) {
+            ratBtn.classList.add("weakenedRat");
+            ratBtn.textContent += " (Weakened)";
+        }
+
         ratSelectList.appendChild(ratBtn);
     })
 }
@@ -896,7 +905,10 @@ function validateItemUse(item) {
             return { valid: true };
 
         case "poisonRat":
-            // Change this later so it only works in context of Rat Encounter Scene
+            if (document.getElementById("ratScene").style.display !== "block") {
+                return { valid: false, message: "Plague concoction can only be used in rat encounters." };
+            }
+
             return { valid: true };
 
         case "cureDoctorPoison":
@@ -924,9 +936,6 @@ function applyItemEffect(item) {
 
         case "poisonRat":
             return applyPoisonRat(item);
-
-        case "cureDoctorPoison":
-            return applyCureDoctorPoison(item);
 
         case "permanentProtection":
             return applyPermanentProtection(item);
@@ -1096,15 +1105,77 @@ function applySuppressVillagerInfection(item) {
     return true;
 }
 
-// applyPoisonRat - used by Plague Concoction, weakens rat attacks in battle
+// applyPoisonRat - used by Plague Concoction, weakens rats for 1 day so they don't gain HP at End of Day report.
 function applyPoisonRat(item) {
-    alert("Plague Concoction logic will connect to rat encounter scene.");
-    return false;
-}
+    const ratSceneVisible = document.getElementById("ratScene").style.display === "block";
 
-// applyCureDoctorPoison - used by Ash Remedy, reduces Doctor poison status
-function applyCureDoctorPoison(item) {
-    alert("Ash Remedy can be used by doctor in any scene.");
+    if (!ratSceneVisible) {
+        alert("Plague Concoction can only be used during a rat encounter.");
+        return false;
+    }
+
+    const rat = getActiveRat();
+
+    if (!rat) {
+        alert("No active rat found.");
+        return false;
+    }
+
+    if (rat.dead) {
+        alert("This rat is already dead.");
+        return false;
+    }
+
+    if (rat.weakened) {
+        alert("This rat is already weakened for the night.");
+        return false;
+    }
+
+    if (!canSpendActionToken(1)) {
+        return false;
+    }
+
+    spendActionToken(1);
+
+    let damage = 0;
+
+    switch (item.tier) {
+        case "weak":
+            damage = 5;
+            break;
+        case "mid":
+            damage = 10;
+            break;
+        case "strong":
+            damage = 15;
+            break;
+        default:
+            damage = 10;
+    }
+
+    rat.hp -= damage;
+
+    if (rat.hp <= 0) {
+        rat.hp = 0;
+        rat.dead = true;
+        gameState.ratsKilled += 1;
+
+        updateObjectivePanel();
+        renderRatHp();
+        renderRatSelectList();
+
+        alert(`The rat was killed by the Plague Concoction.`)
+        return true;
+    }
+
+    rat.weakened = true;
+
+    renderRatHp();
+    renderRatSelectList();
+
+    alert(`The rat takes ${damage} damage and has been weakened. It will not recover HP tonight.`);
+
+    return true;
 }
 
 // applyPermanentProtection - used by Ruby Amulet. Permanently protects villager from End of Day infection increase.
@@ -1307,12 +1378,17 @@ function applyEndOfDayUpdates() {
         giftedItems: []
     };
 
-    // Rats that are still alive gain HP
+    // Rats that are still alive gain HP unless weakened for the night.
     Object.values(gameState.rats).forEach(rat => {
         if (!rat.dead) {
-            rat.hp += 10;
-            if (rat.hp > 100) rat.hp = 100;
-            report.ratsStrengthened += 1;
+            if (!rat.weakened) {
+                rat.hp += 10;
+                if (rat.hp > 100) rat.hp = 100;
+                report.ratsStrengthened += 1;
+            }
+
+            // Weakened effect only lasts one day.
+            rat.weakened = false;
         }
     });
 

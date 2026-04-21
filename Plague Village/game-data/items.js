@@ -282,7 +282,7 @@ const itemDatabase = {
     brilliantEmerald: {
         name: "Brilliant Emerald",
         img: "images/charm-items/brilliant-emerald.png",
-        description: "A beautiful shimmering emerald, increases potency of potions",
+        description: "A beautiful shimmering emerald, increases potency of Elixirs and Healing Tonics.",
         category: "charm",
         weight: 2,
         price: 100
