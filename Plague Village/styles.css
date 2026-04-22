@@ -1566,6 +1566,25 @@ button {
     position: absolute;
     left: 50vw;
     top: 20vh;
+    padding: .5vw .5vh;
+    font-size: 2vh;
+    font-weight: bold;
+    background-color: #7fffd1;
+    color: #000;
+    border: 2px solid #c6a988;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    z-index: 1000;
+}
+
+#temporaryAttackBtn:hover {
+    transform: scale(1.1);
+    background-color: #64c19f;
+}
+
+#temporaryAttackBtn:active {
+    transform: scale(0.97);
 }
 
 /* ============================= */
