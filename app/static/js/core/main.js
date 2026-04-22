@@ -111,9 +111,24 @@ function initializeNewGameMoney() {
 }
 
 async function startGame() {
-    initializeNewGameMoney()
-    showScene("arrivalScene");
+    initializeNewGameMoney();
+
+    sceneState = "intro";
     currentLine = 0;
+    startItemsGiven = false;
+    currentVillagerKey = null;
+    currentRatKey = null;
+
+    gameState.day = 1;
+    gameState.actionTokens = gameState.maxActionTokens;
+    gameState.currentScene = "arrivalScene";
+    gameState.sceneState = sceneState;
+    gameState.currentLine = currentLine;
+    gameState.startItemsGiven = startItemsGiven;
+    gameState.currentVillagerKey = currentVillagerKey;
+    gameState.currentRatKey = currentRatKey;
+
+    showScene("arrivalScene");
     dialogueText.innerHTML = "";
     typeLine(dialogueLines[currentLine]);
 }
@@ -159,7 +174,7 @@ loginForm?.addEventListener("submit", async (e) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Accept: "application/json",
+                "Accept": "application/json",
             },
             credentials: "same-origin",
             body: JSON.stringify({
@@ -177,8 +192,20 @@ loginForm?.addEventListener("submit", async (e) => {
 
         hideLogin();
 
-        // Redirect to profile page after successful login
-        // window.location.href = '/profile/profile';
+        if (create) {
+            await startGame();
+            return;
+        }
+
+        try {
+            await loadGame({ silent: true });
+        } catch (loadError) {
+            if (String(loadError.message || "").toLowerCase().includes("no saved game")) {
+                await startGame();
+            } else {
+                throw loadError;
+            }
+        }
     } catch (err) {
         console.error("Login failed:", err);
 
@@ -928,12 +955,32 @@ saveLoadOverlay.addEventListener("click", (e) => {
     }
 });
 
-saveGameBtn.addEventListener("click", () => {
-    console.log("Save button clicked");
+saveGameBtn.addEventListener("click", async () => {
+    try {
+        gameState.currentScene = gameState.currentScene || "arrivalScene";
+        gameState.sceneState = sceneState;
+        gameState.currentLine = currentLine;
+        gameState.startItemsGiven = startItemsGiven;
+        gameState.currentVillagerKey = currentVillagerKey;
+        gameState.currentRatKey = currentRatKey;
+
+        await saveGame();
+        saveLoadOverlay.classList.add("hidden");
+        alert("Game saved.");
+    } catch (error) {
+        console.error("Save failed:", error);
+        alert(error.message || "Failed to save game.");
+    }
 });
 
-loadGameBtn.addEventListener("click", () => {
-    console.log("Load button clicked");
+loadGameBtn.addEventListener("click", async () => {
+    try {
+        await loadGame();
+        saveLoadOverlay.classList.add("hidden");
+    } catch (error) {
+        console.error("Load failed:", error);
+        alert(error.message || "Failed to load game.");
+    }
 });
 
 
@@ -1003,13 +1050,21 @@ closeVillagerSelectBtn.addEventListener("click", () => {
 
 // Travel to rats
 ratSelectList.addEventListener("click", (e) => {
-    if (!e.target.classList.contains("ratSelectBtn")) return;
+    const ratButton = e.target.closest(".ratSelectBtn");
+    if (!ratButton) return;
 
-    currentRatKey = e.target.dataset.rat;
+    currentRatKey = ratButton.dataset.rat;
+    console.log("clicked rat:", currentRatKey);
+
     ratSelectOverlay.classList.add("hidden");
-
-    setActiveRat(currentRatKey);
     showScene("ratScene");
+
+    if (typeof window.setActiveRat !== "function") {
+        console.error("window.setActiveRat is not defined");
+        return;
+    }
+
+    window.setActiveRat(currentRatKey);
 });
 
 closeRatSelectBtn.addEventListener("click", () => {

@@ -71,7 +71,9 @@ button {
 }
 
 #ratScene {
-    background-image: url('../img/backgrounds/rat-encounter-background.png');
+    background-color: #1a1a1a;
+    background-size: cover;
+    background-position: center;
 }
 
 #shopScene {
@@ -2634,6 +2636,10 @@ button {
         box-shadow: 0 0 5px #7fffd1, 0 0 10px #7fffd1;
         opacity: 0.95;
     }
+}
+
+.hidden {
+    display: none !important;
 }
 
 /* Login overlay */
