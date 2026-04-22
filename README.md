@@ -15,6 +15,7 @@ Gather ingredients and create potions to cure as many villagers as possible whil
   - `static/` – Flask static files (CSS/JS/images placeholders for later)
 - `data/` – runtime data (encrypted journal, maps, db, etc.). Not committed.
 -  `docs/` – Documents, guidance, and information about the project
+-  `plague village/` - frontend application build
 - `tests/` – unit tests / smoke tests
 
 
