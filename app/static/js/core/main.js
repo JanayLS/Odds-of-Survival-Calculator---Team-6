@@ -577,7 +577,6 @@ function handleArrivalSceneReturn() {
 // --------------------------------------------------------------
 // SCENE SWITCHING FUNCTION 
 function showScene(sceneID) {
-
     const scenes = document.querySelectorAll(".scene");
 
     scenes.forEach(scene => {
@@ -587,14 +586,20 @@ function showScene(sceneID) {
     hideItemDescription();
     document.getElementById(sceneID).style.display = "block";
 
-    // Set currentScene in gameState to current scene for save/load functionality
+    if (sceneID === "chapelScene" && typeof window.resetChapelScene === "function") {
+        window.resetChapelScene();
+    }
+
+    if (sceneID === "forestScene" && typeof window.resetForestScene === "function") {
+        window.resetForestScene();
+    }
+
     gameState.currentScene = sceneID;
 
     if (sceneID === "shopScene" && typeof resetShopDialogue === "function") {
         resetShopDialogue();
     }
 
-    // If Player has no Action Tokens, End of Day report will be shown when they return to Arrival (Main Village) Scene
     if (sceneID === "arrivalScene") {
         handleArrivalSceneReturn();
 
@@ -603,19 +608,16 @@ function showScene(sceneID) {
         }
     }
 
-
-    // Renders villager infection when player enters villager healing scene
     if (sceneID === "villagerHealingScene") {
         renderVillagerInfection();
     }
 
-    // Music within Scenes
     if (sceneID === "potionsScene") {
         bgm.src = "/static/audio/potionsMusic.mp3";
         bgm.load();
-        // bgm.play();
+        
     } else if (sceneID === "shopScene") {
-        bgm.src = "/static/audio/shopMusic.mp3"
+        bgm.src = "/static/audio/shopMusic.mp3";
         bgm.load();
     }
 }
