@@ -346,5 +346,5 @@ forestClosePopupBtn.addEventListener("click", () => {
     forestLootPopup.style.display = "none";
 });
 
-registerForestSceneEnterHook("forestScene", resetForestScene);
+window.resetForestScene = resetForestScene;
 resetForestScene();

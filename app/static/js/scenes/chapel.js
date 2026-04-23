@@ -533,5 +533,5 @@ chapelLeaveChapelBtn.addEventListener("click", () => {
     showScene("arrivalScene");
 });
 
-registerChapelSceneEnterHook("chapelScene", resetChapelScene);
+window.resetChapelScene = resetChapelScene;
 resetChapelScene();
