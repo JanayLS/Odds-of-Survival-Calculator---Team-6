@@ -179,7 +179,7 @@ function typeChapelLine(text) {
                 }
             }
         }
-    }, 25);
+    }, typingSpeed);
 }
 
 function showChapelDialogue() {

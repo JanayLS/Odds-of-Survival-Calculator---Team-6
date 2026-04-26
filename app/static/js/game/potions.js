@@ -185,6 +185,7 @@ potionsScene.innerHTML = `
 // Potion Brewing System
 setupBrewingSlots();
 const potionBrewSound = new Audio('/static/sound-effects/potion-sounds/potion-brewed.wav')
+potionBrewSound.volume = 0.2;
 let brewedPotion = null;
 
 let brewingSlots = {
