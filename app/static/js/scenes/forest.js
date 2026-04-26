@@ -121,7 +121,7 @@ function typeForestLine(text) {
             forestIsTyping = false;
             forestNextArrow.style.opacity = 1;
         }
-    }, 25);
+    }, typingSpeed);
 }
 
 function updateForestSearchButton() {

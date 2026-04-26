@@ -23,6 +23,7 @@ const saveLoadOverlay = document.getElementById("saveLoadOverlay");
 const saveGameBtn = document.getElementById("saveGameBtn");
 const loadGameBtn = document.getElementById("loadGameBtn");
 const closeSaveLoadBtn = document.getElementById("closeSaveLoadBtn");
+const returnToMainMenuBtn = document.getElementById("returnToMainMenuBtn");
 
 // Music Button
 const bgm = document.getElementById('bgm');
@@ -34,6 +35,12 @@ const typeSounds = document.querySelectorAll('.typeSound');
 let lastSoundIndex = -1;
 // Randomizes typing sounds
 function playRandomTypeSound() {
+
+    if (!canPlayTypingSfx) return;
+
+    if (mainMenu.style.display !== "none") return;
+    if (loginOverlay && !loginOverlay.classList.contains("hidden")) return;
+
     let randomIndex;
 
     do {
@@ -110,7 +117,10 @@ function initializeNewGameMoney() {
     renderMoney();
 }
 
+let canPlayTypingSfx = false;
+
 async function startGame() {
+    canPlayTypingSfx = true;
     initializeNewGameMoney();
 
     sceneState = "intro";
@@ -367,6 +377,35 @@ const dialogueLines = [
 let currentLine = 0;
 let isTyping = false;
 let typingSpeed = 40;
+
+function getTypingSpeedLabel() {
+    if (typingSpeed <= 20) return "Fast";
+    if (typingSpeed >= 70) return "Slow";
+    return "Normal";
+}
+
+function updateTextSpeedButton() {
+    if (!textSpeedBtn) return;
+    textSpeedBtn.textContent = `Text Speed: ${getTypingSpeedLabel()}`;
+}
+
+function cycleTypingSpeed() {
+    if (typingSpeed === 20) {
+        typingSpeed = 40;
+    } else if (typingSpeed === 40) {
+        typingSpeed = 70;
+    } else {
+        typingSpeed = 20;
+    }
+
+    updateTextSpeedButton();
+}
+
+updateTextSpeedButton();
+
+textSpeedBtn?.addEventListener("click", () => {
+    cycleTypingSpeed();
+});
 
 // Typing Animation for Dialogue Text
 // Disables Navigation Arrow while Typing
@@ -985,6 +1024,24 @@ loadGameBtn.addEventListener("click", async () => {
     }
 });
 
+returnToMainMenuBtn?.addEventListener("click", () => {
+    saveLoadOverlay.classList.add("hidden");
+    travelPanel.classList.remove("open");
+    inventoryPanel.classList.remove("open");
+    objectivePanel.classList.remove("open");
+    villagerSelectOverlay.classList.add("hidden");
+    ratSelectOverlay.classList.add("hidden");
+    endOfDayOverlay.classList.add("hidden");
+    hideLogin();
+
+    if (!bgm.paused) {
+        bgm.pause();
+        bgm.currentTime = 0;
+        musicBtn.textContent = "Music Off";
+    }
+
+    showScene("mainMenu");
+});
 
 
 // Music Button
